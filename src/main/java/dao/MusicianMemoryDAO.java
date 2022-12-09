@@ -29,6 +29,7 @@ public class MusicianMemoryDAO implements MusicianDAO {
         }
         return instance;
     }
+
     @Override
     public List<MusicianDTO> getAllMusicians() {
         return musicians;
@@ -36,8 +37,7 @@ public class MusicianMemoryDAO implements MusicianDAO {
 
     @Override
     public boolean exists(String musician) {
-        List<MusicianDTO> musicianDTOS = getAllMusicians();
-        for (MusicianDTO musicianDTO: musicianDTOS) {
+        for (MusicianDTO musicianDTO: musicians) {
             if(musician.equals(musicianDTO.getMusician())){
                 return true;
             }

@@ -44,8 +44,7 @@ public class GenreMemoryDAO implements GenreDAO {
 
     @Override
     public boolean exists(String genre) {
-        List<GenreDTO> genresDTOS = getAllGenres();
-        for (GenreDTO genreDTO : genresDTOS) {
+        for (GenreDTO genreDTO : genres) {
             if(genre.equals(genreDTO.getGenre())){
                 return true;
             }
