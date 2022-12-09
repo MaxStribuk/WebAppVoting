@@ -1,11 +1,12 @@
 package dao.api;
 
-import dto.VoteDTO;
+
+import dto.SavedVoteDTO;
 
 import java.util.List;
 
 public interface VoteDAO {
 
-    List<VoteDTO> getAllVotes();
-    void save(VoteDTO vote);
+    List<SavedVoteDTO> getAllVotes();
+    void save(SavedVoteDTO vote);
 }

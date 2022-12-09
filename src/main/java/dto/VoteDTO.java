@@ -4,9 +4,9 @@ public class VoteDTO {
 
     private final String musician;
     private final String[] genres;
-    private final UserMessage message;
+    private final String message;
 
-    public VoteDTO(String musician, String[] genres, UserMessage message) {
+    public VoteDTO(String musician, String[] genres, String message) {
         this.musician = musician;
         this.genres = genres;
         this.message = message;
@@ -20,7 +20,7 @@ public class VoteDTO {
         return genres;
     }
 
-    public UserMessage getMessage() {
+    public String getMessage() {
         return message;
     }
 

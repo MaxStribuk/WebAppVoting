@@ -1,7 +1,7 @@
 package dao;
 
 import dao.api.VoteDAO;
-import dto.VoteDTO;
+import dto.SavedVoteDTO;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +10,7 @@ public class VoteMemoryDAO implements VoteDAO {
 
     private static volatile VoteMemoryDAO instance = null;
 
-    private final List<VoteDTO> votes = new ArrayList<>();
+    private final List<SavedVoteDTO> votes = new ArrayList<>();
 
     private VoteMemoryDAO() {
     }
@@ -26,12 +26,12 @@ public class VoteMemoryDAO implements VoteDAO {
         return instance;
     }
     @Override
-    public List<VoteDTO> getAllVotes() {
+    public List<SavedVoteDTO> getAllVotes() {
         return votes;
     }
 
     @Override
-    public void save(VoteDTO vote) {
+    public void save(SavedVoteDTO vote) {
         votes.add(vote);
     }
 }

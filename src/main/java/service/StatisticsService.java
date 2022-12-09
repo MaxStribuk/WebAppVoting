@@ -1,6 +1,5 @@
 package service;
 
-import dto.UserMessage;
 import dto.VoteDTO;
 import service.api.IGenreService;
 import service.api.IMusicianService;
