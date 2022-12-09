@@ -1,6 +1,5 @@
 package web;
 
-import dto.UserMessage;
 import dto.VoteDTO;
 import service.api.IVoteService;
 import service.factories.VoteServiceMemorySingleton;

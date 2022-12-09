@@ -1,7 +1,6 @@
 package service;
 
 import dao.api.VoteDAO;
-import dto.UserMessage;
 import dto.VoteDTO;
 import service.api.IVoteService;
 import service.factories.GenreServiceMemorySingleton;
