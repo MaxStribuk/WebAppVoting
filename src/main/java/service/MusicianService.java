@@ -1,6 +1,7 @@
 package service;
 
 import dao.api.IMusicianDAO;
+import dto.MusicianDTO;
 import service.api.IMusicianService;
 
 import java.util.List;
@@ -14,12 +15,12 @@ public class MusicianService implements IMusicianService {
     }
 
     @Override
-    public List<String> getAllMusicians() {
+    public List<MusicianDTO> getAllMusicians() {
         return dataSource.getAllMusicians();
     }
 
     @Override
-    public boolean exists(String musician) {
+    public boolean exists(MusicianDTO musician) {
         return dataSource.exists(musician);
     }
 }

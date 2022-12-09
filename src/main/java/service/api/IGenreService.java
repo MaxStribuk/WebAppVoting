@@ -1,9 +1,11 @@
 package service.api;
 
+import dto.GenreDTO;
+
 import java.util.List;
 
 public interface IGenreService {
 
-    List<String> getAllGenres();
-    boolean exists(String genre);
+    List<GenreDTO> getAllGenres();
+    boolean exists(GenreDTO genre);
 }

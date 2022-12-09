@@ -22,7 +22,7 @@ public class GenreServlet extends HttpServlet {
 
         try(PrintWriter writer = resp.getWriter();) {
             service.getAllGenres().forEach(genre ->
-                    writer.append(genre).append("\n"));
+                    writer.append(genre.getGenre()).append("\n"));
         }
     }
 }

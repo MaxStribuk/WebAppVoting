@@ -29,7 +29,7 @@ public class GenreDAO implements IGenreDAO {
     }
 
     @Override
-    public boolean exists(String genre) {
+    public boolean exists(GenreDTO genre) {
         for (GenreDTO genreDTO : genres) {
             if(genre.equals(genreDTO.getGenre())){
                 return true;

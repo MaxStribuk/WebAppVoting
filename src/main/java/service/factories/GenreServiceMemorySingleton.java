@@ -1,6 +1,7 @@
 package service.factories;
 
 import dao.GenreDAO;
+import dao.factories.GenreDAOSingleton;
 import service.GenreService;
 import service.api.IGenreService;
 
@@ -16,7 +17,8 @@ public class GenreServiceMemorySingleton {
         if(instance == null){
             synchronized (GenreServiceMemorySingleton.class){
                 if(instance == null){
-                    instance = new GenreService(GenreDAO.getInstance());
+                    instance = new GenreService(GenreDAOSingleton
+                            .getInstance());
                 }
             }
         }

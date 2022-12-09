@@ -1,6 +1,7 @@
 package service;
 
 import dao.api.IGenreDAO;
+import dto.GenreDTO;
 import service.api.IGenreService;
 
 import java.util.List;
@@ -14,12 +15,12 @@ public class GenreService implements IGenreService {
     }
 
     @Override
-    public List<String> getAllGenres() {
+    public List<GenreDTO> getAllGenres() {
         return dataSource.getAllGenres();
     }
 
     @Override
-    public boolean exists(String genre) {
+    public boolean exists(GenreDTO genre) {
         return dataSource.exists(genre);
     }
 }

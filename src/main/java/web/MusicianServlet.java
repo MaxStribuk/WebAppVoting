@@ -22,7 +22,7 @@ public class MusicianServlet extends HttpServlet {
 
         try(PrintWriter writer = resp.getWriter()) {
             service.getAllMusicians().forEach(musician ->
-                    writer.append(musician).append("\n"));
+                    writer.append(musician.getMusician()).append("\n"));
         }
     }
 
