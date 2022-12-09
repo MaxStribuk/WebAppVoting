@@ -4,7 +4,7 @@ import dto.GenreDTO;
 
 import java.util.List;
 
-public interface GenreDAO {
+public interface IGenreDAO {
 
     List<GenreDTO> getAllGenres();
     boolean exists(String genre);

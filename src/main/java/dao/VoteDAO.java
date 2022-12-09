@@ -1,25 +1,25 @@
 package dao;
 
-import dao.api.VoteDAO;
+import dao.api.IVoteDAO;
 import dto.SavedVoteDTO;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class VoteMemoryDAO implements VoteDAO {
+public class VoteDAO implements IVoteDAO {
 
-    private static volatile VoteMemoryDAO instance = null;
+    private static volatile VoteDAO instance = null;
 
     private final List<SavedVoteDTO> votes = new ArrayList<>();
 
-    private VoteMemoryDAO() {
+    public VoteDAO() {
     }
 
-    public static VoteMemoryDAO getInstance() {
+    public static VoteDAO getInstance() {
         if (instance == null) {
-            synchronized (VoteMemoryDAO.class) {
+            synchronized (VoteDAO.class) {
                 if (instance == null) {
-                    instance = new VoteMemoryDAO();
+                    instance = new VoteDAO();
                 }
             }
         }

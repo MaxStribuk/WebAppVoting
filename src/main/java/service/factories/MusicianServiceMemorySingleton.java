@@ -1,6 +1,6 @@
 package service.factories;
 
-import dao.MusicianMemoryDAO;
+import dao.MusicianDAO;
 import service.MusicianService;
 import service.api.IMusicianService;
 
@@ -16,7 +16,7 @@ public class MusicianServiceMemorySingleton {
         if(instance == null){
             synchronized (MusicianServiceMemorySingleton.class){
                 if(instance == null){
-                    instance = new MusicianService(MusicianMemoryDAO
+                    instance = new MusicianService(MusicianDAO
                             .getInstance());
                 }
             }

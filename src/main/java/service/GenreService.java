@@ -1,15 +1,15 @@
 package service;
 
-import dao.api.GenreDAO;
+import dao.api.IGenreDAO;
 import service.api.IGenreService;
 
 import java.util.List;
 
 public class GenreService implements IGenreService {
 
-    private final GenreDAO dataSource;
+    private final IGenreDAO dataSource;
 
-    public GenreService(GenreDAO dataSource) {
+    public GenreService(IGenreDAO dataSource) {
         this.dataSource = dataSource;
     }
 

@@ -1,14 +1,13 @@
 package dao;
 
-import dao.api.MusicianDAO;
-import dto.GenreDTO;
+import dao.api.IMusicianDAO;
 import dto.MusicianDTO;
 
 import java.util.List;
 
-public class MusicianMemoryDAO implements MusicianDAO {
+public class MusicianDAO implements IMusicianDAO {
 
-    private static volatile MusicianMemoryDAO instance = null;
+    private static volatile MusicianDAO instance = null;
     private final List<MusicianDTO> musicians = List.of(
             new MusicianDTO(1,"Taylor Swift"),
             new MusicianDTO(2,"Prince"),
@@ -16,14 +15,14 @@ public class MusicianMemoryDAO implements MusicianDAO {
             new MusicianDTO(4,"Eminem")
                     );
 
-    private MusicianMemoryDAO() {
+    public MusicianDAO() {
     }
 
-    public static MusicianMemoryDAO getInstance() {
+    public static MusicianDAO getInstance() {
         if (instance == null) {
-            synchronized (MusicianMemoryDAO.class) {
+            synchronized (MusicianDAO.class) {
                 if (instance == null) {
-                    instance = new MusicianMemoryDAO();
+                    instance = new MusicianDAO();
                 }
             }
         }

@@ -1,6 +1,6 @@
 package service;
 
-import dao.api.VoteDAO;
+import dao.api.IVoteDAO;
 import dto.VoteDTO;
 import service.api.IVoteService;
 import service.factories.GenreServiceMemorySingleton;
@@ -11,9 +11,9 @@ import java.util.NoSuchElementException;
 
 public class VoteService implements IVoteService {
 
-    private final VoteDAO dataSource;
+    private final IVoteDAO dataSource;
 
-    public VoteService(VoteDAO dataSource) {
+    public VoteService(IVoteDAO dataSource) {
         this.dataSource = dataSource;
     }
 

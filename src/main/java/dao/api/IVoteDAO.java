@@ -5,7 +5,7 @@ import dto.SavedVoteDTO;
 
 import java.util.List;
 
-public interface VoteDAO {
+public interface IVoteDAO {
 
     List<SavedVoteDTO> getAllVotes();
     void save(SavedVoteDTO vote);

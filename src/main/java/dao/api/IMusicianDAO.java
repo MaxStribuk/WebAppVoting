@@ -4,7 +4,7 @@ import dto.MusicianDTO;
 
 import java.util.List;
 
-public interface MusicianDAO {
+public interface IMusicianDAO {
 
     List<MusicianDTO> getAllMusicians();
     boolean exists(String musician);

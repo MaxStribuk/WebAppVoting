@@ -1,15 +1,15 @@
 package service;
 
-import dao.api.MusicianDAO;
+import dao.api.IMusicianDAO;
 import service.api.IMusicianService;
 
 import java.util.List;
 
 public class MusicianService implements IMusicianService {
 
-    private final MusicianDAO dataSource;
+    private final IMusicianDAO dataSource;
 
-    public MusicianService(MusicianDAO dataSource) {
+    public MusicianService(IMusicianDAO dataSource) {
         this.dataSource = dataSource;
     }
 

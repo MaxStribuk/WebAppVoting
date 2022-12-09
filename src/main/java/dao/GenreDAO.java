@@ -1,13 +1,13 @@
 package dao;
 
-import dao.api.GenreDAO;
+import dao.api.IGenreDAO;
 import dto.GenreDTO;
 
 import java.util.List;
 
-public class GenreMemoryDAO implements GenreDAO {
+public class GenreDAO implements IGenreDAO {
 
-    private static volatile GenreMemoryDAO instance = null;
+    private static volatile GenreDAO instance = null;
 
     private final List<GenreDTO> genres = List.of(
             new GenreDTO(1,"Pop"),
@@ -22,22 +22,10 @@ public class GenreMemoryDAO implements GenreDAO {
             new GenreDTO(10,"Hip Hop")
     );
 
-    private GenreMemoryDAO() {
-    }
-
-    public static GenreMemoryDAO getInstance() {
-        if (instance == null) {
-            synchronized (GenreMemoryDAO.class) {
-                if (instance == null) {
-                    instance = new GenreMemoryDAO();
-                }
-            }
-        }
-        return instance;
+    public GenreDAO() {
     }
 
     @Override
-    //no list? List.of?
     public List<GenreDTO> getAllGenres() {
         return genres;
     }
