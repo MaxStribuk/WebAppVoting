@@ -6,8 +6,6 @@ import dto.MusicianDTO;
 import java.util.List;
 
 public class MusicianDAO implements IMusicianDAO {
-
-    private static volatile MusicianDAO instance = null;
     private final List<MusicianDTO> musicians = List.of(
             new MusicianDTO(1,"Taylor Swift"),
             new MusicianDTO(2,"Prince"),
@@ -17,18 +15,6 @@ public class MusicianDAO implements IMusicianDAO {
 
     public MusicianDAO() {
     }
-
-    public static MusicianDAO getInstance() {
-        if (instance == null) {
-            synchronized (MusicianDAO.class) {
-                if (instance == null) {
-                    instance = new MusicianDAO();
-                }
-            }
-        }
-        return instance;
-    }
-
     @Override
     public List<MusicianDTO> getAllMusicians() {
         return musicians;

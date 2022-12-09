@@ -7,8 +7,6 @@ import java.util.List;
 
 public class GenreDAO implements IGenreDAO {
 
-    private static volatile GenreDAO instance = null;
-
     private final List<GenreDTO> genres = List.of(
             new GenreDTO(1,"Pop"),
             new GenreDTO(2,"Rap"),
