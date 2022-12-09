@@ -22,11 +22,6 @@ public class MusicianDAO implements IMusicianDAO {
 
     @Override
     public boolean exists(MusicianDTO musician) {
-        for (MusicianDTO musicianDTO: musicians) {
-            if(musician.equals(musicianDTO.getMusician())){
-                return true;
-            }
-        }
-        return false;
+        return musicians.contains(musician);
     }
 }

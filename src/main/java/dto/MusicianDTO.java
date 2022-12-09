@@ -1,5 +1,7 @@
 package dto;
 
+import java.util.Objects;
+
 public class MusicianDTO {
     private int id;
     private String musician;
@@ -15,5 +17,18 @@ public class MusicianDTO {
 
     public String getMusician() {
         return musician;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        MusicianDTO that = (MusicianDTO) o;
+        return id == that.id && musician.equals(that.musician);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, musician);
     }
 }
