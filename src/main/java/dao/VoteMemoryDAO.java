@@ -4,6 +4,7 @@ import dao.api.IVoteDAO;
 import dto.SavedVoteDTO;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class VoteMemoryDAO implements IVoteDAO {
@@ -13,7 +14,7 @@ public class VoteMemoryDAO implements IVoteDAO {
     }
     @Override
     public List<SavedVoteDTO> getAll() {
-        return votes;
+        return Collections.unmodifiableList(votes);
     }
 
     @Override

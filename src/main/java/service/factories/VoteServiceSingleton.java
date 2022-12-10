@@ -1,6 +1,6 @@
 package service.factories;
 
-import dao.VoteMemoryDAO;
+import dao.factories.VoteDAOSingleton;
 import service.VoteService;
 import service.api.IVoteService;
 
@@ -12,10 +12,10 @@ public class VoteServiceSingleton {
     }
 
     public static IVoteService getInstance() {
-        if(instance == null){
-            synchronized (VoteServiceSingleton.class){
-                if(instance == null){
-                    instance = new VoteService(VoteMemoryDAO.getInstance());
+        if (instance == null) {
+            synchronized (VoteServiceSingleton.class) {
+                if (instance == null) {
+                    instance = new VoteService(VoteDAOSingleton.getInstance());
                 }
             }
         }

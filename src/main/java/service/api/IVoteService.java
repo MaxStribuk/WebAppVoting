@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface IVoteService {
 
-    List<SavedVoteDTO> getAllVotes();
+    List<SavedVoteDTO> getAll();
     void save(SavedVoteDTO vote);
     void validate(SavedVoteDTO vote);
 }

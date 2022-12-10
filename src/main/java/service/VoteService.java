@@ -1,6 +1,8 @@
 package service;
 
 import dao.api.IVoteDAO;
+import dto.MusicianDTO;
+import dto.SavedVoteDTO;
 import dto.VoteDTO;
 import service.api.IVoteService;
 import service.factories.GenreServiceSingleton;
@@ -18,12 +20,12 @@ public class VoteService implements IVoteService {
     }
 
     @Override
-    public List<VoteDTO> getAllVotes() {
-        return dataSource.getAllVotes();
+    public List<SavedVoteDTO> getAll() {
+        return dataSource.getAll();
     }
 
     @Override
-    public void save(VoteDTO vote) {
+    public void save(SavedVoteDTO vote) {
         dataSource.save(vote);
     }
 
@@ -43,8 +45,8 @@ public class VoteService implements IVoteService {
         validateMessage(contents);
     }
 
-    private void validateMusician(String musician) {
-        if (musician == null || musician.isBlank()) {
+    private void validateMusician(MusicianDTO musician) {
+        if (musician.getMusician() == null || musician.getMusician().isBlank()) {
             throw new IllegalArgumentException("User failed to provide " +
                     "a musician name");
         }
