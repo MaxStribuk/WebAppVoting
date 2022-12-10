@@ -33,10 +33,8 @@ public class VoteServlet extends HttpServlet {
         service.validate(vote);
         service.save(vote);
 
-        try (PrintWriter writer = resp.getWriter()) {
-            writer.append("Thank you for your response, ")
-                    .append(username);
-        }
+        PrintWriter writer = resp.getWriter();
+        writer.append("Thank you for your response, ").append(username);
     }
 
 

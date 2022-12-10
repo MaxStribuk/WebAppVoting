@@ -1,25 +1,26 @@
 package service;
 
-import dao.api.MusicianDAO;
+import dao.api.IMusicianDAO;
+import dto.MusicianDTO;
 import service.api.IMusicianService;
 
 import java.util.List;
 
 public class MusicianService implements IMusicianService {
 
-    private final MusicianDAO dataSource;
+    private final IMusicianDAO dataSource;
 
-    public MusicianService(MusicianDAO dataSource) {
+    public MusicianService(IMusicianDAO dataSource) {
         this.dataSource = dataSource;
     }
 
     @Override
-    public List<String> getAllMusicians() {
-        return dataSource.getAllMusicians();
+    public List<MusicianDTO> getAll() {
+        return dataSource.getAll();
     }
 
     @Override
-    public boolean exists(String musician) {
+    public boolean exists(MusicianDTO musician) {
         return dataSource.exists(musician);
     }
 }

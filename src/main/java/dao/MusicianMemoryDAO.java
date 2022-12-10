@@ -1,47 +1,29 @@
 package dao;
 
-import dao.api.MusicianDAO;
-import dto.GenreDTO;
+import dao.api.IMusicianDAO;
 import dto.MusicianDTO;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
-public class MusicianMemoryDAO implements MusicianDAO {
+public class MusicianMemoryDAO implements IMusicianDAO {
+    private final List<MusicianDTO> musicians;
 
-    private static volatile MusicianMemoryDAO instance = null;
-    private final List<MusicianDTO> musicians = List.of(
-            new MusicianDTO(1,"Taylor Swift"),
-            new MusicianDTO(2,"Prince"),
-            new MusicianDTO(3,"Elvis Presley"),
-            new MusicianDTO(4,"Eminem")
-                    );
-
-    private MusicianMemoryDAO() {
+    public MusicianMemoryDAO() {
+        musicians = new ArrayList<>();
+        musicians.add(new MusicianDTO(1,"Taylor Swift"));
+        musicians.add(new MusicianDTO(2,"Prince"));
+        musicians.add(new MusicianDTO(3,"Elvis Presley"));
+        musicians.add(new MusicianDTO(4,"Eminem"));
     }
-
-    public static MusicianMemoryDAO getInstance() {
-        if (instance == null) {
-            synchronized (MusicianMemoryDAO.class) {
-                if (instance == null) {
-                    instance = new MusicianMemoryDAO();
-                }
-            }
-        }
-        return instance;
+    @Override
+    public List<MusicianDTO> getAll() {
+        return Collections.unmodifiableList(musicians);
     }
 
     @Override
-    public List<MusicianDTO> getAllMusicians() {
-        return musicians;
-    }
-
-    @Override
-    public boolean exists(String musician) {
-        for (MusicianDTO musicianDTO: musicians) {
-            if(musician.equals(musicianDTO.getMusician())){
-                return true;
-            }
-        }
-        return false;
+    public boolean exists(MusicianDTO musician) {
+        return musicians.contains(musician);
     }
 }

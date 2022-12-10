@@ -1,10 +1,10 @@
-package service.api;
+package dao.api;
 
 import dto.GenreDTO;
 
 import java.util.List;
 
-public interface IGenreService {
+public interface IGenreDAO {
 
     List<GenreDTO> getAll();
     boolean exists(GenreDTO genre);

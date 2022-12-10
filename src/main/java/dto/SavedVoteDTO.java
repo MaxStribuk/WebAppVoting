@@ -4,16 +4,16 @@ import java.time.LocalDateTime;
 
 public class SavedVoteDTO {
     private VoteDTO voteDTO;
-    private LocalDateTime createDataTime;
+    private LocalDateTime creationTime;
 
     public SavedVoteDTO(VoteDTO voteDTO, LocalDateTime localDateTime) {
         this.voteDTO = voteDTO;
-        this.createDataTime = localDateTime;
+        this.creationTime = localDateTime;
     }
 
     public SavedVoteDTO(VoteDTO voteDTO) {
         this.voteDTO = voteDTO;
-        createDataTime =LocalDateTime.now();
+        creationTime = LocalDateTime.now();
     }
 
     public VoteDTO getVoteDTO() {
@@ -21,6 +21,6 @@ public class SavedVoteDTO {
     }
 
     public LocalDateTime getCreateDataTime() {
-        return createDataTime;
+        return creationTime;
     }
 }

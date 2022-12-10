@@ -1,25 +1,26 @@
 package service;
 
-import dao.api.GenreDAO;
+import dao.api.IGenreDAO;
+import dto.GenreDTO;
 import service.api.IGenreService;
 
 import java.util.List;
 
 public class GenreService implements IGenreService {
 
-    private final GenreDAO dataSource;
+    private final IGenreDAO dataSource;
 
-    public GenreService(GenreDAO dataSource) {
+    public GenreService(IGenreDAO dataSource) {
         this.dataSource = dataSource;
     }
 
     @Override
-    public List<String> getAllGenres() {
-        return dataSource.getAllGenres();
+    public List<GenreDTO> getAll() {
+        return dataSource.getAll();
     }
 
     @Override
-    public boolean exists(String genre) {
+    public boolean exists(GenreDTO genre) {
         return dataSource.exists(genre);
     }
 }

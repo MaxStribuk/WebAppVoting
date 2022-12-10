@@ -19,10 +19,9 @@ public class ResultsServlet extends HttpServlet {
 
         resp.setContentType("text/html; charset=UTF-8");
         IStatisticsService service = StatisticsServiceMemorySingleton.getInstance();
-
         String results = service.getStringValue();
-        try (PrintWriter writer = resp.getWriter()) {
-            writer.write(results);
-        }
+        PrintWriter writer = resp.getWriter();
+
+        writer.write(results);
     }
 }
