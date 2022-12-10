@@ -3,8 +3,8 @@ package service;
 import dao.api.IVoteDAO;
 import dto.VoteDTO;
 import service.api.IVoteService;
-import service.factories.GenreServiceMemorySingleton;
-import service.factories.MusicianServiceMemorySingleton;
+import service.factories.GenreServiceSingleton;
+import service.factories.MusicianServiceSingleton;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -48,7 +48,7 @@ public class VoteService implements IVoteService {
             throw new IllegalArgumentException("User failed to provide " +
                     "a musician name");
         }
-        if(!MusicianServiceMemorySingleton.getInstance()
+        if(!MusicianServiceSingleton.getInstance()
                 .exists(musician)) {
             throw new NoSuchElementException("Invalid musician name " +
                     "provided - '" + musician + "'");
@@ -69,7 +69,7 @@ public class VoteService implements IVoteService {
                 throw new IllegalArgumentException("Genre parameter " +
                         "must be non-empty");
             }
-            if(!GenreServiceMemorySingleton.getInstance()
+            if(!GenreServiceSingleton.getInstance()
                     .exists(genre)) {
                 throw new NoSuchElementException("Invalid genre name " +
                         "provided - '" + genre + "'");

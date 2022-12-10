@@ -1,7 +1,7 @@
 package web;
 
 import service.api.IGenreService;
-import service.factories.GenreServiceMemorySingleton;
+import service.factories.GenreServiceSingleton;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -18,7 +18,7 @@ public class GenreServlet extends HttpServlet {
             throws IOException {
 
         resp.setContentType("text/html; charset=UTF-8");
-        IGenreService service = GenreServiceMemorySingleton.getInstance();
+        IGenreService service = GenreServiceSingleton.getInstance();
         PrintWriter writer = resp.getWriter();
 
         service.getAll().forEach(genre -> writer

@@ -3,22 +3,22 @@ package service.factories;
 import service.StatisticsService;
 import service.api.IStatisticsService;
 
-public class StatisticsServiceMemorySingleton {
+public class StatisticsServiceSingleton {
 
     private volatile static IStatisticsService instance = null;
 
-    private StatisticsServiceMemorySingleton() {
+    private StatisticsServiceSingleton() {
 
     }
 
     public static IStatisticsService getInstance() {
         if(instance == null){
-            synchronized (StatisticsServiceMemorySingleton.class){
+            synchronized (StatisticsServiceSingleton.class){
                 if(instance == null){
                     instance = new StatisticsService(
-                            VoteServiceMemorySingleton.getInstance(),
-                            GenreServiceMemorySingleton.getInstance(),
-                            MusicianServiceMemorySingleton.getInstance()
+                            VoteServiceSingleton.getInstance(),
+                            GenreServiceSingleton.getInstance(),
+                            MusicianServiceSingleton.getInstance()
                     );
                 }
             }

@@ -4,16 +4,16 @@ import dao.VoteMemoryDAO;
 import service.VoteService;
 import service.api.IVoteService;
 
-public class VoteServiceMemorySingleton {
+public class VoteServiceSingleton {
 
     private volatile static IVoteService instance = null;
 
-    private VoteServiceMemorySingleton() {
+    private VoteServiceSingleton() {
     }
 
     public static IVoteService getInstance() {
         if(instance == null){
-            synchronized (VoteServiceMemorySingleton.class){
+            synchronized (VoteServiceSingleton.class){
                 if(instance == null){
                     instance = new VoteService(VoteMemoryDAO.getInstance());
                 }

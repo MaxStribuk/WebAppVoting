@@ -1,7 +1,7 @@
 package web;
 
 import service.api.IStatisticsService;
-import service.factories.StatisticsServiceMemorySingleton;
+import service.factories.StatisticsServiceSingleton;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -18,7 +18,7 @@ public class ResultsServlet extends HttpServlet {
             throws IOException {
 
         resp.setContentType("text/html; charset=UTF-8");
-        IStatisticsService service = StatisticsServiceMemorySingleton.getInstance();
+        IStatisticsService service = StatisticsServiceSingleton.getInstance();
         String results = service.getStringValue();
         PrintWriter writer = resp.getWriter();
 

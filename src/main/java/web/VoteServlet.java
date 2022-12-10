@@ -2,7 +2,7 @@ package web;
 
 import dto.VoteDTO;
 import service.api.IVoteService;
-import service.factories.VoteServiceMemorySingleton;
+import service.factories.VoteServiceSingleton;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -20,7 +20,7 @@ public class VoteServlet extends HttpServlet {
 
         req.setCharacterEncoding("UTF-8");
         resp.setContentType("text/html; charset=UTF-8");
-        IVoteService service = VoteServiceMemorySingleton.getInstance();
+        IVoteService service = VoteServiceSingleton.getInstance();
 
         String musician = req.getParameter("artist");
         String[] genres = req.getParameterValues("genre");
