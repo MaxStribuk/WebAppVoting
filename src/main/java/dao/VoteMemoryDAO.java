@@ -6,13 +6,13 @@ import dto.SavedVoteDTO;
 import java.util.ArrayList;
 import java.util.List;
 
-public class VoteDAO implements IVoteDAO {
+public class VoteMemoryDAO implements IVoteDAO {
     private final List<SavedVoteDTO> votes = new ArrayList<>();
 
-    public VoteDAO() {
+    public VoteMemoryDAO() {
     }
     @Override
-    public List<SavedVoteDTO> getAllVotes() {
+    public List<SavedVoteDTO> getAll() {
         return votes;
     }
 

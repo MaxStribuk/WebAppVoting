@@ -6,6 +6,6 @@ import java.util.List;
 
 public interface IMusicianDAO {
 
-    List<MusicianDTO> getAllMusicians();
+    List<MusicianDTO> getAll();
     boolean exists(MusicianDTO musician);
 }

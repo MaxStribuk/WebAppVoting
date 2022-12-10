@@ -7,6 +7,6 @@ import java.util.List;
 
 public interface IVoteDAO {
 
-    List<SavedVoteDTO> getAllVotes();
+    List<SavedVoteDTO> getAll();
     void save(SavedVoteDTO vote);
 }

@@ -1,6 +1,5 @@
 package service.factories;
 
-import dao.GenreDAO;
 import dao.factories.GenreDAOSingleton;
 import service.GenreService;
 import service.api.IGenreService;

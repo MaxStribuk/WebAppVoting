@@ -19,11 +19,11 @@ public class MusicianServlet extends HttpServlet {
 
         resp.setContentType("text/html; charset=UTF-8");
         IMusicianService service = MusicianServiceMemorySingleton.getInstance();
+        PrintWriter writer = resp.getWriter();
 
-        try(PrintWriter writer = resp.getWriter()) {
-            service.getAllMusicians().forEach(musician ->
-                    writer.append(musician.getMusician()).append("\n"));
-        }
+        service.getAll().forEach(musician -> writer
+                .append(musician.getMusician()).append("<br>"));
+
     }
 
 }

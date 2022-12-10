@@ -1,6 +1,6 @@
 package dao.factories;
 
-import dao.GenreDAO;
+import dao.GenreMemoryDAO;
 import dao.api.IGenreDAO;
 
 public class GenreDAOSingleton {
@@ -14,7 +14,7 @@ public class GenreDAOSingleton {
         if (instance == null) {
             synchronized (GenreDAOSingleton.class) {
                 if (instance == null) {
-                    instance = new GenreDAO();
+                    instance = new GenreMemoryDAO();
                 }
             }
         }

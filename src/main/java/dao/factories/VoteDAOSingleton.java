@@ -1,6 +1,6 @@
 package dao.factories;
 
-import dao.VoteDAO;
+import dao.VoteMemoryDAO;
 import dao.api.IVoteDAO;
 
 public class VoteDAOSingleton {
@@ -14,7 +14,7 @@ public class VoteDAOSingleton {
         if (instance == null) {
             synchronized (VoteDAOSingleton.class) {
                 if (instance == null) {
-                    instance = new VoteDAO();
+                    instance = new VoteMemoryDAO();
                 }
             }
         }

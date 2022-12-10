@@ -1,6 +1,5 @@
 package service.factories;
 
-import dao.MusicianDAO;
 import dao.factories.MusicianDAOSingleton;
 import service.MusicianService;
 import service.api.IMusicianService;

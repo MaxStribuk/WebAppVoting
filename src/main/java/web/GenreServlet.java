@@ -19,10 +19,9 @@ public class GenreServlet extends HttpServlet {
 
         resp.setContentType("text/html; charset=UTF-8");
         IGenreService service = GenreServiceMemorySingleton.getInstance();
+        PrintWriter writer = resp.getWriter();
 
-        try(PrintWriter writer = resp.getWriter();) {
-            service.getAllGenres().forEach(genre ->
-                    writer.append(genre.getGenre()).append("\n"));
-        }
+        service.getAll().forEach(genre -> writer
+                .append(genre.getGenre()).append("<br>"));
     }
 }

@@ -1,12 +1,11 @@
 package service.api;
 
-import dao.MusicianDAO;
 import dto.MusicianDTO;
 
 import java.util.List;
 
 public interface IMusicianService {
 
-    List<MusicianDTO> getAllMusicians();
+    List<MusicianDTO> getAll();
     boolean exists(MusicianDTO musician);
 }

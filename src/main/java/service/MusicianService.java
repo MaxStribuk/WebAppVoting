@@ -15,8 +15,8 @@ public class MusicianService implements IMusicianService {
     }
 
     @Override
-    public List<MusicianDTO> getAllMusicians() {
-        return dataSource.getAllMusicians();
+    public List<MusicianDTO> getAll() {
+        return dataSource.getAll();
     }
 
     @Override

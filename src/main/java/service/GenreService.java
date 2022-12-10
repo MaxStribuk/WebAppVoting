@@ -15,8 +15,8 @@ public class GenreService implements IGenreService {
     }
 
     @Override
-    public List<GenreDTO> getAllGenres() {
-        return dataSource.getAllGenres();
+    public List<GenreDTO> getAll() {
+        return dataSource.getAll();
     }
 
     @Override
