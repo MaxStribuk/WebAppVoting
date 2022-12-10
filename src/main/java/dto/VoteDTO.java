@@ -1,23 +1,26 @@
 package dto;
 
+import java.util.Collections;
+import java.util.List;
+
 public class VoteDTO {
 
-    private final String musician;
-    private final String[] genres;
+    private final int musicianId;
+    private final List<Integer> genreIDList;
     private final String message;
 
-    public VoteDTO(String musician, String[] genres, String message) {
-        this.musician = musician;
-        this.genres = genres;
+    public VoteDTO(int musicianId, List<Integer> genreIDList, String message) {
+        this.musicianId = musicianId;
+        this.genreIDList = genreIDList;
         this.message = message;
     }
 
-    public String getMusician() {
-        return musician;
+    public int getMusicianId() {
+        return musicianId;
     }
 
-    public String[] getGenres() {
-        return genres;
+    public List<Integer> getGenreIDList() {
+        return Collections.unmodifiableList(genreIDList);
     }
 
     public String getMessage() {
