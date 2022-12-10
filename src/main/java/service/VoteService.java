@@ -1,7 +1,6 @@
 package service;
 
 import dao.api.IVoteDAO;
-import dto.MusicianDTO;
 import dto.SavedVoteDTO;
 import dto.VoteDTO;
 import service.api.IVoteService;
@@ -31,58 +30,42 @@ public class VoteService implements IVoteService {
 
     @Override
     public void validate(VoteDTO vote) {
-        String musician = vote.getMusician();
-        validateMusician(musician);
+        int musicianId = vote.getMusicianId();
+        validateMusicianId(musicianId);
 
-        String[] genres = vote.getGenres();
-        validateGenres(genres);
+        List<Integer> genresIdList = vote.getGenreIdList();
+        validateGenresId(genresIdList);
 
-        UserMessage message = vote.getMessage();
-        String username = message.getUsername();
-        validateUsername(username);
-
-        String contents = message.getMessage();
-        validateMessage(contents);
+        String message = vote.getMessage();
+        validateMessage(message);
     }
 
-    private void validateMusician(MusicianDTO musician) {
-        if (musician.getMusician() == null || musician.getMusician().isBlank()) {
-            throw new IllegalArgumentException("User failed to provide " +
-                    "a musician name");
-        }
-        if(!MusicianServiceSingleton.getInstance()
-                .exists(musician)) {
-            throw new NoSuchElementException("Invalid musician name " +
-                    "provided - '" + musician + "'");
+    private void validateMusicianId(int musicianId) {
+        if (!MusicianServiceSingleton.getInstance()
+                .exists(musicianId)) {
+            throw new NoSuchElementException("Invalid musician id " +
+                    "provided - '" + musicianId + "'");
         }
     }
 
-    private void validateGenres(String[] genres) {
-        if (genres == null) {
+    private void validateGenresId(List<Integer> genresIdList) {
+        if (genresIdList == null) {
             throw new IllegalArgumentException("User failed to provide " +
                     "a list of genres");
         }
-        if (genres.length < 3 || genres.length > 5) {
+        if (genresIdList.size() < 3 || genresIdList.size() > 5) {
             throw new IllegalArgumentException("Number of genres outside" +
                     " allowed range (3-5)");
         }
-        for (String genre : genres) {
-            if (genre == null || genre.isBlank()) {
-                throw new IllegalArgumentException("Genre parameter " +
-                        "must be non-empty");
-            }
-            if(!GenreServiceSingleton.getInstance()
-                    .exists(genre)) {
-                throw new NoSuchElementException("Invalid genre name " +
-                        "provided - '" + genre + "'");
-            }
+        if (genresIdList.size() > genresIdList.stream().distinct().count()) {
+            throw new IllegalArgumentException("Genre parameter " +
+                    "must be non-repeating");
         }
-    }
-
-    private void validateUsername(String username) {
-        if (username == null || username.isBlank()) {
-            throw new IllegalArgumentException("User failed to provide " +
-                    "a username");
+        for (int genreId : genresIdList) {
+            if (!GenreServiceSingleton.getInstance().exists(genreId)) {
+                throw new NoSuchElementException("Invalid genre id " +
+                        "provided - '" + genreId + "'");
+            }
         }
     }
 
@@ -93,3 +76,4 @@ public class VoteService implements IVoteService {
         }
     }
 }
+

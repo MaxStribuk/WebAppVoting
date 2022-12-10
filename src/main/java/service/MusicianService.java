@@ -20,7 +20,7 @@ public class MusicianService implements IMusicianService {
     }
 
     @Override
-    public boolean exists(MusicianDTO musician) {
-        return dataSource.exists(musician);
+    public boolean exists(int id) {
+        return dataSource.exists(id);
     }
 }

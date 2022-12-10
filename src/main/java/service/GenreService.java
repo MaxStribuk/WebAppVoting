@@ -20,7 +20,8 @@ public class GenreService implements IGenreService {
     }
 
     @Override
-    public boolean exists(GenreDTO genre) {
-        return dataSource.exists(genre);
+    public boolean exists(int id) {
+        return dataSource.exists(id);
     }
+
 }
