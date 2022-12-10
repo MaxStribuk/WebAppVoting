@@ -8,10 +8,12 @@ import java.util.Collections;
 import java.util.List;
 
 public class VoteMemoryDAO implements IVoteDAO {
-    private final List<SavedVoteDTO> votes = new ArrayList<>();
+    private final List<SavedVoteDTO> votes;
 
     public VoteMemoryDAO() {
+        votes = new ArrayList<>();
     }
+
     @Override
     public List<SavedVoteDTO> getAll() {
         return Collections.unmodifiableList(votes);
