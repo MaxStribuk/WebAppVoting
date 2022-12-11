@@ -25,33 +25,43 @@ public class VoteServlet extends HttpServlet {
         req.setCharacterEncoding("UTF-8");
         resp.setContentType("text/html; charset=UTF-8");
 
-        String artistId = req.getParameter("artist");
-        if (artistId == null || artistId.isBlank()) {
+        String[] artistIds = req.getParameterValues("artist");
+        if (artistIds == null) {
+            throw new IllegalArgumentException("User failed to provide artist id");
+        }
+        if (artistIds.length > 1) {
+            throw new IllegalArgumentException("User provided more than one artist id");
+        }
+
+        int musicianId;
+        try {
+            musicianId = Integer.parseInt(artistIds[0]);
+        } catch (NumberFormatException e) {
             throw new IllegalArgumentException("User failed to provide artist id");
         }
 
         String[] genreIds = req.getParameterValues("genre");
         if (genreIds == null) {
+            throw new IllegalArgumentException("User failed to provide genre ids");
+        }
+
+        List<Integer> genres;
+        try {
+            genres = Arrays.stream(genreIds).map(Integer::parseInt).collect(Collectors.toList());
+        } catch (NumberFormatException e) {
             throw new IllegalArgumentException("User failed to provide genre id");
         }
-        for (String genreId : genreIds) {
-            if (genreId.isBlank()) {
-                throw new IllegalArgumentException("User failed to provide genre id");
-            }
+
+        String[] messages = req.getParameterValues("message");
+        if (messages==null){
+            throw new IllegalArgumentException("User failed to provide message");
+        }
+        if (messages.length > 1) {
+            throw new IllegalArgumentException("User provided more than one message");
         }
 
-        String message = req.getParameter("message");
-        if (message == null || message.isBlank()) {
-            throw new IllegalArgumentException("User failed to provide a message");
-        }
-
+        VoteDTO vote = new VoteDTO(musicianId, genres, messages[0]);
         IVoteService service = VoteServiceSingleton.getInstance();
-
-        int musicianId = Integer.parseInt(artistId);
-        List<Integer> genres = Arrays.stream(genreIds).map(Integer::parseInt).collect(Collectors.toList());
-
-        VoteDTO vote = new VoteDTO(musicianId, genres, message);
-
         service.validate(vote);
         service.save(new SavedVoteDTO(vote));
 
