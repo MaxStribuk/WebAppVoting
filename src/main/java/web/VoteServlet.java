@@ -42,7 +42,7 @@ public class VoteServlet extends HttpServlet {
 
         String message = req.getParameter("message");
         if (message == null || message.isBlank()) {
-            throw new IllegalArgumentException("User failed to provide artist id");
+            throw new IllegalArgumentException("User failed to provide a message");
         }
 
         IVoteService service = VoteServiceSingleton.getInstance();
