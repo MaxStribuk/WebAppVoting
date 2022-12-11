@@ -30,7 +30,7 @@ public class MusicianMemoryDAO implements IMusicianDAO {
     }
 
     @Override
-    public MusicianDTO geMusicianById(int id) {
+    public MusicianDTO getMusicianById(int id) {
         return musicians.get(id);
     }
 }
