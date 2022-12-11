@@ -6,12 +6,12 @@ import java.util.List;
 public class VoteDTO {
 
     private final int musicianId;
-    private final List<Integer> genreIdList;
+    private final List<Integer> genreIds;
     private final String message;
 
-    public VoteDTO(int musicianId, List<Integer> genreIdList, String message) {
+    public VoteDTO(int musicianId, List<Integer> genreIds, String message) {
         this.musicianId = musicianId;
-        this.genreIdList = genreIdList;
+        this.genreIds = genreIds;
         this.message = message;
     }
 
@@ -19,8 +19,8 @@ public class VoteDTO {
         return musicianId;
     }
 
-    public List<Integer> getGenreIdList() {
-        return Collections.unmodifiableList(genreIdList);
+    public List<Integer> getGenreIds() {
+        return Collections.unmodifiableList(genreIds);
     }
 
     public String getMessage() {

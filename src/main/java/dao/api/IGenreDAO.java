@@ -10,5 +10,5 @@ public interface IGenreDAO {
 
     boolean exists(int id);
 
-    GenreDTO getGenreById(int id);
+    GenreDTO get(int id);
 }

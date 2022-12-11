@@ -21,7 +21,7 @@ public class GenreService implements IGenreService {
 
     @Override
     public GenreDTO getGenreById(int id) {
-        return dataSource.getGenreById(id);
+        return dataSource.get(id);
     }
 
     @Override

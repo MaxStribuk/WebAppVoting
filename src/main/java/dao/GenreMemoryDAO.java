@@ -3,7 +3,6 @@ package dao;
 import dao.api.IGenreDAO;
 import dto.GenreDTO;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,7 +27,7 @@ public class GenreMemoryDAO implements IGenreDAO {
 
     @Override
     public List<GenreDTO> getAll() {
-        return new ArrayList<>(genres.values());
+        return List.copyOf(genres.values());
     }
 
     @Override
@@ -37,7 +36,7 @@ public class GenreMemoryDAO implements IGenreDAO {
     }
 
     @Override
-    public GenreDTO getGenreById(int id) {
+    public GenreDTO get(int id) {
         return genres.get(id);
     }
 }

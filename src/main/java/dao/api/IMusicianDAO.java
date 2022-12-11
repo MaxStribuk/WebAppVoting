@@ -10,5 +10,5 @@ public interface IMusicianDAO {
 
     boolean exists(int id);
 
-    MusicianDTO getMusicianById(int id);
+    MusicianDTO get(int id);
 }

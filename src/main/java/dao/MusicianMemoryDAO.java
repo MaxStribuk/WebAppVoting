@@ -3,7 +3,6 @@ package dao;
 import dao.api.IMusicianDAO;
 import dto.MusicianDTO;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,7 +20,7 @@ public class MusicianMemoryDAO implements IMusicianDAO {
 
     @Override
     public List<MusicianDTO> getAll() {
-        return new ArrayList<>(musicians.values());
+        return List.copyOf(musicians.values());
     }
 
     @Override
@@ -30,7 +29,7 @@ public class MusicianMemoryDAO implements IMusicianDAO {
     }
 
     @Override
-    public MusicianDTO getMusicianById(int id) {
+    public MusicianDTO get(int id) {
         return musicians.get(id);
     }
 }

@@ -21,7 +21,7 @@ public class MusicianService implements IMusicianService {
 
     @Override
     public MusicianDTO getMusicianById(int id) {
-        return dataSource.getMusicianById(id);
+        return dataSource.get(id);
     }
 
     @Override
