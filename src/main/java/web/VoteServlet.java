@@ -56,7 +56,7 @@ public class VoteServlet extends HttpServlet {
         service.save(new SavedVoteDTO(vote));
 
         PrintWriter writer = resp.getWriter();
-        writer.append("Thank you for your response, ");
+        writer.append("Thank you for your response!");
     }
 
 }
