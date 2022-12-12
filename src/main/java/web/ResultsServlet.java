@@ -13,12 +13,17 @@ import java.io.PrintWriter;
 @WebServlet(name = "ResultsServlet", urlPatterns = "/results")
 public class ResultsServlet extends HttpServlet {
 
+    private final IStatisticsService service;
+
+    public ResultsServlet() {
+        this.service = StatisticsServiceSingleton.getInstance();
+    }
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws IOException {
 
+        req.setCharacterEncoding("UTF-8");
         resp.setContentType("text/html; charset=UTF-8");
-        IStatisticsService service = StatisticsServiceSingleton.getInstance();
         String results = service.getStringValue();
         PrintWriter writer = resp.getWriter();
 

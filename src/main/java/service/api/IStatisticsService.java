@@ -7,6 +7,6 @@ public interface IStatisticsService {
 
     Map<String, Integer> getArtistVotes();
     Map<String, Integer> getGenreVotes();
-    List<UserMessage> getUserMessages();
+    List<UserMessage> getUserAbouts();
     String getStringValue();
 }

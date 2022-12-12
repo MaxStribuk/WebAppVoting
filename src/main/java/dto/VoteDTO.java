@@ -5,26 +5,26 @@ import java.util.List;
 
 public class VoteDTO {
 
-    private final int musicianId;
+    private final int artistId;
     private final List<Integer> genreIds;
-    private final String message;
+    private final String about;
 
-    public VoteDTO(int musicianId, List<Integer> genreIds, String message) {
-        this.musicianId = musicianId;
+    public VoteDTO(int artistId, List<Integer> genreIds, String about) {
+        this.artistId = artistId;
         this.genreIds = genreIds;
-        this.message = message;
+        this.about = about;
     }
 
-    public int getMusicianId() {
-        return musicianId;
+    public int getArtistId() {
+        return artistId;
     }
 
     public List<Integer> getGenreIds() {
         return Collections.unmodifiableList(genreIds);
     }
 
-    public String getMessage() {
-        return message;
+    public String getAbout() {
+        return about;
     }
 
 }

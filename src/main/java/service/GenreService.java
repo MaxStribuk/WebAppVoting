@@ -28,5 +28,4 @@ public class GenreService implements IGenreService {
     public boolean exists(int id) {
         return dataSource.exists(id);
     }
-
 }

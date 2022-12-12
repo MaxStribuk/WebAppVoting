@@ -13,15 +13,22 @@ import java.io.PrintWriter;
 @WebServlet(name = "GenreServlet", urlPatterns = "/genres")
 public class GenreServlet extends HttpServlet {
 
+    private final IGenreService service;
+
+    public GenreServlet() {
+        this.service = GenreServiceSingleton.getInstance();
+    }
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws IOException {
 
+        req.setCharacterEncoding("UTF-8");
         resp.setContentType("text/html; charset=UTF-8");
-        IGenreService service = GenreServiceSingleton.getInstance();
         PrintWriter writer = resp.getWriter();
 
-        service.getAll().forEach(genre -> writer
-                .append(genre.getGenre()).append("<br>"));
+        service.getAll()
+                .forEach(genre -> writer.append(genre.getGenre())
+                                        .append("<br>"));
     }
 }

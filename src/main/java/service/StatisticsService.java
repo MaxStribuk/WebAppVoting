@@ -2,7 +2,7 @@ package service;
 
 import dto.VoteDTO;
 import service.api.IGenreService;
-import service.api.IMusicianService;
+import service.api.IArtistService;
 import service.api.IStatisticsService;
 import service.api.IVoteService;
 
@@ -16,20 +16,20 @@ public class StatisticsService implements IStatisticsService {
             ofPattern("HH:mm, dd.MM.yyyy");
     private final IVoteService voteService;
     private final IGenreService genreService;
-    private final IMusicianService musicianService;
+    private final IArtistService artistService;
 
     public StatisticsService(IVoteService voteService,
                              IGenreService genreService,
-                             IMusicianService musicianService) {
+                             IArtistService artistService) {
         this.voteService = voteService;
         this.genreService = genreService;
-        this.musicianService = musicianService;
+        this.artistService = artistService;
     }
 
     @Override
     public Map<String, Integer> getArtistVotes() {
         List<VoteDTO> votes = voteService.getAll();
-        Map<String, Integer> artistVotes = musicianService.getAllMusicians()
+        Map<String, Integer> artistVotes = artistService.getAllMusicians()
                 .stream().collect(Collectors.toMap(x -> x, x -> 0));
         for (VoteDTO vote : votes) {
             String artist = vote.getMusician();
@@ -55,9 +55,9 @@ public class StatisticsService implements IStatisticsService {
     }
 
     @Override
-    public List<UserMessage> getUserMessages() {
+    public List<UserMessage> getUserAbouts() {
         List<VoteDTO> votes = voteService.getAll();
-        return votes.stream().map(VoteDTO::getMessage)
+        return votes.stream().map(VoteDTO::getAbout)
                 .sorted(Comparator.comparing(UserMessage::getDatePosted))
                 .collect(Collectors.toList());
     }
@@ -67,7 +67,7 @@ public class StatisticsService implements IStatisticsService {
         StringBuilder data = new StringBuilder();
         Map<String, Integer> artistVotes = getArtistVotes();
         Map<String, Integer> genreVotes = getGenreVotes();
-        List<UserMessage> userMessages = getUserMessages();
+        List<UserMessage> userMessages = getUserAbouts();
 
         data.append("Current Musician Rankings:\n");
         appendDataFromMap(artistVotes, data);

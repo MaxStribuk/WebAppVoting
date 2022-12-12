@@ -2,34 +2,34 @@ package dto;
 
 import java.util.Objects;
 
-public class GenreDTO {
+public class ArtistDTO {
 
     private final int id;
-    private final String genre;
+    private final String artist;
 
-    public GenreDTO(int id, String genre) {
+    public ArtistDTO(int id, String artist) {
         this.id = id;
-        this.genre = genre;
+        this.artist = artist;
     }
 
     public int getId() {
         return id;
     }
 
-    public String getGenre() {
-        return genre;
+    public String getArtist() {
+        return artist;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        GenreDTO genreDTO = (GenreDTO) o;
-        return id == genreDTO.id && genre.equals(genreDTO.genre);
+        ArtistDTO that = (ArtistDTO) o;
+        return id == that.id && artist.equals(that.artist);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, genre);
+        return Objects.hash(id, artist);
     }
 }
