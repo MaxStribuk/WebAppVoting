@@ -1,19 +1,28 @@
 package service;
 
+import dto.ArtistDTO;
+import dto.GenreDTO;
+import dto.SavedVoteDTO;
+import dto.StatisticsDTO;
 import dto.VoteDTO;
 import service.api.IGenreService;
 import service.api.IArtistService;
 import service.api.IStatisticsService;
 import service.api.IVoteService;
 
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class StatisticsService implements IStatisticsService {
 
-    private static final DateTimeFormatter formatter = DateTimeFormatter.
-            ofPattern("HH:mm, dd.MM.yyyy");
+    private final DateTimeFormatter formatter =
+            DateTimeFormatter.ofPattern("HH:mm:sss, dd.MM.yyyy");
     private final IVoteService voteService;
     private final IGenreService genreService;
     private final IArtistService artistService;
@@ -27,79 +36,63 @@ public class StatisticsService implements IStatisticsService {
     }
 
     @Override
-    public Map<String, Integer> getArtistVotes() {
-        List<VoteDTO> votes = voteService.getAll();
-        Map<String, Integer> artistVotes = artistService.getAllMusicians()
-                .stream().collect(Collectors.toMap(x -> x, x -> 0));
-        for (VoteDTO vote : votes) {
-            String artist = vote.getMusician();
-            artistVotes.put(artist, artistVotes.get(artist) + 1);
-        }
-
-        return getSortedMap(artistVotes);
-    }
-
-    @Override
-    public Map<String, Integer> getGenreVotes() {
-        List<VoteDTO> votes = voteService.getAll();
-        Map<String, Integer> genreVotes = genreService.getAllGenres()
-                .stream().collect(Collectors.toMap(x -> x, x -> 0));
-
-        for (VoteDTO vote : votes) {
-            String[] genres = vote.getGenres();
-            Arrays.stream(genres).forEach(genre -> genreVotes.put(genre,
-                    genreVotes.get(genre) + 1));
-        }
-
-        return getSortedMap(genreVotes);
-    }
-
-    @Override
-    public List<UserMessage> getUserAbouts() {
-        List<VoteDTO> votes = voteService.getAll();
-        return votes.stream().map(VoteDTO::getAbout)
-                .sorted(Comparator.comparing(UserMessage::getDatePosted))
-                .collect(Collectors.toList());
-    }
-    @Override
-    public String getStringValue() {
-
-        StringBuilder data = new StringBuilder();
-        Map<String, Integer> artistVotes = getArtistVotes();
-        Map<String, Integer> genreVotes = getGenreVotes();
-        List<UserMessage> userMessages = getUserAbouts();
-
-        data.append("Current Musician Rankings:\n");
-        appendDataFromMap(artistVotes, data);
-
-        data.append("Current Genre Rankings:\n");
-        appendDataFromMap(genreVotes, data);
-
-        data.append("User messages:\n");
-        userMessages.stream()
-                .sorted(Comparator.comparing(UserMessage::getDatePosted))
-                .forEachOrdered(entry -> data.append(entry.getUsername())
-                        .append(": ")
-                        .append(entry.getMessage())
-                        .append(" (")
-                        .append(entry.getDatePosted().format(formatter))
-                        .append(")\n"));
-        return data.toString();
-    }
-
-    private LinkedHashMap<String, Integer> getSortedMap(Map<String, Integer> map) {
-        return map.entrySet()
+    public Map<ArtistDTO, Integer> getBestArtists() {
+        final Map<Integer, Integer> artistVotes = artistService.getAll()
+                .stream()
+                .collect(Collectors.toMap(ArtistDTO::getId, artist -> 0));
+        voteService.getAll()
+                .stream()
+                .map(SavedVoteDTO::getVoteDTO)
+                .map(VoteDTO::getArtistId)
+                .forEach(artistId -> artistVotes.put(
+                        artistId,
+                        artistVotes.get(artistId) + 1));
+        return artistVotes.entrySet()
                 .stream()
                 .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
-                .collect(Collectors.toMap(Map.Entry::getKey,
-                        Map.Entry::getValue, (e1, e2) -> e1,
-                        LinkedHashMap::new ));
+                .collect(Collectors.toMap(
+                        entry -> artistService.getArtistById(entry.getKey()),
+                        Map.Entry::getValue,
+                        Integer::sum,
+                        LinkedHashMap::new));
     }
 
-    private void appendDataFromMap(Map<String, Integer> map,
-                                  StringBuilder builder) {
-        map.forEach((key, value) -> builder.append(key).append(" - ")
-                .append(value)
-                .append(" votes\n"));
+    @Override
+    public Map<GenreDTO, Integer> getBestGenres() {
+        final Map<Integer, Integer> genreVotes = genreService.getAll()
+                .stream()
+                .collect(Collectors.toMap(GenreDTO::getId, genre -> 0));
+        voteService.getAll()
+                .stream()
+                .map(SavedVoteDTO::getVoteDTO)
+                .map(VoteDTO::getGenreIds)
+                .flatMap(Collection::stream)
+                .forEach(genreId -> genreVotes.put(
+                        genreId,
+                        genreVotes.get(genreId) + 1));
+        return genreVotes.entrySet()
+                .stream()
+                .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
+                .collect(Collectors.toMap(
+                        entry -> genreService.getGenreById(entry.getKey()),
+                        Map.Entry::getValue,
+                        Integer::sum,
+                        LinkedHashMap::new));
+    }
+
+    @Override
+    public Map<LocalDateTime, String> getAbouts() {
+        List<SavedVoteDTO> votes = voteService.getAll();
+        return votes.stream()
+                .peek(vote -> vote.getCreateDataTime().format(formatter))
+                .collect(Collectors.toMap(
+                        SavedVoteDTO::getCreateDataTime,
+                        vote -> vote.getVoteDTO().getAbout()
+                ));
+    }
+
+    @Override
+    public StatisticsDTO getStatistics() {
+        return new StatisticsDTO(getBestArtists(), getBestGenres(), getAbouts());
     }
 }

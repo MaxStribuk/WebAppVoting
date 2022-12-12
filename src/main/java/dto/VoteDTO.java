@@ -26,5 +26,4 @@ public class VoteDTO {
     public String getAbout() {
         return about;
     }
-
 }
