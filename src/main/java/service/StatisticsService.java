@@ -11,7 +11,6 @@ import service.api.IStatisticsService;
 import service.api.IVoteService;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
@@ -21,8 +20,6 @@ import java.util.stream.Collectors;
 
 public class StatisticsService implements IStatisticsService {
 
-    private final DateTimeFormatter formatter =
-            DateTimeFormatter.ofPattern("HH:mm:sss, dd.MM.yyyy");
     private final IVoteService voteService;
     private final IGenreService genreService;
     private final IArtistService artistService;
@@ -84,11 +81,12 @@ public class StatisticsService implements IStatisticsService {
     public Map<LocalDateTime, String> getAbouts() {
         List<SavedVoteDTO> votes = voteService.getAll();
         return votes.stream()
-                .peek(vote -> vote.getCreateDataTime().format(formatter))
+                .sorted(Comparator.comparing(SavedVoteDTO::getCreateDataTime))
                 .collect(Collectors.toMap(
                         SavedVoteDTO::getCreateDataTime,
-                        vote -> vote.getVoteDTO().getAbout()
-                ));
+                        vote -> vote.getVoteDTO().getAbout(),
+                        (value1, value2) -> value1 + "\n\n"+ value2,
+                        LinkedHashMap::new));
     }
 
     @Override

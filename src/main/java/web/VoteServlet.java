@@ -10,7 +10,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -39,8 +38,8 @@ public class VoteServlet extends HttpServlet {
         service.validate(vote);
         service.save(new SavedVoteDTO(vote));
 
-        PrintWriter writer = resp.getWriter();
-        writer.append("Thank you for your response!");
+        String contextPath = req.getContextPath();
+        resp.sendRedirect(contextPath + "/results");
     }
 
     private int getArtistId(HttpServletRequest req) throws IllegalArgumentException {

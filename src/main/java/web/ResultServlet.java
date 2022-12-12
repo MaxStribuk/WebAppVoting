@@ -10,13 +10,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.time.format.DateTimeFormatter;
 
-@WebServlet(name = "ResultsServlet", urlPatterns = "/results")
-public class ResultsServlet extends HttpServlet {
+@WebServlet(name = "ResultServlet", urlPatterns = "/results")
+public class ResultServlet extends HttpServlet {
 
     private final IStatisticsService service;
 
-    public ResultsServlet() {
+    public ResultServlet() {
         this.service = StatisticsServiceSingleton.getInstance();
     }
 
@@ -36,6 +37,7 @@ public class ResultsServlet extends HttpServlet {
     }
 
     private void writeBestArtists(PrintWriter writer, StatisticsDTO statistics) {
+        writer.append("<b>Best artists:</b><br>");
         statistics.getBestArtists()
                 .forEach((key, value) -> writer.append(key.getArtist())
                         .append(" - ")
@@ -44,6 +46,7 @@ public class ResultsServlet extends HttpServlet {
     }
 
     private void writeBestGenres(PrintWriter writer, StatisticsDTO statistics) {
+        writer.append("<b>Best genres:</b><br>");
         statistics.getBestGenres()
                 .forEach((key, value) -> writer.append(key.getGenre())
                         .append(" - ")
@@ -52,8 +55,11 @@ public class ResultsServlet extends HttpServlet {
     }
 
     private void writeAbouts(PrintWriter writer, StatisticsDTO statistics) {
+        writer.append("<b>Information about voters:</b><br>");
+        DateTimeFormatter formatter =
+                DateTimeFormatter.ofPattern("HH:mm:ss, dd.MM.yyyy");
         statistics.getAbouts()
-                .forEach((key, value) -> writer.append(key.toString())
+                .forEach((key, value) -> writer.append(key.format(formatter))
                         .append(" - ")
                         .append(value)
                         .append("<br>"));

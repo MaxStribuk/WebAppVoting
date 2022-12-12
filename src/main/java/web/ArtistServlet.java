@@ -10,12 +10,12 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-@WebServlet(name = "MusicianServlet", urlPatterns = "/artists")
+@WebServlet(name = "ArtistServlet", urlPatterns = "/artists")
 public class ArtistServlet extends HttpServlet {
 
     private final IArtistService service;
 
-    private ArtistServlet() {
+    public ArtistServlet() {
         this.service = ArtistServiceSingleton.getInstance();
     }
 
