@@ -1,7 +1,7 @@
 package web;
 
 import service.api.IMusicianService;
-import service.factories.MusicianServiceMemorySingleton;
+import service.factories.MusicianServiceSingleton;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -18,7 +18,7 @@ public class MusicianServlet extends HttpServlet {
             throws IOException {
 
         resp.setContentType("text/html; charset=UTF-8");
-        IMusicianService service = MusicianServiceMemorySingleton.getInstance();
+        IMusicianService service = MusicianServiceSingleton.getInstance();
         PrintWriter writer = resp.getWriter();
 
         service.getAll().forEach(musician -> writer

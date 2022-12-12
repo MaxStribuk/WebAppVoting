@@ -4,17 +4,17 @@ import dao.factories.GenreDAOSingleton;
 import service.GenreService;
 import service.api.IGenreService;
 
-public class GenreServiceMemorySingleton {
+public class GenreServiceSingleton {
 
 
     private volatile static IGenreService instance = null;
 
-    private GenreServiceMemorySingleton() {
+    private GenreServiceSingleton() {
     }
 
     public static IGenreService getInstance() {
         if(instance == null){
-            synchronized (GenreServiceMemorySingleton.class){
+            synchronized (GenreServiceSingleton.class){
                 if(instance == null){
                     instance = new GenreService(GenreDAOSingleton
                             .getInstance());

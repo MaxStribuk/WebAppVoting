@@ -4,16 +4,16 @@ import dao.factories.MusicianDAOSingleton;
 import service.MusicianService;
 import service.api.IMusicianService;
 
-public class MusicianServiceMemorySingleton {
+public class MusicianServiceSingleton {
 
     private volatile static IMusicianService instance = null;
 
-    private MusicianServiceMemorySingleton() {
+    private MusicianServiceSingleton() {
     }
 
     public static IMusicianService getInstance() {
         if(instance == null){
-            synchronized (MusicianServiceMemorySingleton.class){
+            synchronized (MusicianServiceSingleton.class){
                 if(instance == null){
                     instance = new MusicianService(MusicianDAOSingleton
                             .getInstance());

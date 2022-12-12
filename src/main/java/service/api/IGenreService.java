@@ -7,5 +7,8 @@ import java.util.List;
 public interface IGenreService {
 
     List<GenreDTO> getAll();
-    boolean exists(GenreDTO genre);
+
+    GenreDTO getGenreById(int id);
+
+    boolean exists(int id);
 }

@@ -7,5 +7,8 @@ import java.util.List;
 public interface IMusicianService {
 
     List<MusicianDTO> getAll();
-    boolean exists(MusicianDTO musician);
+
+    MusicianDTO getMusicianById(int id);
+
+    boolean exists(int id);
 }

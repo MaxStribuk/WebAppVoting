@@ -28,7 +28,7 @@ public class StatisticsService implements IStatisticsService {
 
     @Override
     public Map<String, Integer> getArtistVotes() {
-        List<VoteDTO> votes = voteService.getAllVotes();
+        List<VoteDTO> votes = voteService.getAll();
         Map<String, Integer> artistVotes = musicianService.getAllMusicians()
                 .stream().collect(Collectors.toMap(x -> x, x -> 0));
         for (VoteDTO vote : votes) {
@@ -41,7 +41,7 @@ public class StatisticsService implements IStatisticsService {
 
     @Override
     public Map<String, Integer> getGenreVotes() {
-        List<VoteDTO> votes = voteService.getAllVotes();
+        List<VoteDTO> votes = voteService.getAll();
         Map<String, Integer> genreVotes = genreService.getAllGenres()
                 .stream().collect(Collectors.toMap(x -> x, x -> 0));
 
@@ -56,7 +56,7 @@ public class StatisticsService implements IStatisticsService {
 
     @Override
     public List<UserMessage> getUserMessages() {
-        List<VoteDTO> votes = voteService.getAllVotes();
+        List<VoteDTO> votes = voteService.getAll();
         return votes.stream().map(VoteDTO::getMessage)
                 .sorted(Comparator.comparing(UserMessage::getDatePosted))
                 .collect(Collectors.toList());

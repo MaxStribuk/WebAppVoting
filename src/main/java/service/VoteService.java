@@ -1,86 +1,71 @@
 package service;
 
+import dao.api.IGenreDAO;
+import dao.api.IMusicianDAO;
 import dao.api.IVoteDAO;
+import dto.SavedVoteDTO;
 import dto.VoteDTO;
 import service.api.IVoteService;
-import service.factories.GenreServiceMemorySingleton;
-import service.factories.MusicianServiceMemorySingleton;
 
 import java.util.List;
 import java.util.NoSuchElementException;
 
 public class VoteService implements IVoteService {
 
-    private final IVoteDAO dataSource;
+    private final IVoteDAO voteDAO;
+    private final IGenreDAO genreDAO;
+    private final IMusicianDAO musicianDAO;
 
-    public VoteService(IVoteDAO dataSource) {
-        this.dataSource = dataSource;
+    public VoteService(IVoteDAO voteDAO, IGenreDAO genreDAO, IMusicianDAO musicianDAO) {
+        this.voteDAO = voteDAO;
+        this.genreDAO = genreDAO;
+        this.musicianDAO = musicianDAO;
     }
 
     @Override
-    public List<VoteDTO> getAllVotes() {
-        return dataSource.getAllVotes();
+    public List<SavedVoteDTO> getAll() {
+        return voteDAO.getAll();
     }
 
     @Override
-    public void save(VoteDTO vote) {
-        dataSource.save(vote);
+    public void save(SavedVoteDTO vote) {
+        voteDAO.save(vote);
     }
 
     @Override
     public void validate(VoteDTO vote) {
-        String musician = vote.getMusician();
-        validateMusician(musician);
+        int musicianId = vote.getMusicianId();
+        validateMusician(musicianId);
 
-        String[] genres = vote.getGenres();
-        validateGenres(genres);
+        List<Integer> genresIdList = vote.getGenreIds();
+        validateGenres(genresIdList);
 
-        UserMessage message = vote.getMessage();
-        String username = message.getUsername();
-        validateUsername(username);
-
-        String contents = message.getMessage();
-        validateMessage(contents);
+        String message = vote.getMessage();
+        validateMessage(message);
     }
 
-    private void validateMusician(String musician) {
-        if (musician == null || musician.isBlank()) {
-            throw new IllegalArgumentException("User failed to provide " +
-                    "a musician name");
-        }
-        if(!MusicianServiceMemorySingleton.getInstance()
-                .exists(musician)) {
-            throw new NoSuchElementException("Invalid musician name " +
-                    "provided - '" + musician + "'");
+    private void validateMusician(int musicianId) {
+        if (!musicianDAO.exists(musicianId)) {
+            throw new NoSuchElementException("Invalid musician id " +
+                    "provided - '" + musicianId + "'");
         }
     }
 
-    private void validateGenres(String[] genres) {
-        if (genres == null) {
-            throw new IllegalArgumentException("User failed to provide " +
-                    "a list of genres");
-        }
-        if (genres.length < 3 || genres.length > 5) {
+    private void validateGenres(List<Integer> genresIdList) {
+
+        if (genresIdList.size() < 3 || genresIdList.size() > 5) {
             throw new IllegalArgumentException("Number of genres outside" +
                     " allowed range (3-5)");
         }
-        for (String genre : genres) {
-            if (genre == null || genre.isBlank()) {
-                throw new IllegalArgumentException("Genre parameter " +
-                        "must be non-empty");
-            }
-            if(!GenreServiceMemorySingleton.getInstance()
-                    .exists(genre)) {
-                throw new NoSuchElementException("Invalid genre name " +
-                        "provided - '" + genre + "'");
-            }
+        if (genresIdList.size() > genresIdList.stream().distinct().count()) {
+            throw new IllegalArgumentException("Genre parameter " +
+                    "must be non-repeating");
         }
-    }
-
-    private void validateUsername(String username) {
-        if (username == null || username.isBlank()) {
-            throw new IllegalArgumentException("User failed to provide " +
-                    "a username");
+        for (int genreId : genresIdList) {
+            if (!genreDAO.exists(genreId)) {
+                throw new NoSuchElementException("Invalid genre id " +
+                        "provided - '" + genreId + "'");
+            }
         }
     }
 
@@ -91,3 +76,4 @@ public class VoteService implements IVoteService {
         }
     }
 }
+
