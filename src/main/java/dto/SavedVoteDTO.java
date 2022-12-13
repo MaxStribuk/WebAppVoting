@@ -3,8 +3,9 @@ package dto;
 import java.time.LocalDateTime;
 
 public class SavedVoteDTO {
-    private VoteDTO voteDTO;
-    private LocalDateTime creationTime;
+
+    private final VoteDTO voteDTO;
+    private final LocalDateTime creationTime;
 
     public SavedVoteDTO(VoteDTO voteDTO, LocalDateTime localDateTime) {
         this.voteDTO = voteDTO;

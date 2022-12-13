@@ -1,7 +1,7 @@
 package web;
 
-import service.api.IGenreService;
-import service.factories.GenreServiceSingleton;
+import service.api.IArtistService;
+import service.factories.ArtistServiceSingleton;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -10,13 +10,13 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-@WebServlet(name = "GenreServlet", urlPatterns = "/genres")
-public class GenreServlet extends HttpServlet {
+@WebServlet(name = "ArtistServlet", urlPatterns = "/artists")
+public class ArtistServlet extends HttpServlet {
 
-    private final IGenreService service;
+    private final IArtistService service;
 
-    public GenreServlet() {
-        this.service = GenreServiceSingleton.getInstance();
+    public ArtistServlet() {
+        this.service = ArtistServiceSingleton.getInstance();
     }
 
     @Override
@@ -28,7 +28,7 @@ public class GenreServlet extends HttpServlet {
         PrintWriter writer = resp.getWriter();
 
         service.getAll()
-                .forEach(genre -> writer.append(genre.getGenre())
-                                        .append("<br>"));
+                .forEach(artist -> writer.append(artist.getArtist())
+                                           .append("<br>"));
     }
 }

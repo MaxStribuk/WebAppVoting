@@ -1,7 +1,7 @@
 package service;
 
 import dao.api.IGenreDAO;
-import dao.api.IMusicianDAO;
+import dao.api.IArtistDAO;
 import dao.api.IVoteDAO;
 import dto.SavedVoteDTO;
 import dto.VoteDTO;
@@ -14,12 +14,12 @@ public class VoteService implements IVoteService {
 
     private final IVoteDAO voteDAO;
     private final IGenreDAO genreDAO;
-    private final IMusicianDAO musicianDAO;
+    private final IArtistDAO artistDAO;
 
-    public VoteService(IVoteDAO voteDAO, IGenreDAO genreDAO, IMusicianDAO musicianDAO) {
+    public VoteService(IVoteDAO voteDAO, IGenreDAO genreDAO, IArtistDAO artistDAO) {
         this.voteDAO = voteDAO;
         this.genreDAO = genreDAO;
-        this.musicianDAO = musicianDAO;
+        this.artistDAO = artistDAO;
     }
 
     @Override
@@ -34,20 +34,20 @@ public class VoteService implements IVoteService {
 
     @Override
     public void validate(VoteDTO vote) {
-        int musicianId = vote.getMusicianId();
-        validateMusician(musicianId);
+        int artistId = vote.getArtistId();
+        validateArtist(artistId);
 
         List<Integer> genresIdList = vote.getGenreIds();
         validateGenres(genresIdList);
 
-        String message = vote.getMessage();
-        validateMessage(message);
+        String about = vote.getAbout();
+        validateAbout(about);
     }
 
-    private void validateMusician(int musicianId) {
-        if (!musicianDAO.exists(musicianId)) {
-            throw new NoSuchElementException("Invalid musician id " +
-                    "provided - '" + musicianId + "'");
+    private void validateArtist(int artistId) {
+        if (!artistDAO.exists(artistId)) {
+            throw new NoSuchElementException("Invalid artist id " +
+                    "provided - '" + artistId + "' ");
         }
     }
 
@@ -55,25 +55,26 @@ public class VoteService implements IVoteService {
 
         if (genresIdList.size() < 3 || genresIdList.size() > 5) {
             throw new IllegalArgumentException("Number of genres outside" +
-                    " allowed range (3-5)");
+                    " allowed range (3-5) ");
         }
-        if (genresIdList.size() > genresIdList.stream().distinct().count()) {
+        if (genresIdList.size() > genresIdList.stream()
+                                              .distinct()
+                                              .count()) {
             throw new IllegalArgumentException("Genre parameter " +
-                    "must be non-repeating");
+                    "must be non-repeating ");
         }
         for (int genreId : genresIdList) {
             if (!genreDAO.exists(genreId)) {
                 throw new NoSuchElementException("Invalid genre id " +
-                        "provided - '" + genreId + "'");
+                        "provided - '" + genreId + "' ");
             }
         }
     }
 
-    private void validateMessage(String message) {
-        if (message == null || message.isBlank()) {
+    private void validateAbout(String about) {
+        if (about == null || about.isBlank()) {
             throw new IllegalArgumentException("User failed to provide" +
-                    " a message");
+                    " a message ");
         }
     }
 }
-
