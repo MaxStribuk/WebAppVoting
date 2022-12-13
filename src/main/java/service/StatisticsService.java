@@ -32,6 +32,7 @@ public class StatisticsService implements IStatisticsService {
         this.artistService = artistService;
     }
 
+    //Later the "getX" methods may be implemented with the parameter "String sortBy"
     @Override
     public Map<ArtistDTO, Integer> getBestArtists() {
         final Map<Integer, Integer> artistVotes = artistService.getAll()
@@ -44,7 +45,11 @@ public class StatisticsService implements IStatisticsService {
                 .forEach(artistId -> artistVotes.put(
                         artistId,
                         artistVotes.get(artistId) + 1));
-        return artistVotes.entrySet()
+        return sortArtistsByVotes(artistVotes);
+    }
+
+    private Map<ArtistDTO, Integer> sortArtistsByVotes(Map<Integer, Integer> artists) {
+        return artists.entrySet()
                 .stream()
                 .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
                 .collect(Collectors.toMap(
@@ -67,7 +72,11 @@ public class StatisticsService implements IStatisticsService {
                 .forEach(genreId -> genreVotes.put(
                         genreId,
                         genreVotes.get(genreId) + 1));
-        return genreVotes.entrySet()
+        return sortGenresByVotes(genreVotes);
+    }
+
+    private Map<GenreDTO, Integer> sortGenresByVotes(Map<Integer, Integer> genres) {
+        return genres.entrySet()
                 .stream()
                 .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
                 .collect(Collectors.toMap(
