@@ -1,6 +1,6 @@
 package dao.factories;
 
-import dao.ArtistMemoryDAO;
+import dao.ArtistDBDao;
 import dao.api.IArtistDAO;
 
 public class ArtistDAOSingleton {
@@ -14,7 +14,7 @@ public class ArtistDAOSingleton {
         if (instance == null) {
             synchronized (ArtistDAOSingleton.class) {
                 if (instance == null) {
-                    instance = new ArtistMemoryDAO();
+                    instance = new ArtistDBDao();
                 }
             }
         }
