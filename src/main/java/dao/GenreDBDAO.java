@@ -12,31 +12,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GenreDBDAO implements IGenreDAO {
-    private static final String CREATE_TABLE = "CREATE TABLE IF NOT EXISTS app.genres( " +
-            "id BIGSERIAL, " +
-            "name VARCHAR(30), " +
-            "CONSTRAINT pk_id PRIMARY KEY (id));";
-    private static final String INITIALIZE_TABLE = "INSERT INTO app.genres (name) " +
-            "VALUES ('Rock'), ('Pop'), ('Rap'), ('Techno'), ('Jazz'), " +
-            "('Classic Rock'), ('Country'), ('Hard Rock'), ('Blues'), ('Hip Hop');";
     private static final String SELECT_ALL = "SELECT id, name FROM app.genres;";
     private static final String SELECT_BY_ID = "SELECT id, name FROM app.genres" +
             " WHERE id = ?";
-
-    public GenreDBDAO() {
-        try (Connection connection = ConnectionManager.open();
-             PreparedStatement create = connection.prepareStatement(CREATE_TABLE);
-             PreparedStatement initialize = connection.prepareStatement(INITIALIZE_TABLE);
-             PreparedStatement getAll = connection.prepareStatement(SELECT_ALL)) {
-
-            create.execute();
-            if (!getAll.executeQuery().next()) {
-                initialize.execute();
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
 
     @Override
     public List<GenreDTO> getAll() {

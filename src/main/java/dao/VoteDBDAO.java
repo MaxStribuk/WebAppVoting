@@ -13,23 +13,6 @@ import java.util.List;
 
 public class VoteDBDAO implements IVoteDAO {
 
-    private static final String CREATE_TABLE = "CREATE TABLE IF NOT EXISTS app.votes( " +
-            "  id BIGSERIAL, " +
-            "  artist_id INT NOT NULL, " +
-            "  about TEXT NOT NULL, " +
-            "  creation_time TIMESTAMP WITHOUT TIME ZONE NOT NULL, " +
-            "  CONSTRAINT pk_vote_id PRIMARY KEY (id) " +
-            ");";
-    private static final String CREATE_JOIN_TABLE = "CREATE TABLE IF NOT EXISTS app.votes_genres( " +
-            "  vote_id BIGINT NOT NULL, " +
-            "  genre_id INT NOT NULL, " +
-            "  CONSTRAINT fk_vote_id FOREIGN KEY (vote_id) " +
-            "  REFERENCES app.votes (id), " +
-            "  CONSTRAINT fk_genre_id FOREIGN KEY (genre_id) " +
-            "  REFERENCES app.genres (id), " +
-            "  CONSTRAINT unique_vote UNIQUE(vote_id, genre_id) " +
-            ");";
-
     private static final String SELECT_ALL = "SELECT id, artist_id, about, creation_time " +
             "FROM app.votes; ;";
     private static final String SELECT_GENRES = "SELECT vg.genre_id AS id " +
@@ -43,23 +26,6 @@ public class VoteDBDAO implements IVoteDAO {
     private static final String SAVE_GENRE_VOTE = "INSERT INTO app.votes_genres (" +
             "vote_id, genre_id) " +
             "VALUES (?, ?);";
-
-
-    public VoteDBDAO() {
-        try (Connection connection = ConnectionManager.open();
-             PreparedStatement create = connection.prepareStatement(CREATE_TABLE);
-             PreparedStatement createJoin = connection.prepareStatement(CREATE_JOIN_TABLE)) {
-
-            connection.setAutoCommit(false);
-
-            create.execute();
-            createJoin.execute();
-
-            connection.commit();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
     @Override
     public List<SavedVoteDTO> getAll() {
         try (Connection connection = ConnectionManager.open();
