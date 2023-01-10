@@ -30,29 +30,6 @@ public class VoteDBDAO implements IVoteDAO {
             "  CONSTRAINT unique_vote UNIQUE(vote_id, genre_id) " +
             ");";
 
-    private static final String GENRE_NUM_CHECK = "CREATE OR REPLACE FUNCTION " +
-            "check_vote_genres_count() RETURNS TRIGGER AS $$ " +
-            "DECLARE " +
-            "    var_vote_id INTEGER; " +
-            "    vote_genres_count INTEGER; " +
-            "BEGIN " +
-            "    var_vote_id := NEW.vote_id; " +
-            "    SELECT COUNT(*) INTO vote_genres_count FROM app.votes_genres " +
-            "WHERE vote_id = var_vote_id; " +
-            "    IF vote_genres_count > 5 THEN " +
-            "        RAISE EXCEPTION 'A vote can have a maximum of 5 genres.'; " +
-            "    ELSIF vote_genres_count < 3 THEN " +
-            "        RAISE EXCEPTION 'A vote must have at least 3 genres.'; " +
-            "    END IF; " +
-            "    RETURN NEW; " +
-            "END; " +
-            "$$ LANGUAGE plpgsql;";
-
-    private static final String GENRE_NUM_TRIGGER = "CREATE TRIGGER check_vote_genres_count " +
-            "AFTER INSERT OR UPDATE ON app.votes_genres " +
-            "FOR EACH ROW " +
-            "EXECUTE FUNCTION check_vote_genres_count();";
-
     private static final String SELECT_ALL = "SELECT id, artist_id, about, creation_time " +
             "FROM app.votes; ;";
     private static final String SELECT_GENRES = "SELECT vg.genre_id AS id " +
@@ -71,16 +48,12 @@ public class VoteDBDAO implements IVoteDAO {
     public VoteDBDAO() {
         try (Connection connection = ConnectionManager.open();
              PreparedStatement create = connection.prepareStatement(CREATE_TABLE);
-             PreparedStatement createJoin = connection.prepareStatement(CREATE_JOIN_TABLE);
-             PreparedStatement createGenreFunction = connection.prepareStatement(GENRE_NUM_CHECK);
-             PreparedStatement createGenreTrigger = connection.prepareStatement(GENRE_NUM_TRIGGER)) {
+             PreparedStatement createJoin = connection.prepareStatement(CREATE_JOIN_TABLE)) {
 
             connection.setAutoCommit(false);
 
             create.execute();
             createJoin.execute();
-            createGenreFunction.execute();
-            createGenreTrigger.execute();
 
             connection.commit();
         } catch (SQLException e) {
