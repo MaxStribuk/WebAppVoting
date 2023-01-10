@@ -1,10 +1,10 @@
 package service;
 
-import dao.api.IGenreDAO;
-import dao.api.IArtistDAO;
 import dao.api.IVoteDAO;
 import dto.SavedVoteDTO;
 import dto.VoteDTO;
+import service.api.IArtistService;
+import service.api.IGenreService;
 import service.api.IVoteService;
 
 import java.util.List;
@@ -13,13 +13,14 @@ import java.util.NoSuchElementException;
 public class VoteService implements IVoteService {
 
     private final IVoteDAO voteDAO;
-    private final IGenreDAO genreDAO;
-    private final IArtistDAO artistDAO;
+    private final IGenreService genreService;
+    private final IArtistService artistService;
 
-    public VoteService(IVoteDAO voteDAO, IGenreDAO genreDAO, IArtistDAO artistDAO) {
+    public VoteService(IVoteDAO voteDAO, IGenreService genreService,
+                       IArtistService artistService) {
         this.voteDAO = voteDAO;
-        this.genreDAO = genreDAO;
-        this.artistDAO = artistDAO;
+        this.genreService = genreService;
+        this.artistService = artistService;
     }
 
     @Override
@@ -45,7 +46,7 @@ public class VoteService implements IVoteService {
     }
 
     private void validateArtist(int artistId) {
-        if (!artistDAO.exists(artistId)) {
+        if (!artistService.exists(artistId)) {
             throw new NoSuchElementException("Invalid artist id " +
                     "provided - '" + artistId + "' ");
         }
@@ -64,7 +65,7 @@ public class VoteService implements IVoteService {
                     "must be non-repeating ");
         }
         for (int genreId : genresIdList) {
-            if (!genreDAO.exists(genreId)) {
+            if (!genreService.exists(genreId)) {
                 throw new NoSuchElementException("Invalid genre id " +
                         "provided - '" + genreId + "' ");
             }

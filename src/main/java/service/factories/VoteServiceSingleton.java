@@ -1,7 +1,6 @@
 package service.factories;
 
-import dao.factories.GenreDAOSingleton;
-import dao.factories.ArtistDAOSingleton;
+import dao.factories.DAOType;
 import dao.factories.VoteDAOSingleton;
 import service.VoteService;
 import service.api.IVoteService;
@@ -18,9 +17,9 @@ public class VoteServiceSingleton {
             synchronized (VoteServiceSingleton.class) {
                 if (instance == null) {
                     instance = new VoteService(
-                            VoteDAOSingleton.getInstance(),
-                            GenreDAOSingleton.getInstance(),
-                            ArtistDAOSingleton.getInstance());
+                            VoteDAOSingleton.getInstance(DAOType.DB),
+                            GenreServiceSingleton.getInstance(),
+                            ArtistServiceSingleton.getInstance());
                 }
             }
         }
