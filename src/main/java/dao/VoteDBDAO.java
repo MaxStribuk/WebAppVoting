@@ -65,7 +65,7 @@ public class VoteDBDAO implements IVoteDAO {
             "VALUES (?, ?, ?);";
     private static final String SAVE_GENRE_VOTE = "INSERT INTO app.votes_genres (" +
             "vote_id, genre_id) " +
-            "VALUES (2, 2), (2, 3), (2, 4);";
+            "VALUES (?, ?);";
 
 
     public VoteDBDAO() {
@@ -79,8 +79,8 @@ public class VoteDBDAO implements IVoteDAO {
 
             create.execute();
             createJoin.execute();
-            //createGenreFunction.execute();
-            //createGenreTrigger.execute();
+            createGenreFunction.execute();
+            createGenreTrigger.execute();
 
             connection.commit();
         } catch (SQLException e) {
@@ -167,6 +167,7 @@ public class VoteDBDAO implements IVoteDAO {
         IVoteDAO dao = new VoteDBDAO();
         dao.save(new SavedVoteDTO(new VoteDTO(1, List.of(1,2,3,4), "NoText"), LocalDateTime.now()));
     }
+
     private int getID(ResultSet resultSet) throws SQLException {
         return resultSet.getInt(1);
     }
