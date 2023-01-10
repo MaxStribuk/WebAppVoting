@@ -26,10 +26,11 @@ public class GenreDBDAO implements IGenreDAO {
     public GenreDBDAO() {
         try (Connection connection = ConnectionManager.open();
              PreparedStatement create = connection.prepareStatement(CREATE_TABLE);
-             PreparedStatement initialize = connection.prepareStatement(INITIALIZE_TABLE)) {
+             PreparedStatement initialize = connection.prepareStatement(INITIALIZE_TABLE);
+             PreparedStatement getAll = connection.prepareStatement(SELECT_ALL)) {
 
             create.execute();
-            if (getAll().size() == 0) {
+            if (!getAll.executeQuery().next()) {
                 initialize.execute();
             }
         } catch (SQLException e) {
