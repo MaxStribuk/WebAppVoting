@@ -101,12 +101,6 @@ public class VoteDBDAO implements IVoteDAO {
         }
     }
 
-    public static void main(String[] args) {
-        IGenreDAO genre_dao = new GenreDBDAO();
-        IVoteDAO dao = new VoteDBDAO();
-        dao.save(new SavedVoteDTO(new VoteDTO(1, List.of(1,2,3,4), "NoText"), LocalDateTime.now()));
-    }
-
     private int getID(ResultSet resultSet) throws SQLException {
         return resultSet.getInt(1);
     }
