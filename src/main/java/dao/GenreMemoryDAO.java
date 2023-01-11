@@ -3,16 +3,25 @@ package dao;
 import dao.api.IGenreDAO;
 import dto.GenreDTO;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class GenreMemoryDAO implements IGenreDAO {
 
     private final Map<Integer, GenreDTO> genres;
+    private final ReadWriteLock lock;
+    private final Lock writeLock;
+    private final Lock readLock;
 
     public GenreMemoryDAO() {
-        genres = new HashMap<>();
+        genres = new ConcurrentHashMap<>();
+        lock = new ReentrantReadWriteLock();
+        writeLock = lock.writeLock();
+        readLock = lock.readLock();
         genres.put(1, new GenreDTO(1, "Pop"));
         genres.put(2, new GenreDTO(2, "Rap"));
         genres.put(3, new GenreDTO(3, "Techno"));
