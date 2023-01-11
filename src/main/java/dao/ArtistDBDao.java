@@ -16,7 +16,7 @@ public class ArtistDBDao implements IArtistDAO {
     private static final String GET_ALL = "SELECT id, name FROM app.artist";
     private static final String GET = "SELECT id, name FROM app.artist " +
             "WHERE id = ?";
-    private final String ADD = "INSERT INTO app.artist name VALUES (?);";
+    private final String ADD = "INSERT INTO app.artist (name) VALUES (?);";
     private final String UPDATE = "UPDATE app.artist SET name=? WHERE id=?;";
     private final String COUNT_VOTES = "SELECT COUNT(id) AS count FROM app.votes " +
             "GROUP BY artist_id HAVING artist_id=?;";
