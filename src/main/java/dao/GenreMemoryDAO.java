@@ -1,6 +1,7 @@
 package dao;
 
 import dao.api.IGenreDAO;
+import dto.ArtistDTO;
 import dto.GenreDTO;
 
 import java.util.List;
@@ -36,16 +37,83 @@ public class GenreMemoryDAO implements IGenreDAO {
 
     @Override
     public List<GenreDTO> getAll() {
-        return List.copyOf(genres.values());
+        try {
+            readLock.lock();
+
+            return List.copyOf(genres.values());
+        } finally {
+            readLock.unlock();
+        }
     }
 
     @Override
     public boolean exists(int id) {
-        return genres.containsKey(id);
+        try {
+            readLock.lock();
+
+            return genres.containsKey(id);
+        } finally {
+            readLock.unlock();
+        }
     }
 
     @Override
     public GenreDTO get(int id) {
-        return genres.get(id);
+        try {
+            readLock.lock();
+
+            return genres.get(id);
+        } finally {
+            readLock.unlock();
+        }
+    }
+
+    @Override
+    public void add(String genre) {
+        try {
+            writeLock.lock();
+
+            int newId = getNewID();
+            genres.put(newId, new GenreDTO(newId, genre));
+        } finally {
+            writeLock.unlock();
+        }
+    }
+
+    @Override
+    public void update(int id, String genre) {
+        try {
+            writeLock.lock();
+
+            genres.put(id, new GenreDTO(id, genre));
+        } finally {
+            writeLock.unlock();
+        }
+    }
+
+    @Override
+    public void delete(int id) {
+        try {
+            writeLock.lock();
+
+            genres.remove(id);
+        } finally {
+            writeLock.unlock();
+        }
+    }
+
+    private int getNewID() {
+        try {
+            readLock.lock();
+
+            int newID = genres.keySet()
+                    .stream()
+                    .max(Integer::compareTo)
+                    .get() + 1;
+
+            return newID;
+        } finally {
+            readLock.unlock();
+        }
     }
 }
