@@ -1,6 +1,7 @@
 package dao;
 
 import dao.api.IVoteDAO;
+import dao.factories.DAOType;
 import dao.factories.VoteDAOSingleton;
 import dto.SavedVoteDTO;
 import dto.VoteDTO;
@@ -23,7 +24,7 @@ public class VoteMemoryDAOTests {
 
     @BeforeAll
     public void setUp() {
-        dao = VoteDAOSingleton.getInstance();
+        dao = VoteDAOSingleton.getInstance(DAOType.MEMORY);
         expected = new ArrayList<>();
     }
 
