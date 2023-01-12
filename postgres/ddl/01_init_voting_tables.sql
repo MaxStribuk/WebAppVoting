@@ -4,6 +4,12 @@ CREATE TABLE IF NOT EXISTS app.genres(
     CONSTRAINT pk_id PRIMARY KEY (id)
 );
 
+CREATE TABLE app.artist (
+    id BIGSERIAL NOT NULL,
+    name TEXT NOT NULL,
+    CONSTRAINT pk_id PRIMARY KEY (id)
+);
+
 CREATE TABLE IF NOT EXISTS app.votes(
     id BIGSERIAL,
     artist_id INT NOT NULL,
