@@ -62,7 +62,13 @@ public class GenreMemoryDAO implements IGenreDAO {
         try {
             readLock.lock();
 
-            return genres.get(id);
+            GenreDTO genre = genres.get(id);
+            if (genre != null) {
+                return genre;
+            } else {
+                throw new IllegalArgumentException("No genre returned for id "
+                        + id);
+            }
         } finally {
             readLock.unlock();
         }
@@ -103,17 +109,11 @@ public class GenreMemoryDAO implements IGenreDAO {
     }
 
     private int getNewID() {
-        try {
-            readLock.lock();
+        int newID = genres.keySet()
+                .stream()
+                .max(Integer::compareTo)
+                .get() + 1;
 
-            int newID = genres.keySet()
-                    .stream()
-                    .max(Integer::compareTo)
-                    .get() + 1;
-
-            return newID;
-        } finally {
-            readLock.unlock();
-        }
+        return newID;
     }
 }

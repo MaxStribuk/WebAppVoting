@@ -54,7 +54,13 @@ public class ArtistMemoryDAO implements IArtistDAO {
         try {
             readLock.lock();
 
-            return artists.get(id);
+            ArtistDTO artist = artists.get(id);
+            if (artist != null) {
+                return artist;
+            } else {
+                throw new IllegalArgumentException("No artist returned for id "
+                        + id);
+            }
         } finally {
             readLock.unlock();
         }
@@ -95,17 +101,11 @@ public class ArtistMemoryDAO implements IArtistDAO {
     }
 
     private int getNewID() {
-        try {
-            readLock.lock();
+        int newID = artists.keySet()
+                .stream()
+                .max(Integer::compareTo)
+                .get() + 1;
 
-            int newID = artists.keySet()
-                    .stream()
-                    .max(Integer::compareTo)
-                    .get() + 1;
-
-            return newID;
-        } finally {
-            readLock.unlock();
-        }
+        return newID;
     }
 }
