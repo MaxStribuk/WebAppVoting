@@ -28,7 +28,7 @@ public class GenreServlet extends HttpServlet {
         PrintWriter writer = resp.getWriter();
 
         service.getAll()
-                .forEach(genre -> writer.append(genre.getGenre())
-                                        .append("<br>"));
+                .forEach(genre -> writer.append(genre.getId() + " - " + genre.getGenre())
+                        .append("<br>"));
     }
 }
