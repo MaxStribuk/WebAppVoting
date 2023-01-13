@@ -1,6 +1,9 @@
 package dao.factories;
 
 import dao.ArtistDBDao;
+import dao.ArtistMemoryDAO;
+import dao.VoteDBDAO;
+import dao.VoteMemoryDAO;
 import dao.api.IArtistDAO;
 
 public class ArtistDAOSingleton {
@@ -10,11 +13,24 @@ public class ArtistDAOSingleton {
     private ArtistDAOSingleton() {
     }
 
-    public static IArtistDAO getInstance() {
+    public static IArtistDAO getInstance(DAOType type) {
         if (instance == null) {
             synchronized (ArtistDAOSingleton.class) {
                 if (instance == null) {
-                    instance = new ArtistDBDao();
+                    switch (type) {
+                        case DB: {
+                            instance = new ArtistDBDao();
+                            break;
+                        }
+                        case MEMORY: {
+                            instance = new ArtistMemoryDAO();
+                            break;
+                        }
+                        default: {
+                            throw new IllegalArgumentException("Illegal DAO type provided");
+                        }
+                    }
+
                 }
             }
         }
