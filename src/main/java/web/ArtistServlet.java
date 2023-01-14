@@ -28,7 +28,7 @@ public class ArtistServlet extends HttpServlet {
         PrintWriter writer = resp.getWriter();
 
         service.getAll()
-                .forEach(artist -> writer.append(artist.getArtist())
+                .forEach(artist -> writer.append(artist.getId()+" - "+artist.getArtist())
                                            .append("<br>"));
     }
 }

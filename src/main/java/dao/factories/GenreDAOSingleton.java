@@ -1,5 +1,8 @@
 package dao.factories;
 
+import dao.ArtistDBDao;
+import dao.ArtistMemoryDAO;
+import dao.GenreDBDAO;
 import dao.GenreMemoryDAO;
 import dao.api.IGenreDAO;
 
@@ -10,11 +13,23 @@ public class GenreDAOSingleton {
     private GenreDAOSingleton() {
     }
 
-    public static IGenreDAO getInstance() {
+    public static IGenreDAO getInstance(DAOType type) {
         if (instance == null) {
             synchronized (GenreDAOSingleton.class) {
                 if (instance == null) {
-                    instance = new GenreMemoryDAO();
+                    switch (type) {
+                        case DB: {
+                            instance = new GenreDBDAO();
+                            break;
+                        }
+                        case MEMORY: {
+                            instance = new GenreMemoryDAO();
+                            break;
+                        }
+                        default: {
+                            throw new IllegalArgumentException("Illegal DAO type provided");
+                        }
+                    }
                 }
             }
         }
