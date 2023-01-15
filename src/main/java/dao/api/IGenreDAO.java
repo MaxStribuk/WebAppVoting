@@ -15,6 +15,6 @@ public interface IGenreDAO {
     void add(String genre);
 
     void update(int id, String genre);
-
+    
     void delete(int id);
 }
