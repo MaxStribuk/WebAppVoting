@@ -1,8 +1,8 @@
 CREATE SCHEMA IF NOT EXISTS app;
 
 CREATE TABLE IF NOT EXISTS app.genres(
-    id BIGSERIAL,
-    name VARCHAR(30),
+    id BIGSERIAL NOT NULL,
+    name VARCHAR(30) NOT NULL UNIQUE,
     CONSTRAINT pk_genre_id PRIMARY KEY (id)
 );
 
