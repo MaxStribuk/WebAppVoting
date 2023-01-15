@@ -12,9 +12,9 @@ public interface IGenreDAO {
 
     GenreDTO get(int id);
 
-    void add(String artist);
+    void add(String genre);
 
-    void update(int id, String artist);
-
+    void update(int id, String genre);
+    
     void delete(int id);
 }
