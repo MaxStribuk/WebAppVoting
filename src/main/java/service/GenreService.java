@@ -31,10 +31,8 @@ public class GenreService implements IGenreService {
 
     @Override
     public void add(String genre) {
-        boolean isRecurringGenre = getAll().stream()
-                .map(GenreDTO::getGenre)
-                .anyMatch(nameGenre -> nameGenre.equalsIgnoreCase(genre));
-        if (isRecurringGenre) {
+        boolean isDuplicate = isDuplicate(genre);
+        if (isDuplicate) {
             throw new IllegalArgumentException("This genre has already " +
                     "been added");
         } else {
@@ -44,10 +42,12 @@ public class GenreService implements IGenreService {
 
     @Override
     public void update(int id, String genre) {
-        if (dataSource.exists(id)) {
+        boolean isDuplicate = isDuplicate(genre);
+        if (dataSource.exists(id) && !isDuplicate) {
             dataSource.update(id, genre);
         } else {
-            throw new IllegalArgumentException("No genre updated for id " + id);
+            throw new IllegalArgumentException("No genre updated for id " +
+                    id + " or genre has already been added");
         }
     }
 
@@ -58,5 +58,11 @@ public class GenreService implements IGenreService {
         } else {
             throw new IllegalArgumentException("No genre deleted for id " + id);
         }
+    }
+
+    private boolean isDuplicate(String genre){
+        return getAll().stream()
+                .map(GenreDTO::getGenre)
+                .anyMatch(nameGenre -> nameGenre.equalsIgnoreCase(genre));
     }
 }
