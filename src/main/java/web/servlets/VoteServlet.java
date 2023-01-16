@@ -1,4 +1,4 @@
-package web;
+package web.servlets;
 
 import dto.SavedVoteDTO;
 import dto.VoteDTO;
