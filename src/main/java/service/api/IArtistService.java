@@ -8,7 +8,13 @@ public interface IArtistService {
 
     List<ArtistDTO> getAll();
 
-    ArtistDTO getArtistById(int id);
-
     boolean exists(int id);
+
+    ArtistDTO get(int id);
+
+    void add(String artist);
+
+    void update(int id, String artist);
+
+    void delete(int id);
 }

@@ -1,4 +1,4 @@
-package dao;
+package dao.memory;
 
 import dao.api.IArtistDAO;
 import dto.ArtistDTO;
@@ -101,11 +101,10 @@ public class ArtistMemoryDAO implements IArtistDAO {
     }
 
     private int getNewID() {
-        int newID = artists.keySet()
+        return artists.keySet()
                 .stream()
                 .max(Integer::compareTo)
-                .get() + 1;
-
-        return newID;
+                .map(id -> id + 1)
+                .orElse(1);
     }
 }

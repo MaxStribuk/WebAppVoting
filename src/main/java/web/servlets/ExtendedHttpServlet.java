@@ -1,4 +1,4 @@
-package web;
+package web.servlets;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -8,16 +8,15 @@ import java.io.IOException;
 
 public abstract class ExtendedHttpServlet extends HttpServlet {
 
-    public void service(HttpServletRequest request, HttpServletResponse response)
+    public void service(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
-        if (request.getMethod().equalsIgnoreCase("PATCH")){
-            doPatch(request, response);
+        if (req.getMethod().equalsIgnoreCase("PATCH")){
+            doPatch(req, resp);
         } else {
-            super.service(request, response);
+            super.service(req, resp);
         }
     }
 
-    public abstract void doPatch(HttpServletRequest request, HttpServletResponse response)
+    public abstract void doPatch(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException;
-
 }

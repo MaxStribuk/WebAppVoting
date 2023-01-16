@@ -1,9 +1,7 @@
 package dao.factories;
 
-import dao.ArtistDBDao;
-import dao.ArtistMemoryDAO;
-import dao.GenreDBDAO;
-import dao.GenreMemoryDAO;
+import dao.database.GenreDBDAO;
+import dao.memory.GenreMemoryDAO;
 import dao.api.IGenreDAO;
 
 public class GenreDAOSingleton {
