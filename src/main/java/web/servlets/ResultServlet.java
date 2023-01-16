@@ -4,6 +4,7 @@ import dto.StatisticsDTO;
 import service.api.IStatisticsService;
 import service.factories.StatisticsServiceSingleton;
 
+import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -23,7 +24,7 @@ public class ResultServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
-            throws IOException {
+            throws ServletException, IOException {
 
         req.setCharacterEncoding("UTF-8");
         resp.setContentType("text/html; charset=UTF-8");

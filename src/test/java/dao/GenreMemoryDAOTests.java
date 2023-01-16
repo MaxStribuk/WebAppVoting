@@ -1,9 +1,8 @@
 package dao;
 
 import dao.api.IGenreDAO;
-import dao.factories.ArtistDAOSingleton;
+import dao.factories.DAOType;
 import dao.factories.GenreDAOSingleton;
-import dto.ArtistDTO;
 import dto.GenreDTO;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
@@ -22,7 +21,7 @@ public class GenreMemoryDAOTests {
 
     @BeforeAll
     public void setup() {
-        dao = GenreDAOSingleton.getInstance();
+        dao = GenreDAOSingleton.getInstance(DAOType.MEMORY);
         expected = List.of(
                 new GenreDTO(1, "Pop"),
                 new GenreDTO(2, "Rap"),

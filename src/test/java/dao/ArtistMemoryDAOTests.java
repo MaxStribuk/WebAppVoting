@@ -2,6 +2,7 @@ package dao;
 
 import dao.api.IArtistDAO;
 import dao.factories.ArtistDAOSingleton;
+import dao.factories.DAOType;
 import dto.ArtistDTO;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
@@ -19,7 +20,7 @@ public class ArtistMemoryDAOTests {
 
     @BeforeAll
     public void setup() {
-        dao = ArtistDAOSingleton.getInstance();
+        dao = ArtistDAOSingleton.getInstance(DAOType.MEMORY);
         expected = List.of(
                 new ArtistDTO(1, "Taylor Swift"),
                 new ArtistDTO(2, "Prince"),

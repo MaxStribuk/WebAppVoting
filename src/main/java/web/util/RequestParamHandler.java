@@ -1,13 +1,16 @@
 package web.util;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class RequestParamHandler {
 
     public static final String GENRE_PARAM_NAME = "genre";
     public static final String ARTIST_PARAM_NAME = "artist";
+    public static final String ABOUT_PARAM_NAME = "about";
     public static final String ID_PARAM_NAME = "id";
-
 
     public static String getRequestParam(HttpServletRequest req, String name) {
         String[] param = req.getParameterValues(name);
@@ -34,5 +37,17 @@ public class RequestParamHandler {
             throw new IllegalArgumentException("Invalid " + id +
                     " parameter provided");
         }
+    }
+    public static List<Integer> getID(HttpServletRequest req, String name)
+            throws IllegalArgumentException {
+
+        String[] ids = req.getParameterValues(name);
+        if (ids == null || ids.length == 0) {
+            throw new IllegalArgumentException("User failed to provide ids");
+        }
+
+        return Arrays.stream(ids)
+                .map(RequestParamHandler::getID)
+                .collect(Collectors.toList());
     }
 }
