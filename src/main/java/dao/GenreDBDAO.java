@@ -14,12 +14,13 @@ import java.util.List;
 public class GenreDBDAO implements IGenreDAO {
     private static final String SELECT_ALL = "SELECT id, name FROM app.genres;";
     private static final String SELECT_BY_ID = "SELECT id, name FROM app.genres" +
-            " WHERE id = ?";
+            " WHERE id = ?;";
     private static final String ADD = "INSERT INTO app.genres (name) VALUES (?);";
     private static final String UPDATE = "UPDATE app.genres SET name=? WHERE id=?;";
     private static final String COUNT_VOTES = "SELECT COUNT(genre_id) AS count FROM app.votes_genres " +
             "GROUP BY genre_id HAVING genre_id=?;";
     private static final String DELETE = "DELETE FROM app.genres WHERE id=?;";
+
     @Override
     public List<GenreDTO> getAll() {
         try (Connection connection = ConnectionManager.open();

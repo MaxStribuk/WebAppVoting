@@ -53,7 +53,7 @@ public class StatisticsService implements IStatisticsService {
                 .stream()
                 .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
                 .collect(Collectors.toMap(
-                        entry -> artistService.getArtistById(entry.getKey()),
+                        entry -> artistService.get(entry.getKey()),
                         Map.Entry::getValue,
                         Integer::sum,
                         LinkedHashMap::new));
@@ -80,7 +80,7 @@ public class StatisticsService implements IStatisticsService {
                 .stream()
                 .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
                 .collect(Collectors.toMap(
-                        entry -> genreService.getGenreById(entry.getKey()),
+                        entry -> genreService.get(entry.getKey()),
                         Map.Entry::getValue,
                         Integer::sum,
                         LinkedHashMap::new));

@@ -1,7 +1,6 @@
 package dao;
 
 import dao.api.IGenreDAO;
-import dto.ArtistDTO;
 import dto.GenreDTO;
 
 import java.util.List;
@@ -109,11 +108,10 @@ public class GenreMemoryDAO implements IGenreDAO {
     }
 
     private int getNewID() {
-        int newID = genres.keySet()
+        return genres.keySet()
                 .stream()
                 .max(Integer::compareTo)
-                .get() + 1;
-
-        return newID;
+                .map(id -> id + 1)
+                .orElse(1);
     }
 }
