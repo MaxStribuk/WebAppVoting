@@ -18,13 +18,15 @@ public class GenreDBDAO implements IGenreDAO {
     private static final String ADD = "INSERT INTO app.genres (name) VALUES (?);";
     private static final String UPDATE = "UPDATE app.genres SET name=? WHERE id=?;";
     private static final String COUNT_VOTES = "SELECT COUNT(genre_id) AS count FROM app.votes_genres " +
-            "GROUP BY genre_id HAVING genre_id=?;";
+            "WHERE genre_id=?;";
     private static final String DELETE = "DELETE FROM app.genres WHERE id=?;";
 
     @Override
     public List<GenreDTO> getAll() {
         try (Connection connection = ConnectionManager.open();
-             PreparedStatement getAll = connection.prepareStatement(SELECT_ALL);
+             PreparedStatement getAll = connection.prepareStatement(SELECT_ALL,
+                     ResultSet.TYPE_SCROLL_SENSITIVE,
+                     ResultSet.CONCUR_UPDATABLE);
              ResultSet resultSet = getAll.executeQuery()) {
 
             List<GenreDTO> genres = new ArrayList<>();
@@ -95,9 +97,12 @@ public class GenreDBDAO implements IGenreDAO {
     @Override
     public void delete(int id) {
         try (Connection conn = ConnectionManager.open();
-             PreparedStatement statement = conn.prepareStatement(COUNT_VOTES)) {
+             PreparedStatement statement = conn.prepareStatement(COUNT_VOTES,
+                     ResultSet.TYPE_SCROLL_SENSITIVE,
+                     ResultSet.CONCUR_UPDATABLE)) {
             statement.setInt(1, id);
             try (ResultSet resultSet = statement.executeQuery()) {
+                resultSet.first();
                 if (resultSet.getInt("count") == 0) {
                     try (PreparedStatement delStatement = conn.prepareStatement(DELETE)) {
                         delStatement.setInt(1, id);

@@ -2,8 +2,6 @@ package dao.factories;
 
 import dao.ArtistDBDao;
 import dao.ArtistMemoryDAO;
-import dao.VoteDBDAO;
-import dao.VoteMemoryDAO;
 import dao.api.IArtistDAO;
 
 public class ArtistDAOSingleton {

@@ -19,7 +19,7 @@ public class ArtistDBDao implements IArtistDAO {
     private static final String ADD = "INSERT INTO app.artist (name) VALUES (?);";
     private static final String UPDATE = "UPDATE app.artist SET name=? WHERE id=?;";
     private static final String COUNT_VOTES = "SELECT COUNT(id) AS count FROM app.votes " +
-            "GROUP BY artist_id HAVING artist_id=?;";
+            "WHERE artist_id=?";
     private static final String DELETE = "DELETE FROM app.artist WHERE id=?;";
 
     @Override
@@ -97,9 +97,12 @@ public class ArtistDBDao implements IArtistDAO {
     @Override
     public void delete(int id) {
         try (Connection conn = ConnectionManager.open();
-             PreparedStatement statement = conn.prepareStatement(COUNT_VOTES)) {
+             PreparedStatement statement = conn.prepareStatement(COUNT_VOTES,
+                     ResultSet.TYPE_SCROLL_SENSITIVE,
+                     ResultSet.CONCUR_UPDATABLE)) {
             statement.setInt(1, id);
             try (ResultSet resultSet = statement.executeQuery()) {
+                resultSet.first();
                 if (resultSet.getInt("count") == 0) {
                     try (PreparedStatement delStatement = conn.prepareStatement(DELETE)) {
                         delStatement.setInt(1, id);

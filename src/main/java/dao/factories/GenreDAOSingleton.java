@@ -1,7 +1,5 @@
 package dao.factories;
 
-import dao.ArtistDBDao;
-import dao.ArtistMemoryDAO;
 import dao.GenreDBDAO;
 import dao.GenreMemoryDAO;
 import dao.api.IGenreDAO;
