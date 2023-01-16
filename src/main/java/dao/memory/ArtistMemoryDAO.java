@@ -1,7 +1,7 @@
-package dao;
+package dao.memory;
 
-import dao.api.IGenreDAO;
-import dto.GenreDTO;
+import dao.api.IArtistDAO;
+import dto.ArtistDTO;
 
 import java.util.List;
 import java.util.Map;
@@ -10,36 +10,29 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-public class GenreMemoryDAO implements IGenreDAO {
-
-    private final Map<Integer, GenreDTO> genres;
+public class ArtistMemoryDAO implements IArtistDAO {
+    private final Map<Integer, ArtistDTO> artists;
     private final ReadWriteLock lock;
     private final Lock writeLock;
     private final Lock readLock;
 
-    public GenreMemoryDAO() {
-        genres = new ConcurrentHashMap<>();
+    public ArtistMemoryDAO() {
+        artists = new ConcurrentHashMap<>();
         lock = new ReentrantReadWriteLock();
         writeLock = lock.writeLock();
         readLock = lock.readLock();
-        genres.put(1, new GenreDTO(1, "Pop"));
-        genres.put(2, new GenreDTO(2, "Rap"));
-        genres.put(3, new GenreDTO(3, "Techno"));
-        genres.put(4, new GenreDTO(4, "Dubstep"));
-        genres.put(5, new GenreDTO(5, "Jazz"));
-        genres.put(6, new GenreDTO(6, "Classic Rock"));
-        genres.put(7, new GenreDTO(7, "Country"));
-        genres.put(8, new GenreDTO(8, "Hard Rock"));
-        genres.put(9, new GenreDTO(9, "Blues"));
-        genres.put(10, new GenreDTO(10, "Hip Hop"));
+        artists.put(1, new ArtistDTO(1, "Taylor Swift"));
+        artists.put(2, new ArtistDTO(2, "Prince"));
+        artists.put(3, new ArtistDTO(3, "Elvis Presley"));
+        artists.put(4, new ArtistDTO(4, "Eminem"));
     }
 
     @Override
-    public List<GenreDTO> getAll() {
+    public List<ArtistDTO> getAll() {
         try {
             readLock.lock();
 
-            return List.copyOf(genres.values());
+            return List.copyOf(artists.values());
         } finally {
             readLock.unlock();
         }
@@ -50,22 +43,22 @@ public class GenreMemoryDAO implements IGenreDAO {
         try {
             readLock.lock();
 
-            return genres.containsKey(id);
+            return artists.containsKey(id);
         } finally {
             readLock.unlock();
         }
     }
 
     @Override
-    public GenreDTO get(int id) {
+    public ArtistDTO get(int id) {
         try {
             readLock.lock();
 
-            GenreDTO genre = genres.get(id);
-            if (genre != null) {
-                return genre;
+            ArtistDTO artist = artists.get(id);
+            if (artist != null) {
+                return artist;
             } else {
-                throw new IllegalArgumentException("No genre returned for id "
+                throw new IllegalArgumentException("No artist returned for id "
                         + id);
             }
         } finally {
@@ -74,23 +67,23 @@ public class GenreMemoryDAO implements IGenreDAO {
     }
 
     @Override
-    public void add(String genre) {
+    public void add(String artist) {
         try {
             writeLock.lock();
 
             int newId = getNewID();
-            genres.put(newId, new GenreDTO(newId, genre));
+            artists.put(newId, new ArtistDTO(newId, artist));
         } finally {
             writeLock.unlock();
         }
     }
 
     @Override
-    public void update(int id, String genre) {
+    public void update(int id, String artist) {
         try {
             writeLock.lock();
 
-            genres.put(id, new GenreDTO(id, genre));
+            artists.put(id, new ArtistDTO(id, artist));
         } finally {
             writeLock.unlock();
         }
@@ -101,14 +94,14 @@ public class GenreMemoryDAO implements IGenreDAO {
         try {
             writeLock.lock();
 
-            genres.remove(id);
+            artists.remove(id);
         } finally {
             writeLock.unlock();
         }
     }
 
     private int getNewID() {
-        return genres.keySet()
+        return artists.keySet()
                 .stream()
                 .max(Integer::compareTo)
                 .map(id -> id + 1)

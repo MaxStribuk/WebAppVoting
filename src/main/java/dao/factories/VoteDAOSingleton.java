@@ -1,7 +1,7 @@
 package dao.factories;
 
-import dao.VoteDBDAO;
-import dao.VoteMemoryDAO;
+import dao.database.VoteDBDAO;
+import dao.memory.VoteMemoryDAO;
 import dao.api.IVoteDAO;
 
 public class VoteDAOSingleton {

@@ -1,4 +1,4 @@
-package dao;
+package dao.memory;
 
 import dao.api.IVoteDAO;
 import dto.SavedVoteDTO;

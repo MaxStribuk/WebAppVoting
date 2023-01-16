@@ -1,4 +1,4 @@
-package dao;
+package dao.database;
 
 import dao.api.IArtistDAO;
 import dao.util.ConnectionManager;

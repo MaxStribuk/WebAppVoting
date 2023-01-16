@@ -1,4 +1,4 @@
-package dao;
+package dao.database;
 
 import dao.api.IVoteDAO;
 import dao.util.ConnectionManager;

@@ -1,7 +1,7 @@
 package dao.factories;
 
-import dao.ArtistDBDao;
-import dao.ArtistMemoryDAO;
+import dao.database.ArtistDBDao;
+import dao.memory.ArtistMemoryDAO;
 import dao.api.IArtistDAO;
 
 public class ArtistDAOSingleton {
