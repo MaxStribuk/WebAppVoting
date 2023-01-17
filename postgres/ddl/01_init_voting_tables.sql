@@ -17,6 +17,7 @@ CREATE TABLE IF NOT EXISTS app.votes(
     artist_id INT NOT NULL,
     about TEXT NOT NULL,
     creation_time TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    email TEXT NOT NULL UNIQUE,
     CONSTRAINT pk_vote_id PRIMARY KEY (id),
     CONSTRAINT fk_artist_id FOREIGN KEY (artist_id)
     REFERENCES app.artist (id)
