@@ -12,6 +12,7 @@ import javax.mail.MessagingException;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class SenderService implements ISenderService {
@@ -19,6 +20,8 @@ public class SenderService implements ISenderService {
     private IGenreService genreService;
     private IArtistService artistService;
     private MessageFactory messageFactory;
+    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy, HH:mm");
+    private static final String TOPIC = "WebAppVoting Vote Confirmation";
 
     public SenderService(IGenreService genreService,
                          IArtistService artistService) {
@@ -39,6 +42,7 @@ public class SenderService implements ISenderService {
             message.setFrom(new InternetAddress(this.messageFactory.getSender()));
             message.setRecipients(Message.RecipientType.TO,
                     recipient);
+            message.setSubject(TOPIC);
             message.setText(messageText.toString());
             Transport.send(message);
         } catch (MessagingException e) {
@@ -54,16 +58,16 @@ public class SenderService implements ISenderService {
         appendArtistName(voteDTO, message);
         appendAbout(voteDTO, message);
         message.append("Vote date: ");
-        message.append(vote.getCreateDataTime());
+        message.append(vote.getCreateDataTime().format(formatter));
     }
 
     private void appendGenreNames(VoteDTO voteDTO, StringBuilder message) {
         message.append("Your genre vote:\n");
         List<Integer> genreIDs = voteDTO.getGenreIds();
         for (int i = 0; i < genreIDs.size(); i++) {
-            message.append(++i)
+            message.append(i + 1)
                     .append(". ")
-                    .append(this.genreService.get(genreIDs.get(i)))
+                    .append(this.genreService.get(genreIDs.get(i)).getGenre())
                     .append("\n");
         }
     }
@@ -72,14 +76,13 @@ public class SenderService implements ISenderService {
         message.append("Your artist vote:\n");
         int artistID = voteDTO.getArtistId();
         message.append("1. ")
-                .append(this.artistService.get(artistID))
+                .append(this.artistService.get(artistID).getArtist())
                 .append("\n");
     }
 
     private void appendAbout(VoteDTO voteDTO, StringBuilder message) {
         message.append("Your about text:\n");
-        int artistID = voteDTO.getArtistId();
-        message.append(this.artistService.get(artistID))
+        message.append(voteDTO.getAbout())
                 .append("\n");
     }
 }

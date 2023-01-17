@@ -38,9 +38,9 @@ public class VoteServlet extends HttpServlet {
         String about = RequestParamHandler.getRequestParam(req,
                 RequestParamHandler.ABOUT_PARAM_NAME);
 
-        VoteDTO vote = new VoteDTO(artistId, genreIds, about);
-        service.validate(vote);
-        service.save(new SavedVoteDTO(vote));
+        //VoteDTO vote = new VoteDTO(artistId, genreIds, about);
+        //service.validate(vote);
+        //service.save(new SavedVoteDTO(vote));
 
         String contextPath = req.getContextPath();
         resp.sendRedirect(contextPath + "/results");
