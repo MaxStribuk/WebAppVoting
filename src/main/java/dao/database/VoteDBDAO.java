@@ -85,14 +85,20 @@ public class VoteDBDAO implements IVoteDAO {
                     if (generatedID.next()) {
                         voteID = generatedID.getInt(1);
                     } else {
+                        connection.rollback();
                         throw new IllegalArgumentException("Failed to save the vote");
                     }
                 }
 
-                for (int i = 0; i < genres.size(); i++) {
-                    saveGenreVote.setInt(1, voteID);
-                    saveGenreVote.setInt(2, genres.get(i));
-                    saveGenreVote.execute();
+                try {
+                    for (int i = 0; i < genres.size(); i++) {
+                        saveGenreVote.setInt(1, voteID);
+                        saveGenreVote.setInt(2, genres.get(i));
+                        saveGenreVote.execute();
+                    }
+                } catch (SQLException e) {
+                    connection.rollback();
+                    throw new IllegalArgumentException("Failed to save the vote");
                 }
 
                 connection.commit();
