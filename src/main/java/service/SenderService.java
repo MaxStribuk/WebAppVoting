@@ -33,7 +33,7 @@ public class SenderService implements ISenderService {
     @Override
     public void send(SavedVoteDTO vote) {
         StringBuilder messageText = new StringBuilder();
-        formatMessage(vote, messageText);
+        createMessage(vote, messageText);
         String recipient = vote.getVoteDTO()
                 .getEmail();
         MimeMessage message = this.messageFactory.getMessage();
@@ -51,7 +51,7 @@ public class SenderService implements ISenderService {
         }
     }
 
-    private void formatMessage(SavedVoteDTO vote, StringBuilder message) {
+    private void createMessage(SavedVoteDTO vote, StringBuilder message) {
         VoteDTO voteDTO = vote.getVoteDTO();
         message.append("Thank you for submitting your vote!\n");
         appendGenreNames(voteDTO, message);

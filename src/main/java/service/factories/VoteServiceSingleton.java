@@ -19,8 +19,8 @@ public class VoteServiceSingleton {
                     instance = new VoteService(
                             VoteDAOSingleton.getInstance(DAOType.DB),
                             GenreServiceSingleton.getInstance(),
-                            ArtistServiceSingleton.getInstance(),
-                            SenderServiceSingleton.getInstance());
+                            ArtistServiceSingleton.getInstance()
+                    );
                 }
             }
         }

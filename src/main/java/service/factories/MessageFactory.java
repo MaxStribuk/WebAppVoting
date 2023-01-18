@@ -23,7 +23,7 @@ public class MessageFactory {
     }
 
     private void loadProperties() {
-        try (InputStream resourceAsStream = dao.util.PropertiesUtil.class
+        try (InputStream resourceAsStream = MessageFactory.class
                 .getClassLoader()
                 .getResourceAsStream("mailservice.properties")) {
             TRANSPORT_PROPERTIES.load(resourceAsStream);
@@ -31,7 +31,7 @@ public class MessageFactory {
             throw new RuntimeException("Failed to load mailservice.properties");
         }
 
-        try (InputStream resourceAsStream = dao.util.PropertiesUtil.class
+        try (InputStream resourceAsStream = MessageFactory.class
                 .getClassLoader()
                 .getResourceAsStream("mailauthentication.properties")) {
             AUTHENTICATION_PROPERTIES.load(resourceAsStream);
