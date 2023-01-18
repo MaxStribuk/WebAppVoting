@@ -1,8 +1,7 @@
 package dao.factories;
 
-import dao.api.IArtistDAO;
 import dao.api.IConnection;
-import dao.util.ConnectionManager;
+import dao.util.PostgresConnection;
 
 public class ConnectionSingleton {
     private static volatile IConnection instance;
@@ -14,7 +13,7 @@ public class ConnectionSingleton {
         if (instance == null) {
             synchronized (ArtistDAOSingleton.class) {
                 if (instance == null) {
-                    instance=new ConnectionManager();
+                    instance=new PostgresConnection();
                 }
             }
         }

@@ -6,13 +6,13 @@ import java.beans.PropertyVetoException;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-public class ConnectionManager implements IConnection {
+public class PostgresConnection implements IConnection {
     private final String URL = "db.url";
     private final String USERNAME = "db.username";
     private final String PASSWORD = "db.password";
     private final ComboPooledDataSource cpds;
 
-    public ConnectionManager() {
+    public PostgresConnection() {
         cpds = new ComboPooledDataSource();
         loadDriver();
     }

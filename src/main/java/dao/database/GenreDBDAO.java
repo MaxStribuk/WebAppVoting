@@ -2,7 +2,6 @@ package dao.database;
 
 import dao.api.IGenreDAO;
 import dao.factories.ConnectionSingleton;
-import dao.util.ConnectionManager;
 import dto.GenreDTO;
 
 import java.sql.Connection;

@@ -2,7 +2,6 @@ package dao.database;
 
 import dao.api.IArtistDAO;
 import dao.factories.ConnectionSingleton;
-import dao.util.ConnectionManager;
 import dto.ArtistDTO;
 
 import java.sql.Connection;
