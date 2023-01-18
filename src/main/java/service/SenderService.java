@@ -17,9 +17,9 @@ import java.util.List;
 
 public class SenderService implements ISenderService {
 
-    private IGenreService genreService;
-    private IArtistService artistService;
-    private MessageFactory messageFactory;
+    private final IGenreService genreService;
+    private final IArtistService artistService;
+    private final MessageFactory messageFactory;
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy, HH:mm");
     private static final String TOPIC = "WebAppVoting Vote Confirmation";
 

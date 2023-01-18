@@ -35,7 +35,7 @@ public class VoteServlet extends HttpServlet {
         resp.setContentType("text/html; charset=UTF-8");
 
         String id = RequestParamHandler.getRequestParam(req,
-                RequestParamHandler.ID_PARAM_NAME);
+                RequestParamHandler.ARTIST_PARAM_NAME);
         int artistId = RequestParamHandler.getID(id);
         List<Integer> genreIds = RequestParamHandler.getID(req,
                 RequestParamHandler.GENRE_PARAM_NAME);

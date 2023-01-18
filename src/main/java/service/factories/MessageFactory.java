@@ -13,8 +13,8 @@ public class MessageFactory {
     private static volatile MessageFactory instance;
     private static final Properties AUTHENTICATION_PROPERTIES = new Properties();
     private static final Properties TRANSPORT_PROPERTIES = new Properties();
-    private String SENDER_ADDRESS;
-    private String SENDER_PASSWORD;
+    private final String SENDER_ADDRESS;
+    private final String SENDER_PASSWORD;
 
     private MessageFactory() {
         loadProperties();
@@ -57,12 +57,10 @@ public class MessageFactory {
                         SENDER_PASSWORD);
             }
         };
-
         Session session = Session.getInstance(TRANSPORT_PROPERTIES,
                 authenticator);
-        MimeMessage message = new MimeMessage(session);
 
-        return message;
+        return new MimeMessage(session);
     }
 
     public String getSender() {

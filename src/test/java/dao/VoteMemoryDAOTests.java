@@ -38,7 +38,8 @@ public class VoteMemoryDAOTests {
     @DisplayName("Testing the save method of VoteDAO for a single input")
     public void testSave1() {
         SavedVoteDTO vote = new SavedVoteDTO(new VoteDTO(1,
-                Collections.singletonList(2), "test vote"));
+                Collections.singletonList(2), "test vote",
+                "email@gmail.com"));
         dao.save(vote);
         expected.add(vote);
         assertEquals(expected, dao.getAll());
@@ -48,9 +49,11 @@ public class VoteMemoryDAOTests {
     @DisplayName("Testing the save method of VoteDAO for multiple inputs")
     public void testSave2() {
         SavedVoteDTO vote1 = new SavedVoteDTO(new VoteDTO(1,
-                Collections.singletonList(2), "test vote 1"));
+                Collections.singletonList(2), "test vote 1",
+                "email@gmail.com"));
         SavedVoteDTO vote2 = new SavedVoteDTO(new VoteDTO(3,
-                Collections.singletonList(4), "test vote 2"));
+                Collections.singletonList(4), "test vote 2",
+                "email@gmail.com"));
         dao.save(vote1);
         dao.save(vote2);
         expected.add(vote1);

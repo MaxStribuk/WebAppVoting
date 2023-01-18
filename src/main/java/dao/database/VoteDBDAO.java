@@ -14,7 +14,7 @@ public class VoteDBDAO implements IVoteDAO {
 
     private static final String SELECT_ALL = "SELECT id, artist_id, about, email, creation_time " +
             "FROM app.votes;";
-    private static final String SELECT_GENRES = "SELECT vg.genre_id AS id " +
+    private static final String SELECT_GENRES = "SELECT vg.genre_id " +
             "FROM app.votes AS v " +
             "  INNER JOIN app.votes_genres AS vg " +
             "  ON v.id = vg.vote_id " +
