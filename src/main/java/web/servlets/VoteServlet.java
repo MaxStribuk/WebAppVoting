@@ -37,8 +37,10 @@ public class VoteServlet extends HttpServlet {
                 RequestParamHandler.GENRE_PARAM_NAME);
         String about = RequestParamHandler.getRequestParam(req,
                 RequestParamHandler.ABOUT_PARAM_NAME);
+        String email = RequestParamHandler.getRequestParam(req,
+                RequestParamHandler.EMAIL_PARAM_NAME);
 
-        VoteDTO vote = new VoteDTO(artistId, genreIds, about);
+        VoteDTO vote = new VoteDTO(artistId, genreIds, about, email);
         service.validate(vote);
         service.save(new SavedVoteDTO(vote));
 

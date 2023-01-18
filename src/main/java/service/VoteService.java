@@ -17,6 +17,7 @@ public class VoteService implements IVoteService {
     private final IGenreService genreService;
     private final IArtistService artistService;
     private final ISenderService senderService;
+    private static final String EMAIL_PATTERN = "^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$";
 
     public VoteService(IVoteDAO voteDAO,
                        IGenreService genreService,
@@ -49,6 +50,9 @@ public class VoteService implements IVoteService {
 
         String about = vote.getAbout();
         validateAbout(about);
+
+        String email = vote.getEmail();
+        validateEmail(email);
     }
 
     private void validateArtist(int artistId) {
@@ -82,6 +86,17 @@ public class VoteService implements IVoteService {
         if (about == null || about.isBlank()) {
             throw new IllegalArgumentException("User failed to provide" +
                     " a message ");
+        }
+    }
+
+    private void validateEmail(String email) {
+        if (email == null || email.isBlank()) {
+            throw new IllegalArgumentException("User failed to provide" +
+                    " an email");
+        }
+        if (!email.matches(EMAIL_PATTERN)) {
+            throw new IllegalArgumentException("User provided " +
+                    "an invalid email");
         }
     }
 }
