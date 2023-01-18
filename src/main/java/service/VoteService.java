@@ -17,7 +17,8 @@ public class VoteService implements IVoteService {
     private final IGenreService genreService;
     private final IArtistService artistService;
     private final ISenderService senderService;
-    private static final String EMAIL_PATTERN = "^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$";
+    private static final String EMAIL_PATTERN = "^[\\w!#$%&'*+/=?`{|}~^-]+(?:\\.[\\w!#$%&'*+/=?`{|}~^-]+)*"
+            + "@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$";
 
     public VoteService(IVoteDAO voteDAO,
                        IGenreService genreService,
