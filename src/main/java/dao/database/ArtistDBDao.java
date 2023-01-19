@@ -1,7 +1,7 @@
 package dao.database;
 
 import dao.api.IArtistDAO;
-import dao.util.ConnectionManager;
+import dao.factories.ConnectionSingleton;
 import dto.ArtistDTO;
 
 import java.sql.Connection;
@@ -19,12 +19,12 @@ public class ArtistDBDao implements IArtistDAO {
     private static final String ADD = "INSERT INTO app.artist (name) VALUES (?);";
     private static final String UPDATE = "UPDATE app.artist SET name=? WHERE id=?;";
     private static final String COUNT_VOTES = "SELECT COUNT(id) AS count FROM app.votes " +
-            "WHERE artist_id=?";
+            "WHERE artist_id=?;";
     private static final String DELETE = "DELETE FROM app.artist WHERE id=?;";
 
     @Override
     public List<ArtistDTO> getAll() {
-        try (Connection conn = ConnectionManager.open();
+        try (Connection conn = ConnectionSingleton.getInstance().open();
              PreparedStatement stmt = conn.prepareStatement(GET_ALL,
                      ResultSet.TYPE_SCROLL_SENSITIVE,
                      ResultSet.CONCUR_UPDATABLE);
@@ -52,7 +52,7 @@ public class ArtistDBDao implements IArtistDAO {
 
     @Override
     public ArtistDTO get(int id) {
-        try (Connection conn = ConnectionManager.open();
+        try (Connection conn = ConnectionSingleton.getInstance().open();
              PreparedStatement stmt = conn.prepareStatement(GET,
                      ResultSet.TYPE_SCROLL_SENSITIVE,
                      ResultSet.CONCUR_UPDATABLE)) {
@@ -73,7 +73,7 @@ public class ArtistDBDao implements IArtistDAO {
 
     @Override
     public void add(String artist) {
-        try (Connection conn = ConnectionManager.open();
+        try (Connection conn = ConnectionSingleton.getInstance().open();
              PreparedStatement statement = conn.prepareStatement(ADD)) {
             statement.setString(1, artist);
             statement.executeUpdate();
@@ -84,7 +84,7 @@ public class ArtistDBDao implements IArtistDAO {
 
     @Override
     public void update(int id, String artist) {
-        try (Connection conn = ConnectionManager.open();
+        try (Connection conn = ConnectionSingleton.getInstance().open();
              PreparedStatement statement = conn.prepareStatement(UPDATE)) {
             statement.setString(1, artist);
             statement.setInt(2, id);
@@ -96,7 +96,7 @@ public class ArtistDBDao implements IArtistDAO {
 
     @Override
     public void delete(int id) {
-        try (Connection conn = ConnectionManager.open();
+        try (Connection conn = ConnectionSingleton.getInstance().open();
              PreparedStatement statement = conn.prepareStatement(COUNT_VOTES,
                      ResultSet.TYPE_SCROLL_SENSITIVE,
                      ResultSet.CONCUR_UPDATABLE)) {

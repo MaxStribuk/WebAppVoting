@@ -1,7 +1,7 @@
 package dao.database;
 
 import dao.api.IGenreDAO;
-import dao.util.ConnectionManager;
+import dao.factories.ConnectionSingleton;
 import dto.GenreDTO;
 
 import java.sql.Connection;
@@ -23,7 +23,7 @@ public class GenreDBDAO implements IGenreDAO {
 
     @Override
     public List<GenreDTO> getAll() {
-        try (Connection connection = ConnectionManager.open();
+        try (Connection connection = ConnectionSingleton.getInstance().open();
              PreparedStatement getAll = connection.prepareStatement(SELECT_ALL,
                      ResultSet.TYPE_SCROLL_SENSITIVE,
                      ResultSet.CONCUR_UPDATABLE);
@@ -41,7 +41,7 @@ public class GenreDBDAO implements IGenreDAO {
 
     @Override
     public boolean exists(int id) {
-        try (Connection connection = ConnectionManager.open();
+        try (Connection connection = ConnectionSingleton.getInstance().open();
              PreparedStatement exists = connection.prepareStatement(SELECT_BY_ID)) {
             exists.setInt(1, id);
 
@@ -55,7 +55,7 @@ public class GenreDBDAO implements IGenreDAO {
 
     @Override
     public GenreDTO get(int id) {
-        try (Connection connection = ConnectionManager.open();
+        try (Connection connection = ConnectionSingleton.getInstance().open();
              PreparedStatement exists = connection.prepareStatement(SELECT_BY_ID)) {
             exists.setInt(1, id);
 
@@ -73,7 +73,7 @@ public class GenreDBDAO implements IGenreDAO {
     }
 
     public void add(String genre) {
-        try (Connection conn = ConnectionManager.open();
+        try (Connection conn = ConnectionSingleton.getInstance().open();
              PreparedStatement statement = conn.prepareStatement(ADD)) {
             statement.setString(1, genre);
             statement.executeUpdate();
@@ -84,7 +84,7 @@ public class GenreDBDAO implements IGenreDAO {
 
     @Override
     public void update(int id, String genre) {
-        try (Connection conn = ConnectionManager.open();
+        try (Connection conn = ConnectionSingleton.getInstance().open();
              PreparedStatement statement = conn.prepareStatement(UPDATE)) {
             statement.setString(1, genre);
             statement.setInt(2, id);
@@ -96,7 +96,7 @@ public class GenreDBDAO implements IGenreDAO {
 
     @Override
     public void delete(int id) {
-        try (Connection conn = ConnectionManager.open();
+        try (Connection conn = ConnectionSingleton.getInstance().open();
              PreparedStatement statement = conn.prepareStatement(COUNT_VOTES,
                      ResultSet.TYPE_SCROLL_SENSITIVE,
                      ResultSet.CONCUR_UPDATABLE)) {
