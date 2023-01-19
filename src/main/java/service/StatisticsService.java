@@ -32,7 +32,6 @@ public class StatisticsService implements IStatisticsService {
         this.artistService = artistService;
     }
 
-    //Later the "getX" methods may be implemented with the parameter "String sortBy"
     @Override
     public Map<ArtistDTO, Integer> getBestArtists() {
         final Map<Integer, Integer> artistVotes = artistService.getAll()

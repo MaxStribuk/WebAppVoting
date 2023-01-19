@@ -5,6 +5,7 @@ import dto.SavedVoteDTO;
 import dto.VoteDTO;
 import service.api.IArtistService;
 import service.api.IGenreService;
+import service.api.ISenderService;
 import service.api.IVoteService;
 
 import java.util.List;
@@ -15,9 +16,13 @@ public class VoteService implements IVoteService {
     private final IVoteDAO voteDAO;
     private final IGenreService genreService;
     private final IArtistService artistService;
+    private static final String EMAIL_PATTERN = "^[\\w!#$%&'*+/=?`{|}~^-]+(?:\\.[\\w!#$%&'*+/=?`{|}~^-]+)*"
+            + "@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$";
 
-    public VoteService(IVoteDAO voteDAO, IGenreService genreService,
-                       IArtistService artistService) {
+    public VoteService(IVoteDAO voteDAO,
+                       IGenreService genreService,
+                       IArtistService artistService
+    ) {
         this.voteDAO = voteDAO;
         this.genreService = genreService;
         this.artistService = artistService;
@@ -43,6 +48,9 @@ public class VoteService implements IVoteService {
 
         String about = vote.getAbout();
         validateAbout(about);
+
+        String email = vote.getEmail();
+        validateEmail(email);
     }
 
     private void validateArtist(int artistId) {
@@ -76,6 +84,17 @@ public class VoteService implements IVoteService {
         if (about == null || about.isBlank()) {
             throw new IllegalArgumentException("User failed to provide" +
                     " a message ");
+        }
+    }
+
+    private void validateEmail(String email) {
+        if (email == null || email.isBlank()) {
+            throw new IllegalArgumentException("User failed to provide" +
+                    " an email");
+        }
+        if (!email.matches(EMAIL_PATTERN)) {
+            throw new IllegalArgumentException("User provided " +
+                    "an invalid email");
         }
     }
 }

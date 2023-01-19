@@ -13,16 +13,16 @@ import java.util.List;
 
 public class VoteDBDAO implements IVoteDAO {
 
-    private static final String SELECT_ALL = "SELECT id, artist_id, about, creation_time " +
+    private static final String SELECT_ALL = "SELECT id, artist_id, about, email, creation_time " +
             "FROM app.votes;";
-    private static final String SELECT_GENRES = "SELECT vg.genre_id AS id " +
+    private static final String SELECT_GENRES = "SELECT vg.genre_id " +
             "FROM app.votes AS v " +
             "  INNER JOIN app.votes_genres AS vg " +
             "  ON v.id = vg.vote_id " +
             "WHERE v.id = ?;";
     private static final String SAVE_VOTE = "INSERT INTO app.votes (" +
-            "artist_id, about, creation_time) " +
-            "VALUES (?, ?, ?);";
+            "artist_id, about, email, creation_time) " +
+            "VALUES (?, ?, ?, ?);";
     private static final String SAVE_GENRE_VOTE = "INSERT INTO app.votes_genres (" +
             "vote_id, genre_id) " +
             "VALUES (?, ?);";
@@ -38,6 +38,7 @@ public class VoteDBDAO implements IVoteDAO {
             int artistID;
             LocalDateTime time;
             String about;
+            String email;
             VoteDTO vote;
 
             while (voteResults.next()) {
@@ -52,7 +53,8 @@ public class VoteDBDAO implements IVoteDAO {
                 artistID = getArtistID(voteResults);
                 time = getTime(voteResults);
                 about = getAbout(voteResults);
-                vote = new VoteDTO(artistID, genreIDs, about);
+                email = getEmail(voteResults);
+                vote = new VoteDTO(artistID, genreIDs, about, email);
                 votes.add(new SavedVoteDTO(vote, time));
             }
             return votes;
@@ -74,7 +76,8 @@ public class VoteDBDAO implements IVoteDAO {
                 VoteDTO innerVote = vote.getVoteDTO();
                 saveVote.setInt(1, innerVote.getArtistId());
                 saveVote.setString(2, innerVote.getAbout());
-                saveVote.setObject(3, vote.getCreateDataTime());
+                saveVote.setString(3, innerVote.getEmail());
+                saveVote.setObject(4, vote.getCreateDataTime());
                 saveVote.execute();
 
                 List<Integer> genres = innerVote.getGenreIds();
@@ -83,14 +86,20 @@ public class VoteDBDAO implements IVoteDAO {
                     if (generatedID.next()) {
                         voteID = generatedID.getInt(1);
                     } else {
+                        connection.rollback();
                         throw new IllegalArgumentException("Failed to save the vote");
                     }
                 }
 
-                for (int i = 0; i < genres.size(); i++) {
-                    saveGenreVote.setInt(1, voteID);
-                    saveGenreVote.setInt(2, genres.get(i));
-                    saveGenreVote.execute();
+                try {
+                    for (int i = 0; i < genres.size(); i++) {
+                        saveGenreVote.setInt(1, voteID);
+                        saveGenreVote.setInt(2, genres.get(i));
+                        saveGenreVote.execute();
+                    }
+                } catch (SQLException e) {
+                    connection.rollback();
+                    throw new IllegalArgumentException("Failed to save the vote");
                 }
 
                 connection.commit();
@@ -102,21 +111,25 @@ public class VoteDBDAO implements IVoteDAO {
     }
 
     private int getID(ResultSet resultSet) throws SQLException {
-        return resultSet.getInt(1);
+        return resultSet.getInt("id");
     }
 
     private int getGenreID(ResultSet resultSet) throws SQLException {
-        return resultSet.getInt(1);
+        return resultSet.getInt("genre_id");
     }
     private int getArtistID(ResultSet resultSet) throws SQLException {
-        return resultSet.getInt(2);
+        return resultSet.getInt("artist_id");
     }
 
     private String getAbout(ResultSet resultSet) throws SQLException {
-        return resultSet.getString(3);
+        return resultSet.getString("about");
+    }
+
+    private String getEmail(ResultSet resultSet) throws  SQLException {
+        return resultSet.getString("email");
     }
 
     private LocalDateTime getTime(ResultSet resultSet) throws SQLException {
-        return resultSet.getObject(4, LocalDateTime.class);
+        return resultSet.getObject("creation_time", LocalDateTime.class);
     }
 }

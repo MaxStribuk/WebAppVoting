@@ -2,7 +2,9 @@ package web.servlets;
 
 import dto.SavedVoteDTO;
 import dto.VoteDTO;
+import service.api.ISenderService;
 import service.api.IVoteService;
+import service.factories.SenderServiceSingleton;
 import service.factories.VoteServiceSingleton;
 import web.util.RequestParamHandler;
 
@@ -18,9 +20,11 @@ import java.util.List;
 public class VoteServlet extends HttpServlet {
 
     private final IVoteService service;
+    private final ISenderService senderService;
 
     public VoteServlet() {
         this.service = VoteServiceSingleton.getInstance();
+        this.senderService = SenderServiceSingleton.getInstance();
     }
 
     @Override
@@ -31,16 +35,21 @@ public class VoteServlet extends HttpServlet {
         resp.setContentType("text/html; charset=UTF-8");
 
         String id = RequestParamHandler.getRequestParam(req,
-                RequestParamHandler.ID_PARAM_NAME);
+                RequestParamHandler.ARTIST_PARAM_NAME);
         int artistId = RequestParamHandler.getID(id);
         List<Integer> genreIds = RequestParamHandler.getID(req,
                 RequestParamHandler.GENRE_PARAM_NAME);
         String about = RequestParamHandler.getRequestParam(req,
                 RequestParamHandler.ABOUT_PARAM_NAME);
+        String email = RequestParamHandler.getRequestParam(req,
+                RequestParamHandler.EMAIL_PARAM_NAME);
 
-        VoteDTO vote = new VoteDTO(artistId, genreIds, about);
+        VoteDTO vote = new VoteDTO(artistId, genreIds, about, email);
         service.validate(vote);
-        service.save(new SavedVoteDTO(vote));
+
+        SavedVoteDTO savedVote = new SavedVoteDTO(vote);
+        service.save(savedVote);
+        senderService.send(savedVote);
 
         String contextPath = req.getContextPath();
         resp.sendRedirect(contextPath + "/results");
