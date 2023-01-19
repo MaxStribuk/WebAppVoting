@@ -25,5 +25,5 @@ out/
 target/
 
 # Properties #
-.properties
+*.properties
 !application_template.properties
