@@ -6,20 +6,21 @@ import java.beans.PropertyVetoException;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-public class PostgresConnection implements IConnection {
+public class ConnectionManager implements IConnection {
     private final String URL = "db.url";
     private final String USERNAME = "db.username";
     private final String PASSWORD = "db.password";
+    private final String DRIVER = "db.driver";
     private final ComboPooledDataSource cpds;
 
-    public PostgresConnection() {
+    public ConnectionManager() {
         cpds = new ComboPooledDataSource();
         loadDriver();
     }
 
     private void loadDriver() {
         try {
-            cpds.setDriverClass("org.postgresql.Driver");
+            cpds.setDriverClass(PropertiesUtil.get(DRIVER));
         } catch (PropertyVetoException e) {
             e.printStackTrace();
         }
