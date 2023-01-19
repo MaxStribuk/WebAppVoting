@@ -1,35 +1,36 @@
 package dao.util;
 
+import com.mchange.v2.c3p0.ComboPooledDataSource;
+import dao.api.IConnection;
+import java.beans.PropertyVetoException;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 
-public class ConnectionManager {
+public class ConnectionManager implements IConnection {
+    private final String URL = "db.url";
+    private final String USERNAME = "db.username";
+    private final String PASSWORD = "db.password";
+    private final String DRIVER = "db.driver";
+    private final ComboPooledDataSource cpds;
 
-    private static final String URL = "db.url";
-    private static final String USERNAME = "db.username";
-    private static final String PASSWORD = "db.password";
-
-    static {
+    public ConnectionManager() {
+        cpds = new ComboPooledDataSource();
         loadDriver();
     }
 
-    private static void loadDriver() {
+    private void loadDriver() {
         try {
-            Class.forName("org.postgresql.Driver");
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException("failed load postgresql driver");
+            cpds.setDriverClass(PropertiesUtil.get(DRIVER));
+        } catch (PropertyVetoException e) {
+            e.printStackTrace();
         }
+        cpds.setJdbcUrl(PropertiesUtil.get(URL));
+        cpds.setUser(PropertiesUtil.get(USERNAME));
+        cpds.setPassword(PropertiesUtil.get(PASSWORD));
     }
 
-    public static Connection open() {
-        try {
-            return DriverManager.getConnection(
-                    PropertiesUtil.get(URL),
-                    PropertiesUtil.get(USERNAME),
-                    PropertiesUtil.get(PASSWORD));
-        } catch (SQLException e) {
-            throw new RuntimeException("failed open connection");
-        }
+    @Override
+    public Connection open() throws SQLException {
+        return cpds.getConnection();
     }
 }
