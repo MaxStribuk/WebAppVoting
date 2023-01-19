@@ -1,6 +1,7 @@
 package dao.database;
 
 import dao.api.IVoteDAO;
+import dao.factories.ConnectionSingleton;
 import dao.util.ConnectionManager;
 import dto.SavedVoteDTO;
 import dto.VoteDTO;
@@ -27,7 +28,7 @@ public class VoteDBDAO implements IVoteDAO {
             "VALUES (?, ?);";
     @Override
     public List<SavedVoteDTO> getAll() {
-        try (Connection connection = ConnectionManager.open();
+        try (Connection connection = ConnectionSingleton.getInstance().open();
              PreparedStatement getAll = connection.prepareStatement(SELECT_ALL);
              PreparedStatement getGenres = connection.prepareStatement(SELECT_GENRES);
              ResultSet voteResults = getAll.executeQuery()) {
@@ -62,7 +63,7 @@ public class VoteDBDAO implements IVoteDAO {
 
     @Override
     public void save(SavedVoteDTO vote) {
-        try (Connection connection = ConnectionManager.open()) {
+        try (Connection connection = ConnectionSingleton.getInstance().open()) {
 
             connection.setAutoCommit(false);
 
