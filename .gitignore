@@ -25,4 +25,4 @@ out/
 target/
 
 # Properties #
-*.properties
+application.properties
