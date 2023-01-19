@@ -23,3 +23,6 @@ out/
 *.tar.gz
 *.rar
 target/
+
+# Properties #
+*.properties
