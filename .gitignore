@@ -23,3 +23,7 @@ out/
 *.tar.gz
 *.rar
 target/
+
+# Properties #
+*.properties
+!application_template.properties
