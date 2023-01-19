@@ -19,7 +19,20 @@ public class SenderService implements ISenderService {
     private final IGenreService genreService;
     private final IArtistService artistService;
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy, HH:mm");
+    private static final String SENDER_PROMPT = "sender";
+    private static final String PASSWORD_PROMPT = "password";
     private static final String TOPIC = "WebAppVoting Vote Confirmation";
+    private static final String TRANSPORT_PROTOCOL = "mail.transport.protocol";
+    private static final String SERVICE_HOST = "mail.host";
+    private static final String SMPT_AUTHENTICATION = "mail.smtp.auth";
+    private static final String SMPT_PORT = "mail.smtp.port";
+    private static final String DEBUG_ON = "mail.debug";
+    private static final String SOCKET_FACTORY_PORT = "mail.smtp.socketFactory.port";
+    private static final String SOCKET_FACTORY_CLASS = "mail.smtp.socketFactory.class";
+    private static final String SOCKET_FACTORY_FALLBACK = "mail.smtp.socketFactory.fallback";
+    private static final String ENABLE_START_TLS = "mail.smtp.starttls.enable";
+
+
     private final String SENDER;
     private final String PASSWORD;
     private final Properties mailProperties = new Properties();
@@ -29,26 +42,24 @@ public class SenderService implements ISenderService {
         this.genreService = genreService;
         this.artistService = artistService;
 
-        this.SENDER = PropertiesUtil.get("sender");
-        this.PASSWORD = PropertiesUtil.get("password");
+        this.SENDER = PropertiesUtil.get(SENDER_PROMPT);
+        this.PASSWORD = PropertiesUtil.get(PASSWORD_PROMPT);
 
-        mailProperties.put("mail.transport.protocol",
-                PropertiesUtil.get("mail.transport.protocol"));
-        mailProperties.put("mail.host", PropertiesUtil.get("mail.host"));
-        mailProperties.put("mail.smtp.auth",
-                PropertiesUtil.get("mail.smtp.auth"));
-        mailProperties.put("mail.smtp.port",
-                PropertiesUtil.get("mail.smtp.port"));
-        mailProperties.put("mail.debug",
-                PropertiesUtil.get("mail.debug"));
-        mailProperties.put("mail.smtp.socketFactory.port",
-                PropertiesUtil.get("mail.smtp.socketFactory.port"));
-        mailProperties.put("mail.smtp.socketFactory.class",
-                PropertiesUtil.get("mail.smtp.socketFactory.class"));
-        mailProperties.put("mail.smtp.socketFactory.fallback",
-                PropertiesUtil.get("mail.smtp.socketFactory.fallback"));
-        mailProperties.put("mail.smtp.starttls.enable",
-                PropertiesUtil.get("mail.smtp.starttls.enable"));
+        mailProperties.put(TRANSPORT_PROTOCOL,
+                PropertiesUtil.get(TRANSPORT_PROTOCOL));
+        mailProperties.put(SERVICE_HOST, PropertiesUtil.get(SERVICE_HOST));
+        mailProperties.put(SMPT_AUTHENTICATION,
+                PropertiesUtil.get(SMPT_AUTHENTICATION));
+        mailProperties.put(SMPT_PORT, PropertiesUtil.get(SMPT_PORT));
+        mailProperties.put(DEBUG_ON, PropertiesUtil.get(DEBUG_ON));
+        mailProperties.put(SOCKET_FACTORY_PORT,
+                PropertiesUtil.get(SOCKET_FACTORY_PORT));
+        mailProperties.put(SOCKET_FACTORY_CLASS,
+                PropertiesUtil.get(SOCKET_FACTORY_CLASS));
+        mailProperties.put(SOCKET_FACTORY_FALLBACK,
+                PropertiesUtil.get(SOCKET_FACTORY_FALLBACK));
+        mailProperties.put(ENABLE_START_TLS,
+                PropertiesUtil.get(ENABLE_START_TLS));
     }
 
     @Override
