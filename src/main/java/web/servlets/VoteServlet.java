@@ -21,6 +21,8 @@ public class VoteServlet extends HttpServlet {
 
     private final IVoteService service;
     private final ISenderService senderService;
+    private static final String CHARACTER_ENCODING = "UTF-8";
+    private static final String CONTENT_TYPE = "text/html; charset=UTF-8";
 
     public VoteServlet() {
         this.service = VoteServiceSingleton.getInstance();
@@ -31,8 +33,8 @@ public class VoteServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
 
-        req.setCharacterEncoding("UTF-8");
-        resp.setContentType("text/html; charset=UTF-8");
+        req.setCharacterEncoding(CHARACTER_ENCODING);
+        resp.setContentType(CONTENT_TYPE);
 
         String id = RequestParamHandler.getRequestParam(req,
                 RequestParamHandler.ARTIST_PARAM_NAME);
@@ -49,7 +51,7 @@ public class VoteServlet extends HttpServlet {
 
         SavedVoteDTO savedVote = new SavedVoteDTO(vote);
         service.save(savedVote);
-        senderService.send(savedVote);
+        senderService.sendVoteConfirmation(savedVote);
 
         String contextPath = req.getContextPath();
         resp.sendRedirect(contextPath + "/results");
