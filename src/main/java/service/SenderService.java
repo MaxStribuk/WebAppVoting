@@ -70,7 +70,6 @@ public class SenderService implements ISenderService {
         String messageText = createVoteConfirmationText(vote);
         try {
             send(recipient, CONFIRMATION_SUBJECT, messageText);
-
         } catch (
                 AddressException e) {
             throw new RuntimeException("Failed to send the confirmation email " +
@@ -87,7 +86,6 @@ public class SenderService implements ISenderService {
     public void sendVerificationLink(String email, String verificationLink) {
         try {
             send(email, VALIDATION_SUBJECT, verificationLink);
-
         } catch (
                 AddressException e) {
             throw new RuntimeException("Failed to send the validation email " +
@@ -124,9 +122,9 @@ public class SenderService implements ISenderService {
         StringBuilder messageText = new StringBuilder();
         VoteDTO voteDTO = vote.getVoteDTO();
         messageText.append("Thank you for submitting your vote!\n");
-        appendGenreNames(voteDTO, messageText);
-        appendArtistName(voteDTO, messageText);
-        appendAbout(voteDTO, messageText);
+        messageText.append(getFormattedGenreNames(voteDTO));
+        messageText.append(getFormattedArtistName(voteDTO));
+        messageText.append(getFormattedAbout(voteDTO));
         messageText.append("Vote date: ");
         messageText.append(vote.getCreateDataTime().format(formatter));
 
@@ -134,7 +132,8 @@ public class SenderService implements ISenderService {
     }
 
 
-    private void appendGenreNames(VoteDTO voteDTO, StringBuilder message) {
+    private String getFormattedGenreNames(VoteDTO voteDTO) {
+        StringBuilder message = new StringBuilder();
         message.append("Your genre vote:\n");
         List<Integer> genreIDs = voteDTO.getGenreIds();
         for (int i = 0; i < genreIDs.size(); i++) {
@@ -143,19 +142,22 @@ public class SenderService implements ISenderService {
                     .append(this.genreService.get(genreIDs.get(i)).getGenre())
                     .append("\n");
         }
+        return message.toString();
     }
 
-    private void appendArtistName(VoteDTO voteDTO, StringBuilder message) {
+    private String getFormattedArtistName(VoteDTO voteDTO) {
+        StringBuilder message = new StringBuilder();
         message.append("Your artist vote:\n");
         int artistID = voteDTO.getArtistId();
         message.append("1. ")
                 .append(this.artistService.get(artistID).getArtist())
                 .append("\n");
+        return message.toString();
     }
 
-    private void appendAbout(VoteDTO voteDTO, StringBuilder message) {
-        message.append("Your about text:\n");
-        message.append(voteDTO.getAbout())
-                .append("\n");
+    private String getFormattedAbout(VoteDTO voteDTO) {
+        return "Your about text:\n" +
+                voteDTO.getAbout() +
+                "\n";
     }
 }
