@@ -6,7 +6,7 @@ import java.beans.PropertyVetoException;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-public class ConnectionManager implements IConnection, AutoCloseable {
+public class ConnectionManager implements IConnection {
     private final String URL = "db.url";
     private final String USERNAME = "db.username";
     private final String PASSWORD = "db.password";
