@@ -70,12 +70,10 @@ public class SenderService implements ISenderService {
         String messageText = createVoteConfirmationText(vote);
         try {
             send(recipient, CONFIRMATION_SUBJECT, messageText);
-        } catch (
-                AddressException e) {
+        } catch (AddressException e) {
             throw new RuntimeException("Failed to send the confirmation email " +
                     "due to wrongly formatted address ", e);
-        } catch (
-                MessagingException e) {
+        } catch (MessagingException e) {
             throw new RuntimeException("Failed to send " +
                     "the confirmation email", e);
         }
@@ -86,12 +84,10 @@ public class SenderService implements ISenderService {
     public void sendVerificationLink(String email, String verificationLink) {
         try {
             send(email, VALIDATION_SUBJECT, verificationLink);
-        } catch (
-                AddressException e) {
+        } catch (AddressException e) {
             throw new RuntimeException("Failed to send the validation email " +
                     "due to wrongly formatted address ", e);
-        } catch (
-                MessagingException e) {
+        } catch (MessagingException e) {
             throw new RuntimeException("Failed to send " +
                     "the validation email", e);
         }
