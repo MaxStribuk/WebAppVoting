@@ -19,13 +19,13 @@ import java.util.List;
 @WebServlet(name = "VoteServlet", urlPatterns = "/vote")
 public class VoteServlet extends HttpServlet {
 
-    private final IVoteService service;
+    private final IVoteService voteService;
     private final ISenderService senderService;
     private static final String CHARACTER_ENCODING = "UTF-8";
     private static final String CONTENT_TYPE = "text/html; charset=UTF-8";
 
     public VoteServlet() {
-        this.service = VoteServiceSingleton.getInstance();
+        this.voteService = VoteServiceSingleton.getInstance();
         this.senderService = SenderServiceSingleton.getInstance();
     }
 
@@ -47,10 +47,10 @@ public class VoteServlet extends HttpServlet {
                 RequestParamHandler.EMAIL_PARAM_NAME);
 
         VoteDTO vote = new VoteDTO(artistId, genreIds, about, email);
-        service.validate(vote);
+        voteService.validate(vote);
 
         SavedVoteDTO savedVote = new SavedVoteDTO(vote);
-        service.save(savedVote);
+        voteService.save(savedVote);
         senderService.sendVoteConfirmation(savedVote);
 
         String contextPath = req.getContextPath();
