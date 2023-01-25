@@ -5,7 +5,7 @@ import dto.SavedVoteDTO;
 import dto.VoteDTO;
 import service.api.IArtistService;
 import service.api.IGenreService;
-import service.api.ISenderService;
+import service.api.ISendingService;
 import service.api.IVoteService;
 
 import java.util.List;
@@ -16,14 +16,14 @@ public class VoteService implements IVoteService {
     private final IVoteDAO voteDAO;
     private final IGenreService genreService;
     private final IArtistService artistService;
-    private final ISenderService senderService;
+    private final ISendingService senderService;
     private static final String EMAIL_PATTERN = "^[\\w!#$%&'*+/=?`{|}~^-]+(?:\\.[\\w!#$%&'*+/=?`{|}~^-]+)*"
             + "@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$";
 
     public VoteService(IVoteDAO voteDAO,
                        IGenreService genreService,
                        IArtistService artistService,
-                       ISenderService senderService
+                       ISendingService senderService
     ) {
         this.voteDAO = voteDAO;
         this.genreService = genreService;
@@ -39,7 +39,8 @@ public class VoteService implements IVoteService {
     @Override
     public void save(SavedVoteDTO vote) {
         voteDAO.save(vote);
-        senderService.sendVoteConfirmation(vote);
+        int voteID = voteDAO.getID(vote.getVoteDTO().getEmail());
+        senderService.send(vote, voteID);
     }
 
     @Override
@@ -99,6 +100,12 @@ public class VoteService implements IVoteService {
         if (!email.matches(EMAIL_PATTERN)) {
             throw new IllegalArgumentException("User provided " +
                     "an invalid email");
+        }
+        boolean isDuplicateEmail = voteDAO.getAll().stream()
+                .map(vote -> vote.getVoteDTO().getEmail())
+                .anyMatch(email::equals);
+        if (isDuplicateEmail) {
+            throw new IllegalArgumentException("This email is already in use");
         }
     }
 }

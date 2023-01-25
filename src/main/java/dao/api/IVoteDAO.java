@@ -9,4 +9,6 @@ public interface IVoteDAO {
     List<SavedVoteDTO> getAll();
 
     void save(SavedVoteDTO vote);
+
+    int getID(String email);
 }
