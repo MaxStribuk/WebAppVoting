@@ -33,9 +33,9 @@ public class EmailVerificationServlet extends HttpServlet {
         UUID keyFromServer = UUID.randomUUID();
         req.getSession().setAttribute(VERIFICATION_KEY_ATTRIBUTE, keyFromServer.toString());
         String userEmail = RequestParamHandler.getRequestParam(req, RequestParamHandler.EMAIL_PARAM_NAME);
-
-        senderService.sendVerificationLink(userEmail, req.getRequestURL().toString() + "?"
-                + RequestParamHandler.VERIFICATION_KEY + "=" + keyFromServer);
+        String verificationLink = req.getRequestURL().toString() + "?"
+                + RequestParamHandler.VERIFICATION_KEY + "=" + keyFromServer;
+        senderService.sendVerificationLink(userEmail, "<a href=" + verificationLink + ">Confirm email!</a>");
     }
 
     @Override
