@@ -14,22 +14,17 @@ public class EmailSendingMemoryDAO implements IEmailSendingDAO {
     }
 
     @Override
-    public void updateDepartures(int voteId) {
-
-    }
-
-    @Override
     public EmailDTO get(int voteID) {
         return null;
     }
 
     @Override
-    public void updateSending(int voteId) {
-
+    public List<EmailDTO> getUnsent() {
+        return null;
     }
 
     @Override
-    public List<EmailDTO> receiveUnsent() {
-        return null;
+    public void update(EmailDTO email) {
+
     }
 }

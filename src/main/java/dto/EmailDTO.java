@@ -6,8 +6,8 @@ public class EmailDTO {
     private String recipient;
     private String topic;
     private String textMessage;
-    private boolean sending;
     private int departures;
+    private EmailStatus status;
 
     public EmailDTO(int voteID, String recipient, String topic,
                     String textMessage) {
@@ -15,20 +15,23 @@ public class EmailDTO {
         this.recipient = recipient;
         this.topic = topic;
         this.textMessage = textMessage;
+        this.status = EmailStatus.WAITING;
+    }
+
+    public EmailDTO(String recipient, String topic, String textMessage) {
+        this.recipient = recipient;
+        this.topic = topic;
+        this.textMessage = textMessage;
     }
 
     public EmailDTO(int voteID, String recipient, String topic,
-                    String textMessage, boolean sending, int departures) {
+                    String textMessage, int departures, String status) {
         this.voteID = voteID;
         this.recipient = recipient;
         this.topic = topic;
         this.textMessage = textMessage;
-        this.sending = sending;
         this.departures = departures;
-    }
-
-    public void setSending(boolean sending) {
-        this.sending = sending;
+        this.status = EmailStatus.valueOf(status);
     }
 
     public int getVoteID() {
@@ -47,11 +50,35 @@ public class EmailDTO {
         return textMessage;
     }
 
-    public boolean isSending() {
-        return sending;
-    }
-
     public int getDepartures() {
         return departures;
+    }
+
+    public EmailStatus getStatus() {
+        return status;
+    }
+
+    public void setVoteID(int voteID) {
+        this.voteID = voteID;
+    }
+
+    public void setRecipient(String recipient) {
+        this.recipient = recipient;
+    }
+
+    public void setTopic(String topic) {
+        this.topic = topic;
+    }
+
+    public void setTextMessage(String textMessage) {
+        this.textMessage = textMessage;
+    }
+
+    public void setDepartures(int departures) {
+        this.departures = departures;
+    }
+
+    public void setStatus(EmailStatus status) {
+        this.status = status;
     }
 }
