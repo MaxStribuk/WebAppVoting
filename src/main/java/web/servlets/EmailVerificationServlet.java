@@ -1,6 +1,6 @@
 package web.servlets;
 
-import service.api.ISenderService;
+import service.api.ISendingService;
 import service.factories.SenderServiceSingleton;
 import web.util.RequestParamHandler;
 
@@ -19,7 +19,7 @@ public class EmailVerificationServlet extends HttpServlet {
     private static final String CONTENT_TYPE = "text/html; charset=UTF-8";
     private static final String VERIFICATION_KEY_ATTRIBUTE = "key";
     private static final String AUTHENTICATION_ATTRIBUTE = "isAuthenticated";
-    private final ISenderService senderService;
+    private final ISendingService senderService;
 
     public EmailVerificationServlet() {
         senderService = SenderServiceSingleton.getInstance();

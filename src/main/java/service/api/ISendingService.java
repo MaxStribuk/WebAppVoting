@@ -2,14 +2,13 @@ package service.api;
 
 import dto.SavedVoteDTO;
 
-import javax.mail.MessagingException;
-import java.util.concurrent.ScheduledExecutorService;
-
 public interface ISendingService {
 
     void send(SavedVoteDTO vote, int voteID);
 
-    void resend() throws MessagingException;
+    void initializeSendingService();
 
-    ScheduledExecutorService getExecutorService();
+    void stopSendingService();
+
+    void sendVerificationLink(String email, String verificationLink);
 }
