@@ -3,11 +3,12 @@ package service;
 import dao.api.IEmailSendingDAO;
 import dao.util.PropertiesUtil;
 import dto.EmailDTO;
+import dto.EmailStatus;
 import dto.SavedVoteDTO;
 import dto.VoteDTO;
 import service.api.IArtistService;
 import service.api.IGenreService;
-import service.api.ISenderService;
+import service.api.ISendingService;
 
 import javax.mail.Authenticator;
 import javax.mail.Message;
@@ -23,8 +24,9 @@ import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
-public class SenderService implements ISenderService {
+public class EmailSendingService implements ISendingService {
 
     private final IGenreService genreService;
     private final IArtistService artistService;
@@ -44,12 +46,11 @@ public class SenderService implements ISenderService {
     private static final String SOCKET_FACTORY_FALLBACK = "mail.smtp.socketFactory.fallback";
     private static final String ENABLE_START_TLS = "mail.smtp.starttls.enable";
 
-
     private final String SENDER;
     private final String PASSWORD;
     private final Properties mailProperties = new Properties();
     private final ScheduledExecutorService executorService;
-    private final int CORE_POOL_SIZE = 4;
+    private static final int CORE_POOL_SIZE = 4;
 
     public EmailSendingService(IGenreService genreService,
                                IArtistService artistService,
@@ -67,69 +68,66 @@ public class SenderService implements ISenderService {
 
     @Override
     public void send(SavedVoteDTO vote, int voteID) {
-        String messageText = createMessageText(vote);
-        EmailDTO emailDTO = createEmailDTO(vote, voteID, messageText);
-        String recipient = vote.getVoteDTO().getEmail();
-        try {
-            MimeMessage message = prepareMessage(recipient, messageText);
-            Transport.send(message);
-            emailDTO.setSending(true);
-        } catch (MessagingException e) {
-        }
-        emailSendingDAO.add(emailDTO);
-    }
-
-    @Override
-    public void resend() throws MessagingException {
-        List<EmailDTO> emails = emailSendingDAO.receiveUnsent();
-        int counter = 0;
-        for (EmailDTO email : emails) {
-            boolean resendStatus = resendEmail(email);
-            if (!resendStatus) {
-                counter++;
-            }
-        }
-        if (counter == 10) {
-            throw new MessagingException();
-        }
-    }
-
-    @Override
-    public void sendVoteConfirmation(SavedVoteDTO vote) {
-        String recipient = vote.getVoteDTO().getEmail();
         String messageText = createVoteConfirmationText(vote);
-        try {
-            send(recipient, CONFIRMATION_SUBJECT, messageText);
-        } catch (AddressException e) {
-            throw new RuntimeException("Failed to send the confirmation email " +
-                    "due to wrongly formatted address ", e);
-        } catch (MessagingException e) {
-            throw new RuntimeException("Failed to send " +
-                    "the confirmation email", e);
-        }
+        String recipient = vote.getVoteDTO().getEmail();
+        EmailDTO email = new EmailDTO(voteID, recipient, CONFIRMATION_SUBJECT, messageText);
+        emailSendingDAO.add(email);
+    }
 
+    @Override
+    public void initializeSendingService() {
+        executorService.scheduleWithFixedDelay(() -> {
+            List<EmailDTO> emails = emailSendingDAO.getUnsent();
+            for (EmailDTO email : emails) {
+                email.setStatus(EmailStatus.SENT);
+                email.setDepartures(email.getDepartures() + 1);
+                emailSendingDAO.update(email);
+                executorService.submit(() -> {
+                    try {
+                        send(email);
+                        email.setStatus(EmailStatus.SUCCESS);
+                    } catch (AddressException e) {
+                        email.setStatus(EmailStatus.ERROR);
+                        throw new RuntimeException("Failed to send the confirmation " +
+                                "email due to wrongly formatted address ", e);
+                    } catch (MessagingException e) {
+                        email.setStatus(EmailStatus.WAITING);
+                        throw new RuntimeException("Failed to send " +
+                                "the confirmation email", e);
+                    } finally {
+                        emailSendingDAO.update(email);
+                    }
+                });
+            }
+        }, 60L, 60L, TimeUnit.SECONDS);
+    }
+
+    @Override
+    public void stopSendingService() {
+        this.executorService.shutdown();
     }
 
     @Override
     public void sendVerificationLink(String email, String verificationLink) {
-        try {
-            send(email, VALIDATION_SUBJECT, verificationLink);
-        } catch (AddressException e) {
-            throw new RuntimeException("Failed to send the validation email " +
-                    "due to wrongly formatted address ", e);
-        } catch (MessagingException e) {
-            throw new RuntimeException("Failed to send " +
-                    "the validation email", e);
-        }
-
+        executorService.submit(() -> {
+            try {
+                send(new EmailDTO(email, VALIDATION_SUBJECT, verificationLink));
+            } catch (AddressException e) {
+                throw new RuntimeException("Failed to send the validation email " +
+                        "due to wrongly formatted address ", e);
+            } catch (MessagingException e) {
+                throw new RuntimeException("Failed to send " +
+                        "the validation email", e);
+            }
+        });
     }
 
-    private void send(String recipient, String subject, String messageText) throws MessagingException {
-        Authenticator authenticator = new javax.mail.Authenticator() {
+    private void send(EmailDTO email)
+            throws MessagingException {
+        Authenticator authenticator = new Authenticator() {
             @Override
             protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication(SENDER,
-                        PASSWORD);
+                return new PasswordAuthentication(SENDER, PASSWORD);
             }
         };
         Session session = Session.getInstance(mailProperties,
@@ -138,94 +136,11 @@ public class SenderService implements ISenderService {
         InternetAddress address = new InternetAddress(SENDER);
         message.setFrom(address);
         message.setRecipients(Message.RecipientType.TO,
-                recipient);
-        message.setSubject(subject);
-        message.setText(messageText);
+                email.getRecipient());
+        message.setSubject(email.getTopic());
+        message.setText(email.getTextMessage());
         Transport.send(message);
     }
-
-    private boolean resendEmail(EmailDTO email) {
-        executorService.submit(() -> {
-            int voteID = email.getVoteID();
-            try {
-                MimeMessage message = prepareMessage(email.getRecipient(),
-                        email.getTextMessage());
-                Transport.send(message);
-                emailSendingDAO.updateSending(voteID);
-                return true;
-            } catch (MessagingException e) {
-                return false;
-            }
-            finally {
-                emailSendingDAO.updateDepartures(voteID);
-            }
-        });
-        return true;
-
-
-    public void sendVoteConfirmation(SavedVoteDTO vote) {
-        String recipient = vote.getVoteDTO().getEmail();
-        String messageText = createVoteConfirmationText(vote);
-        try {
-            send(recipient, CONFIRMATION_SUBJECT, messageText);
-        } catch (AddressException e) {
-            throw new RuntimeException("Failed to send the confirmation email " +
-                    "due to wrongly formatted address ", e);
-        } catch (MessagingException e) {
-            throw new RuntimeException("Failed to send " +
-                    "the confirmation email", e);
-        }
-
-    }
-
-
-    private EmailDTO createEmailDTO(SavedVoteDTO vote, int voteID, String messageText) {
-        String recipient = vote.getVoteDTO().getEmail();
-        return new EmailDTO(voteID, recipient, TOPIC, messageText);
-    }
-
-    private MimeMessage prepareMessage(String recipient, String messageText)
-            throws MessagingException {
-        Authenticator authenticator = new Authenticator() {
-            protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication(SENDER,
-                        PASSWORD);
-            }
-        };
-        Session session = Session.getInstance(mailProperties, authenticator);
-        MimeMessage message = new MimeMessage(session);
-        message.setFrom(new InternetAddress(SENDER));
-        message.setRecipients(Message.RecipientType.TO, recipient);
-        message.setSubject(TOPIC);
-        message.setText(messageText);
-        Transport.send(message);
-    }
-
-        private String createVoteConfirmationText(SavedVoteDTO vote) {
-            StringBuilder messageText = new StringBuilder();
-            VoteDTO voteDTO = vote.getVoteDTO();
-            messageText.append("Thank you for submitting your vote!\n");
-            messageText.append(getFormattedGenreNames(voteDTO));
-            messageText.append(getFormattedArtistName(voteDTO));
-            messageText.append(getFormattedAbout(voteDTO));
-            messageText.append("Vote date: ");
-            messageText.append(vote.getCreateDataTime().format(formatter));
-
-            return messageText.toString();
-        }
-
-        private String createVoteConfirmationText(SavedVoteDTO vote) {
-            StringBuilder messageText = new StringBuilder();
-            VoteDTO voteDTO = vote.getVoteDTO();
-            messageText.append("Thank you for submitting your vote!\n");
-            messageText.append(getFormattedGenreNames(voteDTO));
-            messageText.append(getFormattedArtistName(voteDTO));
-            messageText.append(getFormattedAbout(voteDTO));
-            messageText.append("Vote date: ");
-            messageText.append(vote.getCreateDataTime().format(formatter));
-
-            return messageText.toString();
-        }
 
     private void prepareMailProperties() {
         mailProperties.put(TRANSPORT_PROTOCOL,
@@ -245,7 +160,21 @@ public class SenderService implements ISenderService {
                 PropertiesUtil.get(ENABLE_START_TLS));
     }
 
-        private String getFormattedGenreNames(VoteDTO voteDTO) {        message.append("Your genre vote:\n");
+    private String createVoteConfirmationText(SavedVoteDTO vote) {
+        StringBuilder messageText = new StringBuilder();
+        VoteDTO voteDTO = vote.getVoteDTO();
+        messageText.append("Thank you for submitting your vote!\n");
+        messageText.append(getFormattedGenreNames(voteDTO));
+        messageText.append(getFormattedArtistName(voteDTO));
+        messageText.append(getFormattedAbout(voteDTO));
+        messageText.append("Vote date: ");
+        messageText.append(vote.getCreateDataTime().format(formatter));
+        return messageText.toString();
+    }
+
+    private String getFormattedGenreNames(VoteDTO voteDTO) {
+        StringBuilder message = new StringBuilder();
+        message.append("Your genre vote:\n");
         List<Integer> genreIDs = voteDTO.getGenreIds();
         for (int i = 0; i < genreIDs.size(); i++) {
             message.append(i + 1)
@@ -270,9 +199,5 @@ public class SenderService implements ISenderService {
         return "Your about text:\n" +
                 voteDTO.getAbout() +
                 "\n";
-    }
-
-    public ScheduledExecutorService getExecutorService() {
-        return executorService;
     }
 }
