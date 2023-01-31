@@ -1,41 +1,35 @@
-package dto;
+package dao.entity;
 
-public class EmailDTO {
+public class EmailEntity {
 
-    private int voteID;
+    private int id;
     private String recipient;
     private String topic;
     private String textMessage;
     private int departures;
     private EmailStatus status;
 
-    public EmailDTO(int voteID, String recipient, String topic,
-                    String textMessage) {
-        this.voteID = voteID;
-        this.recipient = recipient;
-        this.topic = topic;
-        this.textMessage = textMessage;
-        this.status = EmailStatus.WAITING;
-    }
-
-    public EmailDTO(String recipient, String topic, String textMessage) {
-        this.recipient = recipient;
-        this.topic = topic;
-        this.textMessage = textMessage;
-    }
-
-    public EmailDTO(int voteID, String recipient, String topic,
-                    String textMessage, int departures, String status) {
-        this.voteID = voteID;
+    public EmailEntity(String recipient, String topic, String textMessage,
+                       int departures, EmailStatus status) {
         this.recipient = recipient;
         this.topic = topic;
         this.textMessage = textMessage;
         this.departures = departures;
-        this.status = EmailStatus.valueOf(status);
+        this.status = status;
     }
 
-    public int getVoteID() {
-        return voteID;
+    public EmailEntity(int id, String recipient, String topic,
+                       String textMessage, int departures, EmailStatus status) {
+        this.id = id;
+        this.recipient = recipient;
+        this.topic = topic;
+        this.textMessage = textMessage;
+        this.departures = departures;
+        this.status = status;
+    }
+
+    public int getId() {
+        return id;
     }
 
     public String getRecipient() {
@@ -58,8 +52,8 @@ public class EmailDTO {
         return status;
     }
 
-    public void setVoteID(int voteID) {
-        this.voteID = voteID;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public void setRecipient(String recipient) {

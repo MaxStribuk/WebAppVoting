@@ -35,7 +35,7 @@ public class EmailVerificationServlet extends HttpServlet {
         String userEmail = RequestParamHandler.getRequestParam(req, RequestParamHandler.EMAIL_PARAM_NAME);
         String verificationLink = req.getRequestURL().toString() + "?"
                 + RequestParamHandler.VERIFICATION_KEY + "=" + keyFromServer;
-        senderService.sendVerificationLink(userEmail, "<a href=" + verificationLink + ">Confirm email!</a>");
+        senderService.verifyEmail(userEmail, "<a href=" + verificationLink + ">Confirm email!</a>");
     }
 
     @Override

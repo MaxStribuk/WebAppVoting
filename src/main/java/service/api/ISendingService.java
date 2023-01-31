@@ -4,11 +4,11 @@ import dto.SavedVoteDTO;
 
 public interface ISendingService {
 
-    void send(SavedVoteDTO vote, int voteID);
-
     void initializeSendingService();
 
     void stopSendingService();
 
-    void sendVerificationLink(String email, String verificationLink);
+    void confirmVote(SavedVoteDTO vote);
+
+    void verifyEmail(String email, String verificationLink);
 }
