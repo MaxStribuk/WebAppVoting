@@ -1,16 +1,14 @@
 package dao.api;
 
-import dto.EmailDTO;
+import dao.entity.EmailEntity;
 
 import java.util.List;
 
 public interface IEmailSendingDAO {
 
-    void add(EmailDTO email);
+    void add(EmailEntity email);
 
-    EmailDTO get(int voteID);
+    List<EmailEntity> getUnsent();
 
-    List<EmailDTO> getUnsent();
-
-    void update(EmailDTO email);
+    void update(EmailEntity email);
 }

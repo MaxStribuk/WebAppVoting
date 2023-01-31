@@ -2,8 +2,8 @@ package service;
 
 import dao.api.IEmailSendingDAO;
 import dao.util.PropertiesUtil;
-import dto.EmailDTO;
-import dto.EmailStatus;
+import dao.entity.EmailEntity;
+import dao.entity.EmailStatus;
 import dto.SavedVoteDTO;
 import dto.VoteDTO;
 import service.api.IArtistService;
@@ -51,6 +51,9 @@ public class EmailSendingService implements ISendingService {
     private final Properties mailProperties = new Properties();
     private final ScheduledExecutorService executorService;
     private static final int CORE_POOL_SIZE = 4;
+    private static final int MAX_VOTE_CONFIRMATION_SENDS = 3;
+    private static final int MAX_SENDS_VERIFICATION_LINK = 1;
+    private static final long INTERVAL_BETWEEN_SHIPMENTS = 10L;
 
     public EmailSendingService(IGenreService genreService,
                                IArtistService artistService,
@@ -67,20 +70,28 @@ public class EmailSendingService implements ISendingService {
     }
 
     @Override
-    public void send(SavedVoteDTO vote, int voteID) {
+    public void confirmVote(SavedVoteDTO vote) {
         String messageText = createVoteConfirmationText(vote);
         String recipient = vote.getVoteDTO().getEmail();
-        EmailDTO email = new EmailDTO(voteID, recipient, CONFIRMATION_SUBJECT, messageText);
+        EmailEntity email = new EmailEntity(recipient, CONFIRMATION_SUBJECT, messageText,
+                MAX_VOTE_CONFIRMATION_SENDS, EmailStatus.WAITING);
         emailSendingDAO.add(email);
+    }
+
+    @Override
+    public void verifyEmail(String email, String messageText) {
+        EmailEntity emailEntity = new EmailEntity(email, VALIDATION_SUBJECT, messageText,
+                MAX_SENDS_VERIFICATION_LINK, EmailStatus.WAITING);
+        emailSendingDAO.add(emailEntity);
     }
 
     @Override
     public void initializeSendingService() {
         executorService.scheduleWithFixedDelay(() -> {
-            List<EmailDTO> emails = emailSendingDAO.getUnsent();
-            for (EmailDTO email : emails) {
+            List<EmailEntity> emails = emailSendingDAO.getUnsent();
+            for (EmailEntity email : emails) {
                 email.setStatus(EmailStatus.SENT);
-                email.setDepartures(email.getDepartures() + 1);
+                email.setDepartures(email.getDepartures() - 1);
                 emailSendingDAO.update(email);
                 executorService.submit(() -> {
                     try {
@@ -99,7 +110,7 @@ public class EmailSendingService implements ISendingService {
                     }
                 });
             }
-        }, 60L, 60L, TimeUnit.SECONDS);
+        }, INTERVAL_BETWEEN_SHIPMENTS, INTERVAL_BETWEEN_SHIPMENTS, TimeUnit.SECONDS);
     }
 
     @Override
@@ -107,22 +118,7 @@ public class EmailSendingService implements ISendingService {
         this.executorService.shutdown();
     }
 
-    @Override
-    public void sendVerificationLink(String email, String verificationLink) {
-        executorService.submit(() -> {
-            try {
-                send(new EmailDTO(email, VALIDATION_SUBJECT, verificationLink));
-            } catch (AddressException e) {
-                throw new RuntimeException("Failed to send the validation email " +
-                        "due to wrongly formatted address ", e);
-            } catch (MessagingException e) {
-                throw new RuntimeException("Failed to send " +
-                        "the validation email", e);
-            }
-        });
-    }
-
-    private void send(EmailDTO email)
+    private void send(EmailEntity email)
             throws MessagingException {
         Authenticator authenticator = new Authenticator() {
             @Override

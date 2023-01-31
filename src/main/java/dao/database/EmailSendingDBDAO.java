@@ -2,8 +2,8 @@ package dao.database;
 
 import dao.api.IEmailSendingDAO;
 import dao.factories.ConnectionSingleton;
-import dto.EmailDTO;
-import dto.EmailStatus;
+import dao.entity.EmailEntity;
+import dao.entity.EmailStatus;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -15,30 +15,26 @@ import java.util.List;
 public class EmailSendingDBDAO implements IEmailSendingDAO {
 
     private static final String ADD = "INSERT INTO app.emails(" +
-            "vote_id, recipient, topic, text_message, departures, status)" +
-            "VALUES (?, ?, ?, ?, ?, ?);";
-    private static final String GET = "SELECT vote_id, recipient, topic, " +
-            "text_message, departures, status FROM app.emails WHERE vote_id = ?;";
-    private static final String GET_UNSENT = "SELECT vote_id, recipient, topic, " +
+            "recipient, topic, text_message, departures, status)" +
+            "VALUES (?, ?, ?, ?, ?);";
+    private static final String GET_UNSENT = "SELECT id, recipient, topic, " +
             "text_message, departures, status FROM app.emails " +
-            "WHERE departures<? AND status=? " +
-            "ORDER BY vote_id LIMIT ?;";
+            "WHERE departures>0 AND status=? " +
+            "ORDER BY id LIMIT ?;";
     private static final String UPDATE = "UPDATE app.emails " +
-            "SET vote_id=?, recipient=?, topic=?, text_message=?, departures=?, status=? " +
-            "WHERE vote_id=?;";
-    private static final int MAX_EMAIL_SENDS_NUMBER = 5;
+            "SET recipient=?, topic=?, text_message=?, departures=?, status=? " +
+            "WHERE id=?;";
     private static final int NUMBER_EMAILS_TO_SEND = 10;
 
     @Override
-    public void add(EmailDTO email) {
+    public void add(EmailEntity email) {
         try (Connection conn = ConnectionSingleton.getInstance().open();
              PreparedStatement stmt = conn.prepareStatement(ADD)) {
-            stmt.setInt(1, email.getVoteID());
-            stmt.setString(2, email.getRecipient());
-            stmt.setString(3, email.getTopic());
-            stmt.setString(4, email.getTextMessage());
-            stmt.setInt(5, email.getDepartures());
-            stmt.setString(6, email.getStatus().toString());
+            stmt.setString(1, email.getRecipient());
+            stmt.setString(2, email.getTopic());
+            stmt.setString(3, email.getTextMessage());
+            stmt.setInt(4, email.getDepartures());
+            stmt.setString(5, email.getStatus().toString());
             stmt.execute();
         } catch (SQLException e) {
             throw new RuntimeException("database query error");
@@ -46,15 +42,14 @@ public class EmailSendingDBDAO implements IEmailSendingDAO {
     }
 
     @Override
-    public List<EmailDTO> getUnsent() {
+    public List<EmailEntity> getUnsent() {
         try (Connection conn = ConnectionSingleton.getInstance().open();
              PreparedStatement stmt = conn.prepareStatement(GET_UNSENT,
                      ResultSet.TYPE_SCROLL_SENSITIVE,
                      ResultSet.CONCUR_UPDATABLE)) {
-            stmt.setInt(1, MAX_EMAIL_SENDS_NUMBER);
-            stmt.setString(2, EmailStatus.WAITING.toString());
-            stmt.setInt(3, NUMBER_EMAILS_TO_SEND);
-            List<EmailDTO> emails = new ArrayList<>();
+            stmt.setString(1, EmailStatus.WAITING.toString());
+            stmt.setInt(2, NUMBER_EMAILS_TO_SEND);
+            List<EmailEntity> emails = new ArrayList<>();
             try (ResultSet resultSet = stmt.executeQuery()) {
                 while (resultSet.next()) {
                     emails.add(get(resultSet));
@@ -67,49 +62,29 @@ public class EmailSendingDBDAO implements IEmailSendingDAO {
     }
 
     @Override
-    public EmailDTO get(int voteID) {
-        try (Connection conn = ConnectionSingleton.getInstance().open();
-             PreparedStatement stmt = conn.prepareStatement(GET,
-                     ResultSet.TYPE_SCROLL_SENSITIVE,
-                     ResultSet.CONCUR_UPDATABLE)) {
-            stmt.setInt(1, voteID);
-            try (ResultSet email = stmt.executeQuery()) {
-                if (email.first()) {
-                    return get(email);
-                } else {
-                    throw new IllegalArgumentException("email with the" +
-                            " specified id does not exist");
-                }
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException("database query error");
-        }
-    }
-
-    @Override
-    public void update(EmailDTO email) {
+    public void update(EmailEntity email) {
         try (Connection conn = ConnectionSingleton.getInstance().open();
              PreparedStatement stmt = conn.prepareStatement(UPDATE)) {
-            stmt.setInt(1, email.getVoteID());
-            stmt.setString(2, email.getRecipient());
-            stmt.setString(3, email.getTopic());
-            stmt.setString(4, email.getTextMessage());
-            stmt.setInt(5, email.getDepartures());
-            stmt.setString(6, email.getStatus().toString());
+            stmt.setString(1, email.getRecipient());
+            stmt.setString(2, email.getTopic());
+            stmt.setString(3, email.getTextMessage());
+            stmt.setInt(4, email.getDepartures());
+            stmt.setString(5, email.getStatus().toString());
+            stmt.setInt(6, email.getId());
             stmt.execute();
         } catch (SQLException e) {
             throw new RuntimeException("database query error");
         }
     }
 
-    private EmailDTO get(ResultSet email) throws SQLException {
-        return new EmailDTO(
-                email.getInt("vote_id"),
+    private EmailEntity get(ResultSet email) throws SQLException {
+        return new EmailEntity(
+                email.getInt("id"),
                 email.getString("recipient"),
                 email.getString("topic"),
                 email.getString("text_message"),
                 email.getInt("departures"),
-                email.getString("status")
-        );
+                EmailStatus.getEmailStatus(email.getString("status")
+        ));
     }
 }
