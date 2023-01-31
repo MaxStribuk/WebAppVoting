@@ -5,7 +5,11 @@ import dao.factories.ConnectionSingleton;
 import dto.SavedVoteDTO;
 import dto.VoteDTO;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,8 +18,6 @@ public class VoteDBDAO implements IVoteDAO {
 
     private static final String SELECT_ALL = "SELECT id, artist_id, about, email, creation_time " +
             "FROM app.votes;";
-    private static final String GET = "SELECT id, artist_id, about, email, creation_time " +
-            "FROM app.votes WHERE email = ?;";
     private static final String SELECT_GENRES = "SELECT vg.genre_id " +
             "FROM app.votes AS v " +
             "  INNER JOIN app.votes_genres AS vg " +
@@ -107,22 +109,6 @@ public class VoteDBDAO implements IVoteDAO {
                 connection.commit();
             }
 
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    @Override
-    public int getID(String email) {
-        try (Connection connection = ConnectionSingleton.getInstance().open();
-             PreparedStatement statement = connection.prepareStatement(GET,
-                     ResultSet.TYPE_SCROLL_SENSITIVE,
-                     ResultSet.CONCUR_UPDATABLE)) {
-            statement.setString(1, email);
-            try (ResultSet vote = statement.executeQuery()) {
-                vote.first();
-                return vote.getInt("id");
-            }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

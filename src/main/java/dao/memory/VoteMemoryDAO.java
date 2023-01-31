@@ -23,9 +23,4 @@ public class VoteMemoryDAO implements IVoteDAO {
     public void save(SavedVoteDTO vote) {
         votes.add(vote);
     }
-
-    @Override
-    public int getID(String email) {
-        return 0;
-    }
 }

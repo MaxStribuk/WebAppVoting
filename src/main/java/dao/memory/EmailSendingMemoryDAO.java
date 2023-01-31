@@ -1,7 +1,7 @@
 package dao.memory;
 
 import dao.api.IEmailSendingDAO;
-import dto.EmailDTO;
+import dao.entity.EmailEntity;
 
 import java.util.List;
 
@@ -9,22 +9,17 @@ public class EmailSendingMemoryDAO implements IEmailSendingDAO {
 
 
     @Override
-    public void add(EmailDTO email) {
+    public void add(EmailEntity email) {
 
     }
 
     @Override
-    public EmailDTO get(int voteID) {
+    public List<EmailEntity> getUnsent() {
         return null;
     }
 
     @Override
-    public List<EmailDTO> getUnsent() {
-        return null;
-    }
-
-    @Override
-    public void update(EmailDTO email) {
+    public void update(EmailEntity email) {
 
     }
 }

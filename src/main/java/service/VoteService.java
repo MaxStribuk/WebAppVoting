@@ -39,8 +39,7 @@ public class VoteService implements IVoteService {
     @Override
     public void save(SavedVoteDTO vote) {
         voteDAO.save(vote);
-        int voteID = voteDAO.getID(vote.getVoteDTO().getEmail());
-        senderService.send(vote, voteID);
+        senderService.confirmVote(vote);
     }
 
     @Override
