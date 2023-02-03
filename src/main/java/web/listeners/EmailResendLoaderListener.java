@@ -1,7 +1,7 @@
 package web.listeners;
 
 import service.api.ISendingService;
-import service.factories.SenderServiceSingleton;
+import service.factories.SendingServiceSingleton;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
@@ -13,7 +13,7 @@ public class EmailResendLoaderListener implements ServletContextListener {
     private final ISendingService sendingService;
 
     public EmailResendLoaderListener() {
-        sendingService = SenderServiceSingleton.getInstance();
+        sendingService = SendingServiceSingleton.getInstance();
     }
 
     @Override

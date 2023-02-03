@@ -16,19 +16,19 @@ public class VoteService implements IVoteService {
     private final IVoteDAO voteDAO;
     private final IGenreService genreService;
     private final IArtistService artistService;
-    private final ISendingService senderService;
+    private final ISendingService sendingService;
     private static final String EMAIL_PATTERN = "^[\\w!#$%&'*+/=?`{|}~^-]+(?:\\.[\\w!#$%&'*+/=?`{|}~^-]+)*"
             + "@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$";
 
     public VoteService(IVoteDAO voteDAO,
                        IGenreService genreService,
                        IArtistService artistService,
-                       ISendingService senderService
+                       ISendingService sendingService
     ) {
         this.voteDAO = voteDAO;
         this.genreService = genreService;
         this.artistService = artistService;
-        this.senderService = senderService;
+        this.sendingService = sendingService;
     }
 
     @Override
@@ -39,7 +39,7 @@ public class VoteService implements IVoteService {
     @Override
     public void save(SavedVoteDTO vote) {
         voteDAO.save(vote);
-        senderService.confirmVote(vote);
+        sendingService.confirmVote(vote);
     }
 
     @Override
