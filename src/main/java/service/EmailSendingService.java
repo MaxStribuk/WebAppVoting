@@ -16,7 +16,6 @@ import javax.mail.MessagingException;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.mail.Transport;
-import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.time.format.DateTimeFormatter;
@@ -50,6 +49,7 @@ public class EmailSendingService implements ISendingService {
     private final String PASSWORD;
     private final Properties mailProperties = new Properties();
     private final ScheduledExecutorService executorService;
+    private final EmailSendingThread sendingThread;
     private static final int CORE_POOL_SIZE = 4;
     private static final int MAX_VOTE_CONFIRMATION_SENDS = 3;
     private static final int MAX_SENDS_VERIFICATION_LINK = 1;
@@ -62,6 +62,7 @@ public class EmailSendingService implements ISendingService {
         this.artistService = artistService;
         this.emailSendingDAO = emailSendingDAO;
         this.executorService = Executors.newScheduledThreadPool(CORE_POOL_SIZE);
+        this.sendingThread = new EmailSendingThread(executorService, emailSendingDAO, this);
 
         this.SENDER = PropertiesUtil.get(SENDER_PROMPT);
         this.PASSWORD = PropertiesUtil.get(PASSWORD_PROMPT);
@@ -70,47 +71,11 @@ public class EmailSendingService implements ISendingService {
     }
 
     @Override
-    public void confirmVote(SavedVoteDTO vote) {
-        String messageText = createVoteConfirmationText(vote);
-        String recipient = vote.getVoteDTO().getEmail();
-        EmailEntity email = new EmailEntity(recipient, CONFIRMATION_SUBJECT, messageText,
-                MAX_VOTE_CONFIRMATION_SENDS, EmailStatus.WAITING);
-        emailSendingDAO.add(email);
-    }
-
-    @Override
-    public void verifyEmail(String email, String messageText) {
-        EmailEntity emailEntity = new EmailEntity(email, VALIDATION_SUBJECT, messageText,
-                MAX_SENDS_VERIFICATION_LINK, EmailStatus.WAITING);
-        emailSendingDAO.add(emailEntity);
-    }
-
-    @Override
     public void initializeSendingService() {
-        executorService.scheduleWithFixedDelay(() -> {
-            List<EmailEntity> emails = emailSendingDAO.getUnsent();
-            for (EmailEntity email : emails) {
-                email.setStatus(EmailStatus.SENT);
-                email.setDepartures(email.getDepartures() - 1);
-                emailSendingDAO.update(email);
-                executorService.submit(() -> {
-                    try {
-                        send(email);
-                        email.setStatus(EmailStatus.SUCCESS);
-                    } catch (AddressException e) {
-                        email.setStatus(EmailStatus.ERROR);
-                        throw new RuntimeException("Failed to send the confirmation " +
-                                "email due to wrongly formatted address ", e);
-                    } catch (MessagingException e) {
-                        email.setStatus(EmailStatus.WAITING);
-                        throw new RuntimeException("Failed to send " +
-                                "the confirmation email", e);
-                    } finally {
-                        emailSendingDAO.update(email);
-                    }
-                });
-            }
-        }, INTERVAL_BETWEEN_SHIPMENTS, INTERVAL_BETWEEN_SHIPMENTS, TimeUnit.SECONDS);
+        executorService.scheduleWithFixedDelay(sendingThread,
+                INTERVAL_BETWEEN_SHIPMENTS,
+                INTERVAL_BETWEEN_SHIPMENTS,
+                TimeUnit.SECONDS);
     }
 
     @Override
@@ -118,8 +83,24 @@ public class EmailSendingService implements ISendingService {
         this.executorService.shutdown();
     }
 
-    private void send(EmailEntity email)
-            throws MessagingException {
+    @Override
+    public void confirmVote(SavedVoteDTO vote) {
+        String messageText = createVoteConfirmationText(vote);
+        String recipient = vote.getVoteDTO().getEmail();
+        EmailEntity email = new EmailEntity(recipient, CONFIRMATION_SUBJECT,
+                messageText, MAX_VOTE_CONFIRMATION_SENDS, EmailStatus.WAITING);
+        emailSendingDAO.add(email);
+    }
+
+    @Override
+    public void verifyEmail(String email, String messageText) {
+        EmailEntity emailEntity = new EmailEntity(email, VALIDATION_SUBJECT,
+                messageText, MAX_SENDS_VERIFICATION_LINK, EmailStatus.WAITING);
+        emailSendingDAO.add(emailEntity);
+    }
+
+    @Override
+    public void send(EmailEntity email) throws MessagingException {
         Authenticator authenticator = new Authenticator() {
             @Override
             protected PasswordAuthentication getPasswordAuthentication() {
