@@ -40,7 +40,7 @@ public class ResultServlet extends HttpServlet {
     private void writeBestArtists(PrintWriter writer, StatisticsDTO statistics) {
         writer.append("<b>Best artists:</b><br>");
         statistics.getBestArtists()
-                .forEach((key, value) -> writer.append(key.getArtist())
+                .forEach((key, value) -> writer.append(key.getName())
                         .append(" - ")
                         .append(value.toString())
                         .append(" votes<br>"));
@@ -49,7 +49,7 @@ public class ResultServlet extends HttpServlet {
     private void writeBestGenres(PrintWriter writer, StatisticsDTO statistics) {
         writer.append("<b>Best genres:</b><br>");
         statistics.getBestGenres()
-                .forEach((key, value) -> writer.append(key.getGenre())
+                .forEach((key, value) -> writer.append(key.getTitle())
                         .append(" - ")
                         .append(value.toString())
                         .append(" votes<br>"));

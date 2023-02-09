@@ -1,5 +1,6 @@
 package web.servlets;
 
+import dto.EmailDTO;
 import service.api.ISendingService;
 import service.factories.SendingServiceSingleton;
 import web.util.RequestParamHandler;
@@ -35,7 +36,8 @@ public class EmailVerificationServlet extends HttpServlet {
         String userEmail = RequestParamHandler.getRequestParam(req, RequestParamHandler.EMAIL_PARAM_NAME);
         String verificationLink = req.getRequestURL().toString() + "?"
                 + RequestParamHandler.VERIFICATION_KEY + "=" + keyFromServer;
-        sendingService.verifyEmail(userEmail, "<a href=" + verificationLink + ">Confirm email!</a>");
+        sendingService.verifyEmail(new EmailDTO(
+                userEmail, "<a href=" + verificationLink + ">Confirm email!</a>"));
     }
 
     @Override
