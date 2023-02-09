@@ -1,9 +1,9 @@
 package service.factories;
 
-import dao.factories.DAOType;
 import dao.factories.EmailSendingDAOSingleton;
 import service.EmailSendingService;
 import service.api.ISendingService;
+import service.converters.VoteEntitySavedDTOConverter;
 
 public class SendingServiceSingleton {
 
@@ -19,7 +19,8 @@ public class SendingServiceSingleton {
                     instance = new EmailSendingService(
                             GenreServiceSingleton.getInstance(),
                             ArtistServiceSingleton.getInstance(),
-                            EmailSendingDAOSingleton.getInstance(DAOType.DB));
+                            EmailSendingDAOSingleton.getInstance(),
+                            new VoteEntitySavedDTOConverter());
                 }
             }
         }

@@ -1,12 +1,15 @@
 package service;
 
 import dao.api.IEmailSendingDAO;
+import dao.entity.VoteEntity;
 import dao.util.PropertiesUtil;
 import dao.entity.EmailEntity;
 import dao.entity.EmailStatus;
+import dto.EmailDTO;
 import dto.SavedVoteDTO;
 import dto.VoteDTO;
 import service.api.IArtistService;
+import service.api.IConvertable;
 import service.api.IGenreService;
 import service.api.ISendingService;
 
@@ -50,6 +53,7 @@ public class EmailSendingService implements ISendingService {
     private final Properties mailProperties = new Properties();
     private final ScheduledExecutorService executorService;
     private final EmailSendingThread sendingThread;
+    private final IConvertable<VoteEntity, SavedVoteDTO> voteEntitySavedDTOConverter;
     private static final int CORE_POOL_SIZE = 4;
     private static final int MAX_VOTE_CONFIRMATION_SENDS = 3;
     private static final int MAX_SENDS_VERIFICATION_LINK = 1;
@@ -57,12 +61,14 @@ public class EmailSendingService implements ISendingService {
 
     public EmailSendingService(IGenreService genreService,
                                IArtistService artistService,
-                               IEmailSendingDAO emailSendingDAO) {
+                               IEmailSendingDAO emailSendingDAO,
+                               IConvertable<VoteEntity, SavedVoteDTO> voteEntitySavedDTOConverter) {
         this.genreService = genreService;
         this.artistService = artistService;
         this.emailSendingDAO = emailSendingDAO;
         this.executorService = Executors.newScheduledThreadPool(CORE_POOL_SIZE);
         this.sendingThread = new EmailSendingThread(executorService, emailSendingDAO, this);
+        this.voteEntitySavedDTOConverter = voteEntitySavedDTOConverter;
 
         this.SENDER = PropertiesUtil.get(SENDER_PROMPT);
         this.PASSWORD = PropertiesUtil.get(PASSWORD_PROMPT);
@@ -84,18 +90,19 @@ public class EmailSendingService implements ISendingService {
     }
 
     @Override
-    public void confirmVote(SavedVoteDTO vote) {
-        String messageText = createVoteConfirmationText(vote);
-        String recipient = vote.getVoteDTO().getEmail();
-        EmailEntity email = new EmailEntity(recipient, CONFIRMATION_SUBJECT,
+    public void confirmVote(VoteEntity vote) {
+        SavedVoteDTO voteDTO = voteEntitySavedDTOConverter.convert(vote);
+        String messageText = createVoteConfirmationText(voteDTO);
+        String recipient = vote.getEmail();
+        EmailEntity email = new EmailEntity(vote, recipient, CONFIRMATION_SUBJECT,
                 messageText, MAX_VOTE_CONFIRMATION_SENDS, EmailStatus.WAITING);
         emailSendingDAO.add(email);
     }
 
     @Override
-    public void verifyEmail(String email, String messageText) {
-        EmailEntity emailEntity = new EmailEntity(email, VALIDATION_SUBJECT,
-                messageText, MAX_SENDS_VERIFICATION_LINK, EmailStatus.WAITING);
+    public void verifyEmail(EmailDTO email) {
+        EmailEntity emailEntity = new EmailEntity(new VoteEntity(), email.getEmail(), VALIDATION_SUBJECT,
+                email.getMessage(), MAX_SENDS_VERIFICATION_LINK, EmailStatus.WAITING);
         emailSendingDAO.add(emailEntity);
     }
 
@@ -152,11 +159,11 @@ public class EmailSendingService implements ISendingService {
     private String getFormattedGenreNames(VoteDTO voteDTO) {
         StringBuilder message = new StringBuilder();
         message.append("Your genre vote:\n");
-        List<Integer> genreIDs = voteDTO.getGenreIds();
+        List<Long> genreIDs = voteDTO.getGenreIds();
         for (int i = 0; i < genreIDs.size(); i++) {
             message.append(i + 1)
                     .append(". ")
-                    .append(this.genreService.get(genreIDs.get(i)).getGenre())
+                    .append(this.genreService.get(genreIDs.get(i)).getTitle())
                     .append("\n");
         }
         return message.toString();
@@ -165,9 +172,9 @@ public class EmailSendingService implements ISendingService {
     private String getFormattedArtistName(VoteDTO voteDTO) {
         StringBuilder message = new StringBuilder();
         message.append("Your artist vote:\n");
-        int artistID = voteDTO.getArtistId();
+        long artistID = voteDTO.getArtistId();
         message.append("1. ")
-                .append(this.artistService.get(artistID).getArtist())
+                .append(this.artistService.get(artistID).getName())
                 .append("\n");
         return message.toString();
     }

@@ -1,7 +1,8 @@
 package service.api;
 
 import dao.entity.EmailEntity;
-import dto.SavedVoteDTO;
+import dao.entity.VoteEntity;
+import dto.EmailDTO;
 
 import javax.mail.MessagingException;
 
@@ -11,9 +12,9 @@ public interface ISendingService {
 
     void stopSendingService();
 
-    void confirmVote(SavedVoteDTO vote);
+    void confirmVote(VoteEntity vote);
 
-    void verifyEmail(String email, String verificationLink);
+    void verifyEmail(EmailDTO email);
 
     void send(EmailEntity email) throws MessagingException;
 }
