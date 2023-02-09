@@ -1,7 +1,7 @@
 package web.servlets;
 
-import service.api.ISenderService;
-import service.factories.SenderServiceSingleton;
+import service.api.ISendingService;
+import service.factories.SendingServiceSingleton;
 import web.util.RequestParamHandler;
 
 import javax.servlet.ServletException;
@@ -19,10 +19,10 @@ public class EmailVerificationServlet extends HttpServlet {
     private static final String CONTENT_TYPE = "text/html; charset=UTF-8";
     private static final String VERIFICATION_KEY_ATTRIBUTE = "key";
     private static final String AUTHENTICATION_ATTRIBUTE = "isAuthenticated";
-    private final ISenderService senderService;
+    private final ISendingService sendingService;
 
     public EmailVerificationServlet() {
-        senderService = SenderServiceSingleton.getInstance();
+        sendingService = SendingServiceSingleton.getInstance();
     }
 
     @Override
@@ -35,7 +35,7 @@ public class EmailVerificationServlet extends HttpServlet {
         String userEmail = RequestParamHandler.getRequestParam(req, RequestParamHandler.EMAIL_PARAM_NAME);
         String verificationLink = req.getRequestURL().toString() + "?"
                 + RequestParamHandler.VERIFICATION_KEY + "=" + keyFromServer;
-        senderService.sendVerificationLink(userEmail, "<a href=" + verificationLink + ">Confirm email!</a>");
+        sendingService.verifyEmail(userEmail, "<a href=" + verificationLink + ">Confirm email!</a>");
     }
 
     @Override
