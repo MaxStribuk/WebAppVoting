@@ -25,4 +25,8 @@ public class PropertiesUtil {
     public static String get(String key) {
         return PROPERTIES.getProperty(key);
     }
+
+    public static Properties get() {
+        return PROPERTIES;
+    }
 }

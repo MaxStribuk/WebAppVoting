@@ -4,20 +4,24 @@ import java.util.Objects;
 
 public class GenreDTO {
 
-    private final int id;
-    private final String genre;
+    private long id;
+    private String title;
 
-    public GenreDTO(int id, String genre) {
+    public GenreDTO(long id, String title) {
         this.id = id;
-        this.genre = genre;
+        this.title = title;
     }
 
-    public int getId() {
+    public GenreDTO(String title) {
+        this.title = title;
+    }
+
+    public long getId() {
         return id;
     }
 
-    public String getGenre() {
-        return genre;
+    public String getTitle() {
+        return title;
     }
 
     @Override
@@ -25,11 +29,19 @@ public class GenreDTO {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         GenreDTO genreDTO = (GenreDTO) o;
-        return id == genreDTO.id && genre.equals(genreDTO.genre);
+        return id == genreDTO.id && title.equals(genreDTO.title);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, genre);
+        return Objects.hash(id, title);
+    }
+
+    @Override
+    public String toString() {
+        return "GenreDTO{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                '}';
     }
 }

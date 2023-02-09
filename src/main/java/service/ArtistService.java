@@ -1,50 +1,66 @@
 package service;
 
 import dao.api.IArtistDAO;
+import dao.entity.ArtistEntity;
 import dto.ArtistDTO;
 import service.api.IArtistService;
+import service.api.IConvertable;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ArtistService implements IArtistService {
 
     private final IArtistDAO dataSource;
+    private final IConvertable<ArtistDTO, ArtistEntity> artistDTOEntityConverter;
+    private final IConvertable<ArtistEntity, ArtistDTO> artistEntityDTOConverter;
 
-    public ArtistService(IArtistDAO dataSource) {
+    public ArtistService(IArtistDAO dataSource,
+                         IConvertable<ArtistDTO, ArtistEntity> artistDTOEntityConverter,
+                         IConvertable<ArtistEntity, ArtistDTO> artistEntityDTOConverter) {
         this.dataSource = dataSource;
+        this.artistDTOEntityConverter = artistDTOEntityConverter;
+        this.artistEntityDTOConverter = artistEntityDTOConverter;
     }
 
     @Override
     public List<ArtistDTO> getAll() {
-        return dataSource.getAll();
+        return dataSource.getAll()
+                .stream()
+                .map(artistEntityDTOConverter::convert)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public boolean exists(int id) {
+    public boolean exists(long id) {
         return dataSource.exists(id);
     }
 
     @Override
-    public ArtistDTO get(int id) {
-        return dataSource.get(id);
+    public ArtistDTO get(long id) {
+        return artistEntityDTOConverter.convert(
+                dataSource.get(id));
     }
 
     @Override
-    public void add(String artist) {
-        dataSource.add(artist);
+    public void add(ArtistDTO artist) {
+        dataSource.add(
+                artistDTOEntityConverter.convert(artist));
     }
 
     @Override
-    public void update(int id, String artist) {
+    public void update(ArtistDTO artist) {
+        long id = artist.getId();
         if (dataSource.exists(id)) {
-            dataSource.update(id, artist);
+            dataSource.update(
+                    artistDTOEntityConverter.convert(artist));
         } else {
             throw new IllegalArgumentException("No artist updated for id " + id);
         }
     }
 
     @Override
-    public void delete(int id) {
+    public void delete(long id) {
         if (dataSource.exists(id)) {
             dataSource.delete(id);
         } else {

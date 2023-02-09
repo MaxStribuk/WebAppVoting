@@ -1,18 +1,20 @@
 package web.servlets;
 
+import dto.GenreDTO;
 import service.api.IGenreService;
 import service.factories.GenreServiceSingleton;
 import web.util.RequestParamHandler;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 
 @WebServlet(name = "GenreServlet", urlPatterns = "/genres")
-public class GenreServlet extends ExtendedHttpServlet {
+public class GenreServlet extends HttpServlet {
 
     private final IGenreService service;
 
@@ -31,7 +33,7 @@ public class GenreServlet extends ExtendedHttpServlet {
         service.getAll()
                 .forEach(genre -> writer.append(String.valueOf(genre.getId()))
                         .append(" - ")
-                        .append(genre.getGenre())
+                        .append(genre.getTitle())
                         .append("<br>"));
     }
 
@@ -44,7 +46,7 @@ public class GenreServlet extends ExtendedHttpServlet {
 
         String genre = RequestParamHandler.getRequestParam(req,
                 RequestParamHandler.GENRE_PARAM_NAME);
-        service.add(genre);
+        service.add(new GenreDTO(genre));
 
         PrintWriter writer = resp.getWriter();
         writer.append(genre)
@@ -52,17 +54,17 @@ public class GenreServlet extends ExtendedHttpServlet {
     }
 
     @Override
-    public void doPatch(HttpServletRequest req, HttpServletResponse resp)
+    public void doPut(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
         req.setCharacterEncoding("UTF-8");
         resp.setContentType("text/html; charset=UTF-8");
 
         String id =RequestParamHandler.getRequestParam(req,
                 RequestParamHandler.ID_PARAM_NAME);
-        int genreId = RequestParamHandler.getID(id);
+        long genreId = RequestParamHandler.getID(id);
         String genre = RequestParamHandler.getRequestParam(req,
                 RequestParamHandler.GENRE_PARAM_NAME);
-        service.update(genreId, genre);
+        service.update(new GenreDTO(genreId, genre));
 
         PrintWriter writer = resp.getWriter();
         writer.append(genre)
@@ -77,7 +79,7 @@ public class GenreServlet extends ExtendedHttpServlet {
 
         String id =RequestParamHandler.getRequestParam(req,
                 RequestParamHandler.ID_PARAM_NAME);
-        int genreId = RequestParamHandler.getID(id);
+        long genreId = RequestParamHandler.getID(id);
         service.delete(genreId);
 
         PrintWriter writer = resp.getWriter();

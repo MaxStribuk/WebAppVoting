@@ -1,18 +1,20 @@
 package web.servlets;
 
+import dto.ArtistDTO;
 import service.api.IArtistService;
 import service.factories.ArtistServiceSingleton;
 import web.util.RequestParamHandler;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 
 @WebServlet(name = "ArtistServlet", urlPatterns = "/artists")
-public class ArtistServlet extends ExtendedHttpServlet {
+public class ArtistServlet extends HttpServlet {
 
     private final IArtistService service;
 
@@ -31,7 +33,7 @@ public class ArtistServlet extends ExtendedHttpServlet {
         service.getAll()
                 .forEach(artist -> writer.append(String.valueOf(artist.getId()))
                         .append(" - ")
-                        .append(artist.getArtist())
+                        .append(artist.getName())
                         .append("<br>"));
     }
 
@@ -44,7 +46,7 @@ public class ArtistServlet extends ExtendedHttpServlet {
 
         String artist = RequestParamHandler.getRequestParam(req,
                 RequestParamHandler.ARTIST_PARAM_NAME);
-        service.add(artist);
+        service.add(new ArtistDTO(artist));
 
         PrintWriter writer = resp.getWriter();
         writer.append(artist)
@@ -52,17 +54,17 @@ public class ArtistServlet extends ExtendedHttpServlet {
     }
 
     @Override
-    public void doPatch(HttpServletRequest req, HttpServletResponse resp)
+    public void doPut(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
         req.setCharacterEncoding("UTF-8");
         resp.setContentType("text/html; charset=UTF-8");
 
         String id = RequestParamHandler.getRequestParam(req,
                 RequestParamHandler.ID_PARAM_NAME);
-        int artistId = RequestParamHandler.getID(id);
+        long artistId = RequestParamHandler.getID(id);
         String artist = RequestParamHandler.getRequestParam(req,
                 RequestParamHandler.ARTIST_PARAM_NAME);
-        service.update(artistId, artist);
+        service.update(new ArtistDTO(artistId, artist));
 
         PrintWriter writer = resp.getWriter();
         writer.append(artist)
@@ -77,7 +79,7 @@ public class ArtistServlet extends ExtendedHttpServlet {
 
         String id = RequestParamHandler.getRequestParam(req,
                 RequestParamHandler.ID_PARAM_NAME);
-        int artistId = RequestParamHandler.getID(id);
+        long artistId = RequestParamHandler.getID(id);
         service.delete(artistId);
 
         PrintWriter writer = resp.getWriter();

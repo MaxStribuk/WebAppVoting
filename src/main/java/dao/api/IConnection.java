@@ -1,8 +1,8 @@
 package dao.api;
 
-import java.sql.Connection;
-import java.sql.SQLException;
+import javax.persistence.EntityManager;
 
 public interface IConnection extends AutoCloseable {
-    Connection open() throws SQLException;
+
+    EntityManager getEntityManager();
 }

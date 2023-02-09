@@ -1,50 +1,64 @@
 package service;
 
 import dao.api.IGenreDAO;
+import dao.entity.GenreEntity;
 import dto.GenreDTO;
+import service.api.IConvertable;
 import service.api.IGenreService;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class GenreService implements IGenreService {
 
     private final IGenreDAO dataSource;
+    private final IConvertable<GenreDTO, GenreEntity> genreDTOEntityConverter;
+    private final IConvertable<GenreEntity,GenreDTO> genreEntityDTOConverter;
 
-    public GenreService(IGenreDAO dataSource) {
+    public GenreService(IGenreDAO dataSource,
+                        IConvertable<GenreDTO, GenreEntity> genreDTOEntityConverter,
+                        IConvertable<GenreEntity, GenreDTO> genreEntityDTOConverter) {
         this.dataSource = dataSource;
+        this.genreDTOEntityConverter = genreDTOEntityConverter;
+        this.genreEntityDTOConverter = genreEntityDTOConverter;
     }
 
     @Override
     public List<GenreDTO> getAll() {
-        return dataSource.getAll();
+        return dataSource.getAll()
+                .stream()
+                .map(genreEntityDTOConverter::convert)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public GenreDTO get(int id) {
-        return dataSource.get(id);
+    public GenreDTO get(long id) {
+        return genreEntityDTOConverter.convert(
+                dataSource.get(id));
     }
 
     @Override
-    public boolean exists(int id) {
+    public boolean exists(long id) {
         return dataSource.exists(id);
     }
 
     @Override
-    public void add(String genre) {
-        boolean isDuplicate = isDuplicate(genre);
+    public void add(GenreDTO genre) {
+        boolean isDuplicate = isDuplicate(genre.getTitle());
         if (isDuplicate) {
             throw new IllegalArgumentException("This genre has already " +
                     "been added");
         } else {
-            dataSource.add(genre);
+            dataSource.add(genreDTOEntityConverter.convert(genre));
         }
     }
 
     @Override
-    public void update(int id, String genre) {
-        boolean isDuplicate = isDuplicate(genre);
+    public void update(GenreDTO genre) {
+        long id = genre.getId();
+        boolean isDuplicate = isDuplicate(genre.getTitle());
         if (dataSource.exists(id) && !isDuplicate) {
-            dataSource.update(id, genre);
+            dataSource.update(genreDTOEntityConverter.convert(genre));
         } else {
             throw new IllegalArgumentException("No genre updated for id " +
                     id + " or genre has already been added");
@@ -52,7 +66,7 @@ public class GenreService implements IGenreService {
     }
 
     @Override
-    public void delete(int id) {
+    public void delete(long id) {
         if (dataSource.exists(id)) {
             dataSource.delete(id);
         } else {
@@ -62,7 +76,7 @@ public class GenreService implements IGenreService {
 
     private boolean isDuplicate(String genre){
         return getAll().stream()
-                .map(GenreDTO::getGenre)
+                .map(GenreDTO::getTitle)
                 .anyMatch(nameGenre -> nameGenre.equalsIgnoreCase(genre));
     }
 }

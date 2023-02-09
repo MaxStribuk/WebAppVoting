@@ -1,9 +1,10 @@
 package service.factories;
 
-import dao.factories.DAOType;
 import dao.factories.VoteDAOSingleton;
 import service.VoteService;
 import service.api.IVoteService;
+import service.converters.VoteEntitySavedDTOConverter;
+import service.converters.VoteSavedDTOEntityConverter;
 
 public class VoteServiceSingleton {
 
@@ -17,10 +18,12 @@ public class VoteServiceSingleton {
             synchronized (VoteServiceSingleton.class) {
                 if (instance == null) {
                     instance = new VoteService(
-                            VoteDAOSingleton.getInstance(DAOType.DB),
+                            VoteDAOSingleton.getInstance(),
                             GenreServiceSingleton.getInstance(),
                             ArtistServiceSingleton.getInstance(),
-                            SendingServiceSingleton.getInstance()
+                            SendingServiceSingleton.getInstance(),
+                            new VoteEntitySavedDTOConverter(),
+                            new VoteSavedDTOEntityConverter()
                     );
                 }
             }

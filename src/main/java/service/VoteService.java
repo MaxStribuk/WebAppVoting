@@ -1,15 +1,18 @@
 package service;
 
 import dao.api.IVoteDAO;
+import dao.entity.VoteEntity;
 import dto.SavedVoteDTO;
 import dto.VoteDTO;
 import service.api.IArtistService;
+import service.api.IConvertable;
 import service.api.IGenreService;
 import service.api.ISendingService;
 import service.api.IVoteService;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 public class VoteService implements IVoteService {
 
@@ -17,37 +20,46 @@ public class VoteService implements IVoteService {
     private final IGenreService genreService;
     private final IArtistService artistService;
     private final ISendingService sendingService;
-    private static final String EMAIL_PATTERN = "^[\\w!#$%&'*+/=?`{|}~^-]+(?:\\.[\\w!#$%&'*+/=?`{|}~^-]+)*"
+    private final IConvertable<SavedVoteDTO, VoteEntity> voteSavedDTOEntityConverter;
+    private final IConvertable<VoteEntity, SavedVoteDTO> voteEntitySavedDTOConverter;
+    private static final String EMAIL_PATTERN =
+            "^[\\w!#$%&'*+/=?`{|}~^-]+(?:\\.[\\w!#$%&'*+/=?`{|}~^-]+)*"
             + "@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$";
 
     public VoteService(IVoteDAO voteDAO,
                        IGenreService genreService,
                        IArtistService artistService,
-                       ISendingService sendingService
-    ) {
+                       ISendingService sendingService,
+                       IConvertable<VoteEntity, SavedVoteDTO> voteEntitySavedDTOConverter,
+                       IConvertable<SavedVoteDTO, VoteEntity> voteSavedDTOEntityConverter) {
         this.voteDAO = voteDAO;
         this.genreService = genreService;
         this.artistService = artistService;
         this.sendingService = sendingService;
+        this.voteEntitySavedDTOConverter = voteEntitySavedDTOConverter;
+        this.voteSavedDTOEntityConverter = voteSavedDTOEntityConverter;
     }
 
     @Override
     public List<SavedVoteDTO> getAll() {
-        return voteDAO.getAll();
+        return voteDAO.getAll().stream()
+                .map(voteEntitySavedDTOConverter::convert)
+                .collect(Collectors.toList());
     }
 
     @Override
     public void save(SavedVoteDTO vote) {
-        voteDAO.save(vote);
-        sendingService.confirmVote(vote);
+        VoteEntity voteEntity = voteSavedDTOEntityConverter.convert(vote);
+        voteDAO.save(voteEntity);
+        sendingService.confirmVote(voteEntity);
     }
 
     @Override
     public void validate(VoteDTO vote) {
-        int artistId = vote.getArtistId();
+        long artistId = vote.getArtistId();
         validateArtist(artistId);
 
-        List<Integer> genresIdList = vote.getGenreIds();
+        List<Long> genresIdList = vote.getGenreIds();
         validateGenres(genresIdList);
 
         String about = vote.getAbout();
@@ -57,14 +69,14 @@ public class VoteService implements IVoteService {
         validateEmail(email);
     }
 
-    private void validateArtist(int artistId) {
+    private void validateArtist(long artistId) {
         if (!artistService.exists(artistId)) {
             throw new NoSuchElementException("Invalid artist id " +
                     "provided - '" + artistId + "' ");
         }
     }
 
-    private void validateGenres(List<Integer> genresIdList) {
+    private void validateGenres(List<Long> genresIdList) {
 
         if (genresIdList.size() < 3 || genresIdList.size() > 5) {
             throw new IllegalArgumentException("Number of genres outside" +
@@ -76,7 +88,7 @@ public class VoteService implements IVoteService {
             throw new IllegalArgumentException("Genre parameter " +
                     "must be non-repeating ");
         }
-        for (int genreId : genresIdList) {
+        for (long genreId : genresIdList) {
             if (!genreService.exists(genreId)) {
                 throw new NoSuchElementException("Invalid genre id " +
                         "provided - '" + genreId + "' ");
@@ -100,8 +112,9 @@ public class VoteService implements IVoteService {
             throw new IllegalArgumentException("User provided " +
                     "an invalid email");
         }
-        boolean isDuplicateEmail = voteDAO.getAll().stream()
-                .map(vote -> vote.getVoteDTO().getEmail())
+        boolean isDuplicateEmail = voteDAO.getAll()
+                .stream()
+                .map(VoteEntity::getEmail)
                 .anyMatch(email::equals);
         if (isDuplicateEmail) {
             throw new IllegalArgumentException("This email is already in use");

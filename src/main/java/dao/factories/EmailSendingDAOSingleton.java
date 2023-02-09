@@ -2,7 +2,6 @@ package dao.factories;
 
 import dao.api.IEmailSendingDAO;
 import dao.database.EmailSendingDBDAO;
-import dao.memory.EmailSendingMemoryDAO;
 
 public class EmailSendingDAOSingleton {
 
@@ -11,23 +10,11 @@ public class EmailSendingDAOSingleton {
     private EmailSendingDAOSingleton() {
     }
 
-    public static IEmailSendingDAO getInstance(DAOType type) {
+    public static IEmailSendingDAO getInstance() {
         if (instance == null) {
             synchronized (EmailSendingDAOSingleton.class) {
                 if (instance == null) {
-                    switch (type) {
-                        case DB: {
-                            instance = new EmailSendingDBDAO();
-                            break;
-                        }
-                        case MEMORY: {
-                            instance = new EmailSendingMemoryDAO();
-                            break;
-                        }
-                        default: {
-                            throw new IllegalArgumentException("Illegal DAO type provided");
-                        }
-                    }
+                    instance = new EmailSendingDBDAO();
                 }
             }
         }
