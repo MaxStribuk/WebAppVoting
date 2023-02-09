@@ -4,9 +4,7 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans
         https://www.springframework.org/schema/beans/spring-beans.xsd">
 
-
     <!--initialize connect to DB-->
-
 
     <bean id="propertiesBean" class="dao.util.PropertiesUtil"
           factory-method="get">
@@ -26,9 +24,7 @@
           factory-bean="connectionManager" factory-method="getEntityManager">
     </bean>
 
-
     <!--initialize dao-->
-
 
     <bean id="artistDBDAO" class="dao.database.ArtistDBDao">
         <constructor-arg name="connectionManager" ref="connectionManager"/>
@@ -46,9 +42,7 @@
         <constructor-arg name="connectionManager" ref="connectionManager"/>
     </bean>
 
-
     <!--initialize converters-->
-
 
     <bean id="artistDTOEntityConverter"
           class="service.converters.ArtistDTOEntityConverter">
@@ -74,9 +68,7 @@
           class="service.converters.VoteEntitySavedDTOConverter">
     </bean>
 
-
     <!--initialize services-->
-
 
     <bean id="artistService" class="service.ArtistService">
         <constructor-arg name="dataSource" ref="artistDBDAO"/>
