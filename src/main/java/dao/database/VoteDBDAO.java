@@ -4,7 +4,7 @@ import dao.api.IVoteDAO;
 import dao.entity.ArtistEntity;
 import dao.entity.GenreEntity;
 import dao.entity.VoteEntity;
-import dao.factories.ConnectionSingleton;
+import dao.util.ConnectionManager;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
@@ -16,10 +16,16 @@ import java.util.List;
 
 public class VoteDBDAO implements IVoteDAO {
 
+    private final ConnectionManager connectionManager;
+
+    public VoteDBDAO(ConnectionManager connectionManager) {
+        this.connectionManager = connectionManager;
+    }
+
     @Override
     public List<VoteEntity> getAll() {
         List<VoteEntity> votes;
-        EntityManager entityManager = ConnectionSingleton.getInstance().getEntityManager();
+        EntityManager entityManager = connectionManager.getEntityManager();
         entityManager.getTransaction().begin();
 
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -40,7 +46,7 @@ public class VoteDBDAO implements IVoteDAO {
 
     @Override
     public void save(VoteEntity vote) {
-        EntityManager entityManager = ConnectionSingleton.getInstance().getEntityManager();
+        EntityManager entityManager = connectionManager.getEntityManager();
         entityManager.getTransaction().begin();
 
 

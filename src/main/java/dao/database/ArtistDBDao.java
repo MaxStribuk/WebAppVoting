@@ -2,7 +2,7 @@ package dao.database;
 
 import dao.api.IArtistDAO;
 import dao.entity.ArtistEntity;
-import dao.factories.ConnectionSingleton;
+import dao.util.ConnectionManager;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
@@ -12,10 +12,16 @@ import java.util.List;
 
 public class ArtistDBDao implements IArtistDAO {
 
+    private final ConnectionManager connectionManager;
+
+    public ArtistDBDao(ConnectionManager connectionManager) {
+        this.connectionManager = connectionManager;
+    }
+
     @Override
     public List<ArtistEntity> getAll() {
         List<ArtistEntity> artists;
-        EntityManager entityManager = ConnectionSingleton.getInstance().getEntityManager();
+        EntityManager entityManager = connectionManager.getEntityManager();
         entityManager.getTransaction().begin();
 
         CriteriaQuery<ArtistEntity> query = entityManager.getCriteriaBuilder()
@@ -37,7 +43,7 @@ public class ArtistDBDao implements IArtistDAO {
 
     @Override
     public ArtistEntity get(long id) {
-        EntityManager entityManager = ConnectionSingleton.getInstance().getEntityManager();
+        EntityManager entityManager = connectionManager.getEntityManager();
         entityManager.getTransaction().begin();
 
         ArtistEntity artistEntity = entityManager.find(ArtistEntity.class, id);
@@ -49,7 +55,7 @@ public class ArtistDBDao implements IArtistDAO {
 
     @Override
     public void add(ArtistEntity artist) {
-        EntityManager entityManager = ConnectionSingleton.getInstance().getEntityManager();
+        EntityManager entityManager = connectionManager.getEntityManager();
         entityManager.getTransaction().begin();
 
         entityManager.merge(artist);
@@ -60,7 +66,7 @@ public class ArtistDBDao implements IArtistDAO {
 
     @Override
     public void update(ArtistEntity artist) {
-        EntityManager entityManager = ConnectionSingleton.getInstance().getEntityManager();
+        EntityManager entityManager = connectionManager.getEntityManager();
         entityManager.getTransaction().begin();
 
         ArtistEntity artistEntity = entityManager.find(ArtistEntity.class, artist.getId());
@@ -72,7 +78,7 @@ public class ArtistDBDao implements IArtistDAO {
 
     @Override
     public void delete(long id) {
-        EntityManager entityManager = ConnectionSingleton.getInstance().getEntityManager();
+        EntityManager entityManager = connectionManager.getEntityManager();
         entityManager.getTransaction().begin();
 
         ArtistEntity artist = entityManager.find(ArtistEntity.class, id);

@@ -3,7 +3,7 @@ package dao.database;
 import dao.api.IEmailSendingDAO;
 import dao.entity.EmailEntity;
 import dao.entity.EmailStatus;
-import dao.factories.ConnectionSingleton;
+import dao.util.ConnectionManager;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
@@ -14,11 +14,17 @@ import java.util.List;
 
 public class EmailSendingDBDAO implements IEmailSendingDAO {
 
+    private final ConnectionManager connectionManager;
+
     private static final int NUMBER_EMAILS_TO_SEND = 10;
+
+    public EmailSendingDBDAO(ConnectionManager connectionManager) {
+        this.connectionManager = connectionManager;
+    }
 
     @Override
     public void add(EmailEntity email) {
-        EntityManager entityManager = ConnectionSingleton.getInstance().getEntityManager();
+        EntityManager entityManager = connectionManager.getEntityManager();
         entityManager.getTransaction().begin();
 
         entityManager.merge(email);
@@ -30,7 +36,7 @@ public class EmailSendingDBDAO implements IEmailSendingDAO {
     @Override
     public List<EmailEntity> getUnsent() {
         List<EmailEntity> emails;
-        EntityManager entityManager = ConnectionSingleton.getInstance().getEntityManager();
+        EntityManager entityManager = connectionManager.getEntityManager();
         entityManager.getTransaction().begin();
 
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -56,7 +62,7 @@ public class EmailSendingDBDAO implements IEmailSendingDAO {
 
     @Override
     public void update(EmailEntity email) {
-        EntityManager entityManager = ConnectionSingleton.getInstance().getEntityManager();
+        EntityManager entityManager = connectionManager.getEntityManager();
         entityManager.getTransaction().begin();
 
         EmailEntity emailEntity = entityManager.find(EmailEntity.class, email.getId());

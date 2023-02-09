@@ -4,12 +4,111 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans
         https://www.springframework.org/schema/beans/spring-beans.xsd">
 
-<!--    <bean id="beanServiceA" class="dao.service.impl.ServiceA">-->
-<!--         <constructor-arg index="0" ref="beanServiceB"/>-->
-<!--    </bean>-->
 
-<!--    <bean id="beanServiceB" class="service.impl.ServiceB">-->
-<!--    </bean>-->
+    <!--initialize connect to DB-->
 
 
+    <bean id="propertiesBean" class="dao.util.PropertiesUtil"
+          factory-method="get">
+    </bean>
+
+    <bean id="entityManagerFactory" class="javax.persistence.Persistence"
+          factory-method="createEntityManagerFactory">
+        <constructor-arg name="persistenceUnitName" value="org.hibernate.voting.jpa"/>
+        <constructor-arg name="properties" ref="propertiesBean"/>
+    </bean>
+
+    <bean id="connectionManager" class="dao.util.ConnectionManager">
+        <constructor-arg name="entityManagerFactory" ref="entityManagerFactory"/>
+    </bean>
+
+    <bean id="entityManager" class="javax.persistence.EntityManager" scope="prototype"
+          factory-bean="connectionManager" factory-method="getEntityManager">
+    </bean>
+
+
+    <!--initialize dao-->
+
+
+    <bean id="artistDBDAO" class="dao.database.ArtistDBDao">
+        <constructor-arg name="connectionManager" ref="connectionManager"/>
+    </bean>
+
+    <bean id="genreDBDAO" class="dao.database.GenreDBDAO">
+        <constructor-arg name="connectionManager" ref="connectionManager"/>
+    </bean>
+
+    <bean id="voteDBDAO" class="dao.database.VoteDBDAO">
+        <constructor-arg name="connectionManager" ref="connectionManager"/>
+    </bean>
+
+    <bean id="emailSendingDBDao" class="dao.database.EmailSendingDBDAO">
+        <constructor-arg name="connectionManager" ref="connectionManager"/>
+    </bean>
+
+
+    <!--initialize converters-->
+
+
+    <bean id="artistDTOEntityConverter"
+          class="service.converters.ArtistDTOEntityConverter">
+    </bean>
+
+    <bean id="artistEntityDTOConverter"
+          class="service.converters.ArtistEntityDTOConverter">
+    </bean>
+
+    <bean id="genreDTOEntityConverter"
+          class="service.converters.GenreDTOEntityConverter">
+    </bean>
+
+    <bean id="genreEntityDTOConverter"
+          class="service.converters.GenreEntityDTOConverter">
+    </bean>
+
+    <bean id="voteSavedDTOEntityConverter"
+          class="service.converters.VoteSavedDTOEntityConverter">
+    </bean>
+
+    <bean id="voteEntitySavedDTOConverter"
+          class="service.converters.VoteEntitySavedDTOConverter">
+    </bean>
+
+
+    <!--initialize services-->
+
+
+    <bean id="artistService" class="service.ArtistService">
+        <constructor-arg name="dataSource" ref="artistDBDAO"/>
+        <constructor-arg name="artistDTOEntityConverter" ref="artistDTOEntityConverter"/>
+        <constructor-arg name="artistEntityDTOConverter" ref="artistEntityDTOConverter"/>
+    </bean>
+
+    <bean id="genreService" class="service.GenreService">
+        <constructor-arg name="dataSource" ref="genreDBDAO"/>
+        <constructor-arg name="genreDTOEntityConverter" ref="genreDTOEntityConverter"/>
+        <constructor-arg name="genreEntityDTOConverter" ref="genreEntityDTOConverter"/>
+    </bean>
+
+    <bean id="emailSendingService" class="service.EmailSendingService">
+        <constructor-arg name="genreService" ref="genreService"/>
+        <constructor-arg name="artistService" ref="artistService"/>
+        <constructor-arg name="emailSendingDAO" ref="emailSendingDBDao"/>
+        <constructor-arg name="voteEntitySavedDTOConverter" ref="voteEntitySavedDTOConverter"/>
+    </bean>
+
+    <bean id="voteService" class="service.VoteService">
+        <constructor-arg name="voteDAO" ref="voteDBDAO"/>
+        <constructor-arg name="genreService" ref="genreService"/>
+        <constructor-arg name="artistService" ref="artistService"/>
+        <constructor-arg name="sendingService" ref="emailSendingService"/>
+        <constructor-arg name="voteEntitySavedDTOConverter" ref="voteEntitySavedDTOConverter"/>
+        <constructor-arg name="voteSavedDTOEntityConverter" ref="voteSavedDTOEntityConverter"/>
+    </bean>
+
+    <bean id="statisticsService" class="service.StatisticsService">
+        <constructor-arg name="voteService" ref="voteService"/>
+        <constructor-arg name="artistService" ref="artistService"/>
+        <constructor-arg name="genreService" ref="genreService"/>
+    </bean>
 </beans>

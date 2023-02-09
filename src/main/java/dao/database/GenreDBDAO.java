@@ -2,7 +2,7 @@ package dao.database;
 
 import dao.api.IGenreDAO;
 import dao.entity.GenreEntity;
-import dao.factories.ConnectionSingleton;
+import dao.util.ConnectionManager;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
@@ -12,11 +12,16 @@ import java.util.List;
 
 public class GenreDBDAO implements IGenreDAO {
 
+    private final ConnectionManager connectionManager;
+
+    public GenreDBDAO(ConnectionManager connectionManager) {
+        this.connectionManager = connectionManager;
+    }
 
     @Override
     public List<GenreEntity> getAll() {
         List<GenreEntity> genres;
-        EntityManager entityManager = ConnectionSingleton.getInstance().getEntityManager();
+        EntityManager entityManager = connectionManager.getEntityManager();
         entityManager.getTransaction().begin();
 
         CriteriaQuery<GenreEntity> query = entityManager.getCriteriaBuilder()
@@ -38,7 +43,7 @@ public class GenreDBDAO implements IGenreDAO {
 
     @Override
     public GenreEntity get(long id) {
-        EntityManager entityManager = ConnectionSingleton.getInstance().getEntityManager();
+        EntityManager entityManager = connectionManager.getEntityManager();
         entityManager.getTransaction().begin();
 
         GenreEntity genreEntity = entityManager.find(GenreEntity.class, id);
@@ -49,7 +54,7 @@ public class GenreDBDAO implements IGenreDAO {
     }
 
     public void add(GenreEntity genre) {
-        EntityManager entityManager = ConnectionSingleton.getInstance().getEntityManager();
+        EntityManager entityManager = connectionManager.getEntityManager();
         entityManager.getTransaction().begin();
 
         entityManager.merge(genre);
@@ -60,7 +65,7 @@ public class GenreDBDAO implements IGenreDAO {
 
     @Override
     public void update(GenreEntity genre) {
-        EntityManager entityManager = ConnectionSingleton.getInstance().getEntityManager();
+        EntityManager entityManager = connectionManager.getEntityManager();
         entityManager.getTransaction().begin();
 
         GenreEntity genreEntity = entityManager.find(GenreEntity.class, genre.getId());
@@ -72,7 +77,7 @@ public class GenreDBDAO implements IGenreDAO {
 
     @Override
     public void delete(long id) {
-        EntityManager entityManager = ConnectionSingleton.getInstance().getEntityManager();
+        EntityManager entityManager = connectionManager.getEntityManager();
         entityManager.getTransaction().begin();
 
         GenreEntity genre = entityManager.find(GenreEntity.class, id);
