@@ -34,7 +34,7 @@ public class StatisticsService implements IStatisticsService {
 
     @Override
     public Map<ArtistDTO, Integer> getBestArtists() {
-        final Map<Integer, Integer> artistVotes = artistService.getAll()
+        final Map<Long, Integer> artistVotes = artistService.getAll()
                 .stream()
                 .collect(Collectors.toMap(ArtistDTO::getId, artist -> 0));
         voteService.getAll()
@@ -47,7 +47,7 @@ public class StatisticsService implements IStatisticsService {
         return sortArtistsByVotes(artistVotes);
     }
 
-    private Map<ArtistDTO, Integer> sortArtistsByVotes(Map<Integer, Integer> artists) {
+    private Map<ArtistDTO, Integer> sortArtistsByVotes(Map<Long, Integer> artists) {
         return artists.entrySet()
                 .stream()
                 .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
@@ -60,7 +60,7 @@ public class StatisticsService implements IStatisticsService {
 
     @Override
     public Map<GenreDTO, Integer> getBestGenres() {
-        final Map<Integer, Integer> genreVotes = genreService.getAll()
+        final Map<Long, Integer> genreVotes = genreService.getAll()
                 .stream()
                 .collect(Collectors.toMap(GenreDTO::getId, genre -> 0));
         voteService.getAll()
@@ -74,7 +74,7 @@ public class StatisticsService implements IStatisticsService {
         return sortGenresByVotes(genreVotes);
     }
 
-    private Map<GenreDTO, Integer> sortGenresByVotes(Map<Integer, Integer> genres) {
+    private Map<GenreDTO, Integer> sortGenresByVotes(Map<Long, Integer> genres) {
         return genres.entrySet()
                 .stream()
                 .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
