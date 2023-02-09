@@ -1,125 +1,84 @@
 package dao.database;
 
 import dao.api.IArtistDAO;
+import dao.entity.ArtistEntity;
 import dao.factories.ConnectionSingleton;
-import dto.ArtistDTO;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
+import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import java.util.List;
 
 public class ArtistDBDao implements IArtistDAO {
 
-    private static final String GET_ALL = "SELECT id, name FROM app.artist;";
-    private static final String GET = "SELECT id, name FROM app.artist " +
-            "WHERE id = ?;";
-    private static final String ADD = "INSERT INTO app.artist (name) VALUES (?);";
-    private static final String UPDATE = "UPDATE app.artist SET name=? WHERE id=?;";
-    private static final String COUNT_VOTES = "SELECT COUNT(id) AS count FROM app.votes " +
-            "WHERE artist_id=?;";
-    private static final String DELETE = "DELETE FROM app.artist WHERE id=?;";
-
     @Override
-    public List<ArtistDTO> getAll() {
-        try (Connection conn = ConnectionSingleton.getInstance().open();
-             PreparedStatement stmt = conn.prepareStatement(GET_ALL,
-                     ResultSet.TYPE_SCROLL_SENSITIVE,
-                     ResultSet.CONCUR_UPDATABLE);
-             ResultSet artists = stmt.executeQuery()) {
+    public List<ArtistEntity> getAll() {
+        List<ArtistEntity> artists;
+        EntityManager entityManager = ConnectionSingleton.getInstance().getEntityManager();
+        entityManager.getTransaction().begin();
 
-            List<ArtistDTO> artistDTOs = new ArrayList<>();
-            while (artists.next()) {
-                artistDTOs.add(get(artists));
-            }
-            return artistDTOs;
-        } catch (SQLException e) {
-            throw new RuntimeException("database query error");
-        }
+        CriteriaQuery<ArtistEntity> query = entityManager.getCriteriaBuilder()
+                .createQuery(ArtistEntity.class);
+        Root<ArtistEntity> root = query.from(ArtistEntity.class);
+        CriteriaQuery<ArtistEntity> all = query.select(root);
+        TypedQuery<ArtistEntity> allQuery = entityManager.createQuery(all);
+        artists = allQuery.getResultList();
+
+        entityManager.getTransaction().commit();
+        entityManager.close();
+        return artists;
     }
 
     @Override
-    public boolean exists(int id) {
-        try {
-            get(id);
-            return true;
-        } catch (IllegalArgumentException e) {
-            return false;
-        }
+    public boolean exists(long id) {
+        return get(id) != null;
     }
 
     @Override
-    public ArtistDTO get(int id) {
-        try (Connection conn = ConnectionSingleton.getInstance().open();
-             PreparedStatement stmt = conn.prepareStatement(GET,
-                     ResultSet.TYPE_SCROLL_SENSITIVE,
-                     ResultSet.CONCUR_UPDATABLE)) {
+    public ArtistEntity get(long id) {
+        EntityManager entityManager = ConnectionSingleton.getInstance().getEntityManager();
+        entityManager.getTransaction().begin();
 
-            stmt.setInt(1, id);
-            try (ResultSet artist = stmt.executeQuery()) {
-                if (artist.first()) {
-                    return get(artist);
-                } else {
-                    throw new IllegalArgumentException("artist with the" +
-                            " specified id does not exist");
-                }
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException("database query error");
-        }
+        ArtistEntity artistEntity = entityManager.find(ArtistEntity.class, id);
+
+        entityManager.getTransaction().commit();
+        entityManager.close();
+        return artistEntity;
     }
 
     @Override
-    public void add(String artist) {
-        try (Connection conn = ConnectionSingleton.getInstance().open();
-             PreparedStatement statement = conn.prepareStatement(ADD)) {
-            statement.setString(1, artist);
-            statement.executeUpdate();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+    public void add(ArtistEntity artist) {
+        EntityManager entityManager = ConnectionSingleton.getInstance().getEntityManager();
+        entityManager.getTransaction().begin();
+
+        entityManager.merge(artist);
+
+        entityManager.getTransaction().commit();
+        entityManager.close();
     }
 
     @Override
-    public void update(int id, String artist) {
-        try (Connection conn = ConnectionSingleton.getInstance().open();
-             PreparedStatement statement = conn.prepareStatement(UPDATE)) {
-            statement.setString(1, artist);
-            statement.setInt(2, id);
-            statement.executeUpdate();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+    public void update(ArtistEntity artist) {
+        EntityManager entityManager = ConnectionSingleton.getInstance().getEntityManager();
+        entityManager.getTransaction().begin();
+
+        ArtistEntity artistEntity = entityManager.find(ArtistEntity.class, artist.getId());
+        artistEntity.setArtist(artist.getArtist());
+
+        entityManager.getTransaction().commit();
+        entityManager.close();
     }
 
     @Override
-    public void delete(int id) {
-        try (Connection conn = ConnectionSingleton.getInstance().open();
-             PreparedStatement statement = conn.prepareStatement(COUNT_VOTES,
-                     ResultSet.TYPE_SCROLL_SENSITIVE,
-                     ResultSet.CONCUR_UPDATABLE)) {
-            statement.setInt(1, id);
-            try (ResultSet resultSet = statement.executeQuery()) {
-                resultSet.first();
-                if (resultSet.getInt("count") == 0) {
-                    try (PreparedStatement delStatement = conn.prepareStatement(DELETE)) {
-                        delStatement.setInt(1, id);
-                        delStatement.executeUpdate();
-                    }
-                } else {
-                    throw new IllegalArgumentException("artist can't be deleted: he has votes");
-                }
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
+    public void delete(long id) {
+        EntityManager entityManager = ConnectionSingleton.getInstance().getEntityManager();
+        entityManager.getTransaction().begin();
 
-    private ArtistDTO get(ResultSet artist) throws SQLException {
-        return new ArtistDTO(
-                artist.getInt("id"),
-                artist.getString("name"));
+        ArtistEntity artist = entityManager.find(ArtistEntity.class, id);
+        entityManager.remove(artist);
+
+        entityManager.getTransaction().commit();
+        entityManager.close();
     }
 }
