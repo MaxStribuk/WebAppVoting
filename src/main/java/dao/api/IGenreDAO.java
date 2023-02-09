@@ -1,20 +1,20 @@
 package dao.api;
 
-import dto.GenreDTO;
+import dao.entity.GenreEntity;
 
 import java.util.List;
 
 public interface IGenreDAO {
 
-    List<GenreDTO> getAll();
+    List<GenreEntity> getAll();
 
-    boolean exists(int id);
+    boolean exists(long id);
 
-    GenreDTO get(int id);
+    GenreEntity get(long id);
 
-    void add(String genre);
+    void add(GenreEntity genre);
 
-    void update(int id, String genre);
+    void update(GenreEntity genre);
     
-    void delete(int id);
+    void delete(long id);
 }
