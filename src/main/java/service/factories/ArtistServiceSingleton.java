@@ -1,9 +1,10 @@
 package service.factories;
 
 import dao.factories.ArtistDAOSingleton;
-import dao.factories.DAOType;
 import service.ArtistService;
 import service.api.IArtistService;
+import service.converters.ArtistDTOEntityConverter;
+import service.converters.ArtistEntityDTOConverter;
 
 public class ArtistServiceSingleton {
 
@@ -17,7 +18,9 @@ public class ArtistServiceSingleton {
             synchronized (ArtistServiceSingleton.class) {
                 if (instance == null) {
                     instance = new ArtistService(
-                            ArtistDAOSingleton.getInstance(DAOType.DB));
+                            ArtistDAOSingleton.getInstance(),
+                            new ArtistDTOEntityConverter(),
+                            new ArtistEntityDTOConverter());
                 }
             }
         }
