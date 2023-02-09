@@ -13,21 +13,23 @@ import service.api.IVoteService;
 
 public class Main {
 
-    private static final ApplicationContext applicationContext =
-            new ClassPathXmlApplicationContext("main-contex.xml");
+    private static final ApplicationContext applicationContext;
+    private static final IArtistService artistService;
+    private static final IGenreService genreService;
+    private static final IVoteService voteService;
+    private static final IStatisticsService statisticsService;
+    private static final ISendingService sendingService;
+
+    static {
+        applicationContext = new ClassPathXmlApplicationContext("main-contex.xml");
+        artistService = applicationContext.getBean("artistService", ArtistService.class);
+        genreService = applicationContext.getBean("genreService", GenreService.class);
+        voteService = applicationContext.getBean("voteService", VoteService.class);
+        statisticsService = applicationContext.getBean("statisticsService", StatisticsService.class);
+        sendingService = applicationContext.getBean("emailSendingService", EmailSendingService.class);
+    }
 
     public static void main(String[] args) {
-        IArtistService artistService = applicationContext.getBean("artistService",
-                ArtistService.class);
-        IGenreService genreService = applicationContext.getBean("genreService",
-                GenreService.class);
-        IVoteService voteService = applicationContext.getBean("voteService",
-                VoteService.class);
-        IStatisticsService statisticsService = applicationContext.getBean("statisticsService",
-                StatisticsService.class);
-        ISendingService sendingService = applicationContext.getBean("emailSendingService",
-                EmailSendingService.class);
-
 
     }
 }
