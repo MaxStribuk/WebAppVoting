@@ -1,5 +1,3 @@
-CREATE SCHEMA IF NOT EXISTS app;
-
 CREATE TABLE app.artists
 (
     id   bigint NOT NULL,
@@ -18,6 +16,7 @@ ALTER SEQUENCE app.artists_id_seq OWNED BY app.artists.id;
 CREATE TABLE app.emails
 (
     id           bigint  NOT NULL,
+    vote_id      bigint  NOT NULL,
     recipient    text    NOT NULL,
     topic        text    NOT NULL,
     text_message text    NOT NULL,
@@ -112,10 +111,10 @@ ALTER TABLE ONLY app.votes
     ADD CONSTRAINT votes_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY app.emails
-    ADD CONSTRAINT emails_recipient_fkey FOREIGN KEY (recipient) REFERENCES app.votes (email) NOT VALID;
+    ADD CONSTRAINT emails_vote_id_fkey FOREIGN KEY (vote_id) REFERENCES app.votes (id) NOT VALID;
 
 ALTER TABLE ONLY app.votes
-    ADD CONSTRAINT "none" FOREIGN KEY (artist_id) REFERENCES app.artists (id) NOT VALID;
+    ADD CONSTRAINT "votes_artists_artist_id_fkey" FOREIGN KEY (artist_id) REFERENCES app.artists (id) NOT VALID;
 
 ALTER TABLE ONLY app.votes_genres
     ADD CONSTRAINT votes_genres_genre_id_fkey FOREIGN KEY (genre_id) REFERENCES app.genres (id);
