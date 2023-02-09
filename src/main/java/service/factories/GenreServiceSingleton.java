@@ -1,9 +1,10 @@
 package service.factories;
 
-import dao.factories.DAOType;
 import dao.factories.GenreDAOSingleton;
 import service.GenreService;
 import service.api.IGenreService;
+import service.converters.GenreDTOEntityConverter;
+import service.converters.GenreEntityDTOConverter;
 
 public class GenreServiceSingleton {
 
@@ -17,7 +18,9 @@ public class GenreServiceSingleton {
             synchronized (GenreServiceSingleton.class) {
                 if (instance == null) {
                     instance = new GenreService(
-                            GenreDAOSingleton.getInstance(DAOType.DB));
+                            GenreDAOSingleton.getInstance(),
+                            new GenreDTOEntityConverter(),
+                            new GenreEntityDTOConverter());
                 }
             }
         }
