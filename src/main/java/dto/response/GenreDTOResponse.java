@@ -1,18 +1,14 @@
-package dto;
+package dto.response;
 
 import java.util.Objects;
 
-public class GenreDTO {
+public class GenreDTOResponse {
 
-    private long id;
-    private String title;
+    private final long id;
+    private final String title;
 
-    public GenreDTO(long id, String title) {
+    public GenreDTOResponse(long id, String title) {
         this.id = id;
-        this.title = title;
-    }
-
-    public GenreDTO(String title) {
         this.title = title;
     }
 
@@ -28,8 +24,8 @@ public class GenreDTO {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        GenreDTO genreDTO = (GenreDTO) o;
-        return id == genreDTO.id && title.equals(genreDTO.title);
+        GenreDTOResponse genreDTOResponse = (GenreDTOResponse) o;
+        return id == genreDTOResponse.id && title.equals(genreDTOResponse.title);
     }
 
     @Override
