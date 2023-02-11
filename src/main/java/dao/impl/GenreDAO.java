@@ -1,4 +1,4 @@
-package dao.database;
+package dao.impl;
 
 import dao.api.IGenreDAO;
 import dao.entity.GenreEntity;
@@ -10,11 +10,11 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import java.util.List;
 
-public class GenreDBDAO implements IGenreDAO {
+public class GenreDAO implements IGenreDAO {
 
     private final ConnectionManager connectionManager;
 
-    public GenreDBDAO(ConnectionManager connectionManager) {
+    public GenreDAO(ConnectionManager connectionManager) {
         this.connectionManager = connectionManager;
     }
 
@@ -57,18 +57,17 @@ public class GenreDBDAO implements IGenreDAO {
         EntityManager entityManager = connectionManager.getEntityManager();
         entityManager.getTransaction().begin();
 
-        entityManager.merge(genre);
-
+        entityManager.persist(genre);
         entityManager.getTransaction().commit();
         entityManager.close();
     }
 
     @Override
-    public void update(GenreEntity genre) {
+    public void update(long id, GenreEntity genre) {
         EntityManager entityManager = connectionManager.getEntityManager();
         entityManager.getTransaction().begin();
 
-        GenreEntity genreEntity = entityManager.find(GenreEntity.class, genre.getId());
+        GenreEntity genreEntity = entityManager.find(GenreEntity.class, id);
         genreEntity.setTitle(genre.getTitle());
 
         entityManager.getTransaction().commit();
