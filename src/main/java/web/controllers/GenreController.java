@@ -2,17 +2,21 @@ package web.controllers;
 
 import dto.request.GenreDTORequest;
 import dto.response.GenreDTOResponse;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import service.api.IGenreService;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/genre")
+@RequestMapping("/genres")
 public class GenreController {
 
     private final IGenreService genreService;
@@ -21,29 +25,30 @@ public class GenreController {
         this.genreService = genreService;
     }
 
-    @RequestMapping(method = RequestMethod.GET)
+    @GetMapping
     public List<GenreDTOResponse> getAll() {
         return genreService.getAll();
     }
 
-    @RequestMapping(path = "/{id}", method = RequestMethod.GET)
+    @GetMapping(path = "/{id}")
     public GenreDTOResponse get(@PathVariable("id") Long id) {
         return genreService.get(id);
     }
 
-    @RequestMapping(method = RequestMethod.POST,
-            headers = {"Content-Type=application/json;charset=utf-8"})
+    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
     public void add(@RequestBody GenreDTORequest genre) {
         genreService.add(genre);
     }
 
-    @RequestMapping(path = "/{id}", method = RequestMethod.PUT)
+    @PutMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
     public void update(@PathVariable("id") Long id,
                        @RequestBody GenreDTORequest genre) {
         genreService.update(id, genre);
     }
 
-    @RequestMapping(path = "/{id}", method = RequestMethod.DELETE)
+    @DeleteMapping(path = "/{id}")
     public void delete(@PathVariable("id") Long id) {
         genreService.delete(id);
     }

@@ -34,8 +34,7 @@ public class GenreService implements IGenreService {
 
     @Override
     public GenreDTOResponse get(long id) {
-        return genreEntityDTOConverter.convert(
-                genreDAO.get(id));
+        return genreEntityDTOConverter.convert(genreDAO.get(id));
     }
 
     @Override
@@ -45,21 +44,19 @@ public class GenreService implements IGenreService {
 
     @Override
     public void add(GenreDTORequest genre) {
-        if (genre == null) {
-            throw new IllegalArgumentException("Genre cannot be null");
+        validate(genre);
+        boolean isDuplicate = isDuplicate(genre.getTitle());
+        if (isDuplicate) {
+            throw new IllegalArgumentException("This genre has already " +
+                    "been added");
         } else {
-            boolean isDuplicate = isDuplicate(genre.getTitle());
-            if (isDuplicate) {
-                throw new IllegalArgumentException("This genre has already " +
-                        "been added");
-            } else {
-                genreDAO.add(genreDTOEntityConverter.convert(genre));
-            }
+            genreDAO.add(genreDTOEntityConverter.convert(genre));
         }
     }
 
     @Override
-    public void update(Long id, GenreDTORequest genre) {
+    public void update(long id, GenreDTORequest genre) {
+        validate(genre);
         boolean isDuplicate = isDuplicate(genre.getTitle());
         if (genreDAO.exists(id) && !isDuplicate) {
             genreDAO.update(id, genreDTOEntityConverter.convert(genre));
@@ -79,8 +76,16 @@ public class GenreService implements IGenreService {
     }
 
     private boolean isDuplicate(String title) {
-        return title != null && getAll().stream()
+        return getAll().stream()
                 .map(GenreDTOResponse::getTitle)
                 .anyMatch(title::equalsIgnoreCase);
+    }
+
+    private void validate(GenreDTORequest genre) {
+        if (genre == null
+                || genre.getTitle() == null
+                || genre.getTitle().isBlank()) {
+            throw new IllegalArgumentException("Genre cannot be null");
+        }
     }
 }

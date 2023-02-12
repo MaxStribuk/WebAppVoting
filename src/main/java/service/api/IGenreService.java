@@ -17,5 +17,5 @@ public interface IGenreService {
 
     void delete(long id);
 
-    void update(Long id, GenreDTORequest genre);
+    void update(long id, GenreDTORequest genre);
 }
