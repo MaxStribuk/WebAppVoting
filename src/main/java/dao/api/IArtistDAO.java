@@ -14,7 +14,7 @@ public interface IArtistDAO {
 
     void add(ArtistEntity artist);
 
-    void update(ArtistEntity artist);
+    void update(long id, ArtistEntity artist);
 
     void delete(long id);
 }

@@ -58,11 +58,11 @@
     <!--initialize converters-->
 
     <bean id="artistDTOEntityConverter"
-          class="service.converters.ArtistDTOEntityConverter">
+          class="service.converters.ArtistDTORequestEntityConverter">
     </bean>
 
     <bean id="artistEntityDTOConverter"
-          class="service.converters.ArtistEntityDTOConverter">
+          class="service.converters.ArtistEntityDTOResponseConverter">
     </bean>
 
     <bean id="genreDTOEntityConverter"
@@ -84,7 +84,7 @@
     <!--initialize services-->
 
     <bean id="artistService" class="service.impl.ArtistService">
-        <constructor-arg name="dataSource" ref="artistDAO"/>
+        <constructor-arg name="artistDAO" ref="artistDAO"/>
         <constructor-arg name="artistDTOEntityConverter" ref="artistDTOEntityConverter"/>
         <constructor-arg name="artistEntityDTOConverter" ref="artistEntityDTOConverter"/>
     </bean>

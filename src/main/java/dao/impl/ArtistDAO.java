@@ -1,4 +1,4 @@
-package dao.database;
+package dao.impl;
 
 import dao.api.IArtistDAO;
 import dao.entity.ArtistEntity;
@@ -10,11 +10,11 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import java.util.List;
 
-public class ArtistDBDao implements IArtistDAO {
+public class ArtistDAO implements IArtistDAO {
 
     private final ConnectionManager connectionManager;
 
-    public ArtistDBDao(ConnectionManager connectionManager) {
+    public ArtistDAO(ConnectionManager connectionManager) {
         this.connectionManager = connectionManager;
     }
 
@@ -58,18 +58,18 @@ public class ArtistDBDao implements IArtistDAO {
         EntityManager entityManager = connectionManager.getEntityManager();
         entityManager.getTransaction().begin();
 
-        entityManager.merge(artist);
+        entityManager.persist(artist);
 
         entityManager.getTransaction().commit();
         entityManager.close();
     }
 
     @Override
-    public void update(ArtistEntity artist) {
+    public void update(long id, ArtistEntity artist) {
         EntityManager entityManager = connectionManager.getEntityManager();
         entityManager.getTransaction().begin();
 
-        ArtistEntity artistEntity = entityManager.find(ArtistEntity.class, artist.getId());
+        ArtistEntity artistEntity = entityManager.find(ArtistEntity.class, id);
         artistEntity.setArtist(artist.getArtist());
 
         entityManager.getTransaction().commit();

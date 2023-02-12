@@ -25,13 +25,8 @@ public class ArtistEntity {
     public ArtistEntity() {
     }
 
-    public ArtistEntity(long id, String artist) {
-        this.id = id;
+    public ArtistEntity(String artist) {
         this.artist = artist;
-    }
-
-    public ArtistEntity(long id) {
-        this.id = id;
     }
 
     public long getId() {
