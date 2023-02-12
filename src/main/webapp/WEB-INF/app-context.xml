@@ -111,7 +111,7 @@
         <constructor-arg name="voteSavedDTOEntityConverter" ref="voteSavedDTOEntityConverter"/>
     </bean>
 
-    <bean id="statisticsService" class="service.impl.StatisticsService">
+    <bean id="statisticsService" class="service.impl.StatisticService">
         <constructor-arg name="voteService" ref="voteService"/>
         <constructor-arg name="artistService" ref="artistService"/>
         <constructor-arg name="genreService" ref="genreService"/>
