@@ -73,12 +73,12 @@
           class="service.converters.GenreEntityDTOResponseConverter">
     </bean>
 
-    <bean id="voteSavedDTOEntityConverter"
-          class="service.converters.VoteSavedDTOEntityConverter">
+    <bean id="voteDTOEntityConverter"
+          class="service.converters.VoteDTOEntityConverter">
     </bean>
 
-    <bean id="voteEntitySavedDTOConverter"
-          class="service.converters.VoteEntitySavedDTOConverter">
+    <bean id="voteEntityDTOConverter"
+          class="service.converters.VoteEntityDTOResponseConverter">
     </bean>
 
     <!--initialize services-->
@@ -99,7 +99,7 @@
         <constructor-arg name="genreService" ref="genreService"/>
         <constructor-arg name="artistService" ref="artistService"/>
         <constructor-arg name="emailSendingDAO" ref="emailSendingDao"/>
-        <constructor-arg name="voteEntitySavedDTOConverter" ref="voteEntitySavedDTOConverter"/>
+        <constructor-arg name="voteEntitySavedDTOConverter" ref="voteEntityDTOConverter"/>
     </bean>
 
     <bean id="voteService" class="service.impl.VoteService">
@@ -107,8 +107,8 @@
         <constructor-arg name="genreService" ref="genreService"/>
         <constructor-arg name="artistService" ref="artistService"/>
         <constructor-arg name="sendingService" ref="emailSendingService"/>
-        <constructor-arg name="voteEntitySavedDTOConverter" ref="voteEntitySavedDTOConverter"/>
-        <constructor-arg name="voteSavedDTOEntityConverter" ref="voteSavedDTOEntityConverter"/>
+        <constructor-arg name="voteEntityDTOConverter" ref="voteEntityDTOConverter"/>
+        <constructor-arg name="voteDTOEntityConverter" ref="voteDTOEntityConverter"/>
     </bean>
 
     <bean id="statisticsService" class="service.impl.StatisticService">

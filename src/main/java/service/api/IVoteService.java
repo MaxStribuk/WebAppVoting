@@ -1,15 +1,13 @@
 package service.api;
 
-import dto.SavedVoteDTO;
-import dto.VoteDTO;
+import dto.response.VoteDTOResponse;
+import dto.request.VoteDTORequest;
 
 import java.util.List;
 
 public interface IVoteService {
 
-    List<SavedVoteDTO> getAll();
+    List<VoteDTOResponse> getAll();
 
-    void save(SavedVoteDTO vote);
-
-    void validate(VoteDTO vote);
+    void save(VoteDTORequest vote);
 }
