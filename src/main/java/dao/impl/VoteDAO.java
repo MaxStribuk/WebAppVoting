@@ -1,4 +1,4 @@
-package dao.database;
+package dao.impl;
 
 import dao.api.IVoteDAO;
 import dao.entity.ArtistEntity;
@@ -14,11 +14,11 @@ import javax.persistence.criteria.Root;
 import java.util.ArrayList;
 import java.util.List;
 
-public class VoteDBDAO implements IVoteDAO {
+public class VoteDAO implements IVoteDAO {
 
     private final ConnectionManager connectionManager;
 
-    public VoteDBDAO(ConnectionManager connectionManager) {
+    public VoteDAO(ConnectionManager connectionManager) {
         this.connectionManager = connectionManager;
     }
 
@@ -48,7 +48,6 @@ public class VoteDBDAO implements IVoteDAO {
     public void save(VoteEntity vote) {
         EntityManager entityManager = connectionManager.getEntityManager();
         entityManager.getTransaction().begin();
-
 
         ArtistEntity artist = entityManager.find(ArtistEntity.class, vote.getArtist().getId());
         vote.setArtist(artist);

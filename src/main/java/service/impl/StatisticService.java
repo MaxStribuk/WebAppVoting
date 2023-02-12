@@ -2,9 +2,8 @@ package service.impl;
 
 import dto.response.ArtistDTOResponse;
 import dto.response.GenreDTOResponse;
-import dto.SavedVoteDTO;
+import dto.response.VoteDTOResponse;
 import dto.response.StatisticDTOResponse;
-import dto.VoteDTO;
 import service.api.IGenreService;
 import service.api.IArtistService;
 import service.api.IStatisticsService;
@@ -38,8 +37,7 @@ public class StatisticService implements IStatisticsService {
                 .collect(Collectors.toMap(ArtistDTOResponse::getId, artist -> 0));
         voteService.getAll()
                 .stream()
-                .map(SavedVoteDTO::getVoteDTO)
-                .map(VoteDTO::getArtistId)
+                .map(VoteDTOResponse::getArtistId)
                 .forEach(artistId -> artistVotes.put(
                         artistId,
                         artistVotes.get(artistId) + 1));
@@ -64,8 +62,7 @@ public class StatisticService implements IStatisticsService {
                 .collect(Collectors.toMap(GenreDTOResponse::getId, genre -> 0));
         voteService.getAll()
                 .stream()
-                .map(SavedVoteDTO::getVoteDTO)
-                .map(VoteDTO::getGenreIds)
+                .map(VoteDTOResponse::getGenreIds)
                 .flatMap(Collection::stream)
                 .forEach(genreId -> genreVotes.put(
                         genreId,
@@ -88,10 +85,10 @@ public class StatisticService implements IStatisticsService {
     public Map<LocalDateTime, String> getAbouts() {
         return voteService.getAll()
                 .stream()
-                .sorted(Comparator.comparing(SavedVoteDTO::getCreateDataTime))
+                .sorted(Comparator.comparing(VoteDTOResponse::getCreationTime))
                 .collect(Collectors.toMap(
-                        SavedVoteDTO::getCreateDataTime,
-                        vote -> vote.getVoteDTO().getAbout(),
+                        VoteDTOResponse::getCreationTime,
+                        VoteDTOResponse::getAbout,
                         (value1, value2) -> value1 + "\n\n"+ value2,
                         LinkedHashMap::new));
     }
