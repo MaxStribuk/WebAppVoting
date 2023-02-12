@@ -1,19 +1,19 @@
 package service.converters;
 
 import dao.entity.ArtistEntity;
-import dto.ArtistDTO;
+import dto.response.ArtistDTOResponse;
 import service.api.IConvertable;
 
-public class ArtistEntityDTOConverter
-        implements IConvertable <ArtistEntity, ArtistDTO> {
+public class ArtistEntityDTOResponseConverter
+        implements IConvertable <ArtistEntity, ArtistDTOResponse> {
 
     @Override
-    public ArtistDTO convert(ArtistEntity artist) {
+    public ArtistDTOResponse convert(ArtistEntity artist) {
         if (artist == null) {
             throw new IllegalArgumentException("the artist with the specified id " +
                     "does not exist");
         }
-        return new ArtistDTO(
+        return new ArtistDTOResponse(
             artist.getId(),
             artist.getArtist()
         );
