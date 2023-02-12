@@ -1,18 +1,14 @@
-package dto;
+package dto.response;
 
 import java.util.Objects;
 
-public class ArtistDTO {
+public class ArtistDTOResponse {
 
-    private long id;
-    private String name;
+    private final long id;
+    private final String name;
 
-    public ArtistDTO(long id, String name) {
+    public ArtistDTOResponse(long id, String name) {
         this.id = id;
-        this.name = name;
-    }
-
-    public ArtistDTO(String name) {
         this.name = name;
     }
 
@@ -28,7 +24,7 @@ public class ArtistDTO {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        ArtistDTO that = (ArtistDTO) o;
+        ArtistDTOResponse that = (ArtistDTOResponse) o;
         return id == that.id && name.equals(that.name);
     }
 
