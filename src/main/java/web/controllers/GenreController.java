@@ -25,24 +25,22 @@ public class GenreController {
         this.genreService = genreService;
     }
 
-    @GetMapping
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public List<GenreDTOResponse> getAll() {
         return genreService.getAll();
     }
 
-    @GetMapping(path = "/{id}")
+    @GetMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public GenreDTOResponse get(@PathVariable("id") Long id) {
         return genreService.get(id);
     }
 
-    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE,
-            consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public void add(@RequestBody GenreDTORequest genre) {
         genreService.add(genre);
     }
 
-    @PutMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE,
-            consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(path = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public void update(@PathVariable("id") Long id,
                        @RequestBody GenreDTORequest genre) {
         genreService.update(id, genre);

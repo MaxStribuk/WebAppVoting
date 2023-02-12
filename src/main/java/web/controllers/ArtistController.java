@@ -25,24 +25,22 @@ public class ArtistController {
         this.artistService = artistService;
     }
 
-    @GetMapping
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public List<ArtistDTOResponse> getAll() {
         return artistService.getAll();
     }
 
-    @GetMapping(path = "/{id}")
+    @GetMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ArtistDTOResponse get(@PathVariable("id") Long id) {
         return artistService.get(id);
     }
 
-    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE,
-            consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public void add(@RequestBody ArtistDTORequest artist) {
         artistService.add(artist);
     }
 
-    @PutMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE,
-            consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(path = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public void update(@PathVariable("id") Long id,
                        @RequestBody ArtistDTORequest artist) {
         artistService.update(id, artist);
