@@ -24,41 +24,62 @@ public class VoteDAO implements IVoteDAO {
 
     @Override
     public List<VoteEntity> getAll() {
-        List<VoteEntity> votes;
-        EntityManager entityManager = connectionManager.getEntityManager();
-        entityManager.getTransaction().begin();
+        EntityManager entityManager = null;
+        try {
+            entityManager = connectionManager.getEntityManager();
+            entityManager.getTransaction().begin();
 
-        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<VoteEntity> query = criteriaBuilder
-                .createQuery(VoteEntity.class);
-        Root<VoteEntity> root = query.from(VoteEntity.class);
-        root.fetch("genres");
-        CriteriaQuery<VoteEntity> all = query.select(root);
-        all.distinct(true);
-        TypedQuery<VoteEntity> allQuery = entityManager.createQuery(all);
-        votes = allQuery.getResultList();
+            CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+            CriteriaQuery<VoteEntity> query = criteriaBuilder
+                    .createQuery(VoteEntity.class);
+            Root<VoteEntity> root = query.from(VoteEntity.class);
+            root.fetch("genres");
+            CriteriaQuery<VoteEntity> all = query.select(root);
+            all.distinct(true);
+            TypedQuery<VoteEntity> allQuery = entityManager.createQuery(all);
+            List<VoteEntity> votes = allQuery.getResultList();
 
-        entityManager.getTransaction().commit();
-        entityManager.close();
-
-        return votes;
+            entityManager.getTransaction().commit();
+            return votes;
+        } catch (Exception e) {
+            if (entityManager != null && entityManager.getTransaction().isActive()) {
+                entityManager.getTransaction().rollback();
+            }
+            throw new RuntimeException(e);
+        } finally {
+            if (entityManager != null) {
+                entityManager.close();
+            }
+        }
     }
 
     @Override
     public void save(VoteEntity vote) {
-        EntityManager entityManager = connectionManager.getEntityManager();
-        entityManager.getTransaction().begin();
+        EntityManager entityManager = null;
+        try {
+            entityManager = connectionManager.getEntityManager();
+            entityManager.getTransaction().begin();
 
-        ArtistEntity artist = entityManager.find(ArtistEntity.class, vote.getArtist().getId());
-        vote.setArtist(artist);
-        List<GenreEntity> genres = vote.getGenres();
-        vote.setGenres(new ArrayList<>());
-        genres.stream()
-                .map(GenreEntity::getId)
-                .forEach(id -> vote.getGenres().add(entityManager.find(GenreEntity.class, id)));
-        entityManager.persist(vote);
+            ArtistEntity artist = entityManager.find(ArtistEntity.class, vote.getArtist().getId());
+            vote.setArtist(artist);
+            List<GenreEntity> genres = vote.getGenres();
+            vote.setGenres(new ArrayList<>());
+            final EntityManager finalEntityManager = entityManager;
+            genres.stream()
+                    .map(GenreEntity::getId)
+                    .forEach(id -> vote.getGenres().add(finalEntityManager.find(GenreEntity.class, id)));
+            entityManager.persist(vote);
 
-        entityManager.getTransaction().commit();
-        entityManager.close();
+            entityManager.getTransaction().commit();
+        } catch (Exception e) {
+            if (entityManager != null && entityManager.getTransaction().isActive()) {
+                entityManager.getTransaction().rollback();
+            }
+            throw new RuntimeException(e);
+        } finally {
+            if (entityManager != null) {
+                entityManager.close();
+            }
+        }
     }
 }

@@ -15,12 +15,12 @@ public class ConnectionManager implements IConnection {
 
     @Override
     public EntityManager getEntityManager() {
-        return sessionFactory.createEntityManager();
+        return this.sessionFactory.createEntityManager();
     }
 
 
     @Override
     public void close() throws Exception {
-        sessionFactory.close();
+        this.sessionFactory.close();
     }
 }

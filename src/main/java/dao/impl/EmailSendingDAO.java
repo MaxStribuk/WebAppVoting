@@ -24,56 +24,92 @@ public class EmailSendingDAO implements IEmailSendingDAO {
 
     @Override
     public void add(EmailEntity email) {
-        EntityManager entityManager = connectionManager.getEntityManager();
-        entityManager.getTransaction().begin();
+        EntityManager entityManager = null;
+        try {
+            entityManager = connectionManager.getEntityManager();
+            entityManager.getTransaction().begin();
 
-        entityManager.persist(email);
+            entityManager.persist(email);
 
-        entityManager.getTransaction().commit();
-        entityManager.close();
+            entityManager.getTransaction().commit();
+        } catch (Exception e) {
+            if (entityManager != null && entityManager.getTransaction().isActive()) {
+                entityManager.getTransaction().rollback();
+            }
+            throw new RuntimeException(e);
+        } finally {
+            if (entityManager != null) {
+                entityManager.close();
+            }
+        }
     }
 
     @Override
     public List<EmailEntity> getUnsent() {
-        List<EmailEntity> emails;
-        EntityManager entityManager = connectionManager.getEntityManager();
-        entityManager.getTransaction().begin();
+        EntityManager entityManager = null;
+        try {
+            entityManager = connectionManager.getEntityManager();
+            entityManager.getTransaction().begin();
 
-        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<EmailEntity> query = criteriaBuilder.createQuery(EmailEntity.class);
-        Root<EmailEntity> root = query.from(EmailEntity.class);
-        CriteriaQuery<EmailEntity> unsentEmails = query
-                .select(root)
-                .where(criteriaBuilder.and(
-                        criteriaBuilder.gt(root.get("departures"), 0),
-                        criteriaBuilder.equal(root.get("status"), EmailStatus.WAITING)
-                ))
-                .orderBy(criteriaBuilder.asc(root.get("id")));
-        TypedQuery<EmailEntity> unsentEmailsQuery = entityManager.createQuery(unsentEmails);
-        emails = unsentEmailsQuery
-                .setFirstResult(0)
-                .setMaxResults(NUMBER_EMAILS_TO_SEND)
-                .getResultList();
+            CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+            CriteriaQuery<EmailEntity> query = criteriaBuilder.createQuery(EmailEntity.class);
+            Root<EmailEntity> root = query.from(EmailEntity.class);
+            CriteriaQuery<EmailEntity> unsentEmails = query
+                    .select(root)
+                    .where(criteriaBuilder.and(
+                            criteriaBuilder.gt(root.get("departures"), 0),
+                            criteriaBuilder.equal(root.get("status"), EmailStatus.WAITING)
+                    ))
+                    .orderBy(criteriaBuilder.asc(root.get("id")));
+            TypedQuery<EmailEntity> unsentEmailsQuery = entityManager.createQuery(unsentEmails);
+            List<EmailEntity> emails = unsentEmailsQuery
+                    .setFirstResult(0)
+                    .setMaxResults(NUMBER_EMAILS_TO_SEND)
+                    .getResultList();
 
-        entityManager.getTransaction().commit();
-        entityManager.close();
-        return emails;
+            entityManager.getTransaction().commit();
+            return emails;
+        } catch (Exception e) {
+            if (entityManager != null && entityManager.getTransaction().isActive()) {
+                entityManager.getTransaction().rollback();
+            }
+            throw new RuntimeException(e);
+        } finally {
+            if (entityManager != null) {
+                entityManager.close();
+            }
+        }
     }
 
     @Override
     public void update(EmailEntity email) {
-        EntityManager entityManager = connectionManager.getEntityManager();
-        entityManager.getTransaction().begin();
+        EntityManager entityManager = null;
+        try {
+            entityManager = connectionManager.getEntityManager();
+            entityManager.getTransaction().begin();
 
-        EmailEntity emailEntity = entityManager.find(EmailEntity.class, email.getId());
-        emailEntity.setVote(email.getVote());
-        emailEntity.setRecipient(email.getRecipient());
-        emailEntity.setTopic(email.getTopic());
-        emailEntity.setTextMessage(email.getTextMessage());
-        emailEntity.setDepartures(email.getDepartures());
-        emailEntity.setStatus(email.getStatus());
+            EmailEntity emailEntity = entityManager.find(EmailEntity.class, email.getId());
+            if (emailEntity == null) {
+                throw new IllegalArgumentException(
+                        "Email with this id was not found in the database");
+            }
+            emailEntity.setVote(email.getVote());
+            emailEntity.setRecipient(email.getRecipient());
+            emailEntity.setTopic(email.getTopic());
+            emailEntity.setTextMessage(email.getTextMessage());
+            emailEntity.setDepartures(email.getDepartures());
+            emailEntity.setStatus(email.getStatus());
 
-        entityManager.getTransaction().commit();
-        entityManager.close();
+            entityManager.getTransaction().commit();
+        } catch (Exception e) {
+            if (entityManager != null && entityManager.getTransaction().isActive()) {
+                entityManager.getTransaction().rollback();
+            }
+            throw new RuntimeException(e);
+        } finally {
+            if (entityManager != null) {
+                entityManager.close();
+            }
+        }
     }
 }
