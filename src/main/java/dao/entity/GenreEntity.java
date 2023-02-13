@@ -34,6 +34,10 @@ public class GenreEntity {
         this.id = id;
     }
 
+    public GenreEntity(String title) {
+        this.title = title;
+    }
+
     public long getId() {
         return id;
     }

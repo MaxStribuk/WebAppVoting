@@ -1,20 +1,21 @@
 package service.api;
 
-import dto.GenreDTO;
+import dto.request.GenreDTORequest;
+import dto.response.GenreDTOResponse;
 
 import java.util.List;
 
 public interface IGenreService {
 
-    List<GenreDTO> getAll();
+    List<GenreDTOResponse> getAll();
 
-    GenreDTO get(long id);
+    GenreDTOResponse get(long id);
 
     boolean exists(long id);
 
-    void add(GenreDTO genre);
-
-    void update(GenreDTO genre);
+    void add(GenreDTORequest genre);
 
     void delete(long id);
+
+    void update(long id, GenreDTORequest genre);
 }

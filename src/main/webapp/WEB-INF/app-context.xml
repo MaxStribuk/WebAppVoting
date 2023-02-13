@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        https://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        https://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/mvc
+        https://www.springframework.org/schema/mvc/spring-mvc.xsd">
+
+    <context:component-scan base-package="web"/>
+
+    <mvc:annotation-driven/>
+
+    <!--initialize connect to DB-->
+
+    <bean id="propertiesBean" class="dao.util.PropertiesUtil"
+          factory-method="get">
+    </bean>
+
+    <bean id="entityManagerFactory" class="javax.persistence.Persistence"
+          factory-method="createEntityManagerFactory"
+          destroy-method="close">
+        <constructor-arg name="persistenceUnitName" value="org.hibernate.voting.jpa"/>
+        <constructor-arg name="properties" ref="propertiesBean"/>
+    </bean>
+
+    <bean id="connectionManager" class="dao.util.ConnectionManager">
+        <constructor-arg name="entityManagerFactory" ref="entityManagerFactory"/>
+    </bean>
+
+    <!--initialize dao-->
+
+    <bean id="artistDAO" class="dao.impl.ArtistDAO">
+        <constructor-arg name="connectionManager" ref="connectionManager"/>
+    </bean>
+
+    <bean id="genreDAO" class="dao.impl.GenreDAO">
+        <constructor-arg name="connectionManager" ref="connectionManager"/>
+    </bean>
+
+    <bean id="voteDAO" class="dao.impl.VoteDAO">
+        <constructor-arg name="connectionManager" ref="connectionManager"/>
+    </bean>
+
+    <bean id="emailSendingDao" class="dao.impl.EmailSendingDAO">
+        <constructor-arg name="connectionManager" ref="connectionManager"/>
+    </bean>
+
+    <!--initialize converters-->
+
+    <bean id="artistDTOEntityConverter"
+          class="service.converters.ArtistDTORequestEntityConverter">
+    </bean>
+
+    <bean id="artistEntityDTOConverter"
+          class="service.converters.ArtistEntityDTOResponseConverter">
+    </bean>
+
+    <bean id="genreDTOEntityConverter"
+          class="service.converters.GenreDTORequestEntityConverter">
+    </bean>
+
+    <bean id="genreEntityDTOConverter"
+          class="service.converters.GenreEntityDTOResponseConverter">
+    </bean>
+
+    <bean id="voteDTOEntityConverter"
+          class="service.converters.VoteDTOEntityConverter">
+    </bean>
+
+    <bean id="voteEntityDTOConverter"
+          class="service.converters.VoteEntityDTOResponseConverter">
+    </bean>
+
+    <!--initialize services-->
+
+    <bean id="artistService" class="service.impl.ArtistService">
+        <constructor-arg name="artistDAO" ref="artistDAO"/>
+        <constructor-arg name="artistDTOEntityConverter" ref="artistDTOEntityConverter"/>
+        <constructor-arg name="artistEntityDTOConverter" ref="artistEntityDTOConverter"/>
+    </bean>
+
+    <bean id="genreService" class="service.impl.GenreService">
+        <constructor-arg name="genreDAO" ref="genreDAO"/>
+        <constructor-arg name="genreDTOEntityConverter" ref="genreDTOEntityConverter"/>
+        <constructor-arg name="genreEntityDTOConverter" ref="genreEntityDTOConverter"/>
+    </bean>
+
+    <bean id="voteService" class="service.impl.VoteService">
+        <constructor-arg name="voteDAO" ref="voteDAO"/>
+        <constructor-arg name="genreService" ref="genreService"/>
+        <constructor-arg name="artistService" ref="artistService"/>
+        <constructor-arg name="sendingService" ref="emailSendingService"/>
+        <constructor-arg name="voteEntityDTOConverter" ref="voteEntityDTOConverter"/>
+        <constructor-arg name="voteDTOEntityConverter" ref="voteDTOEntityConverter"/>
+    </bean>
+
+    <bean id="statisticsService" class="service.impl.StatisticService">
+        <constructor-arg name="voteService" ref="voteService"/>
+        <constructor-arg name="artistService" ref="artistService"/>
+        <constructor-arg name="genreService" ref="genreService"/>
+    </bean>
+
+    <bean id="emailSendingService" class="service.impl.EmailSendingService">
+        <constructor-arg name="genreService" ref="genreService"/>
+        <constructor-arg name="artistService" ref="artistService"/>
+        <constructor-arg name="emailSendingDAO" ref="emailSendingDao"/>
+        <constructor-arg name="voteEntityDTOConverter" ref="voteEntityDTOConverter"/>
+        <constructor-arg name="properties" ref="propertiesBean"/>
+        <constructor-arg name="executorService" ref="emailExecutorService"/>
+    </bean>
+
+    <bean id="emailExecutorService" class="java.util.concurrent.Executors"
+          factory-method="newScheduledThreadPool"
+          destroy-method="shutdown">
+        <constructor-arg type="int" value="4"/>
+    </bean>
+
+    <bean id="emailResendListener" class="web.listeners.EmailResendLoaderListener"
+          init-method="contextInitialized"
+          destroy-method="destroy">
+        <constructor-arg name="sendingService" ref="emailSendingService"/>
+    </bean>
+
+</beans>

@@ -1,28 +1,20 @@
 package web.listeners;
 
 import service.api.ISendingService;
-import service.factories.SendingServiceSingleton;
 
-import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletContextListener;
-import javax.servlet.annotation.WebListener;
-
-@WebListener
-public class EmailResendLoaderListener implements ServletContextListener {
+public class EmailResendLoaderListener {
 
     private final ISendingService sendingService;
 
-    public EmailResendLoaderListener() {
-        sendingService = SendingServiceSingleton.getInstance();
+    public EmailResendLoaderListener(ISendingService sendingService) {
+        this.sendingService = sendingService;
     }
 
-    @Override
-    public void contextInitialized(ServletContextEvent sce) {
+    public void contextInitialized() {
         sendingService.initializeSendingService();
     }
 
-    @Override
-    public void contextDestroyed(ServletContextEvent sce) {
+    public void destroy() {
         sendingService.stopSendingService();
     }
 }

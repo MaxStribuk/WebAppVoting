@@ -14,7 +14,7 @@ public interface IGenreDAO {
 
     void add(GenreEntity genre);
 
-    void update(GenreEntity genre);
+    void update(long id, GenreEntity genre);
     
     void delete(long id);
 }

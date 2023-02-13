@@ -4,15 +4,13 @@ import dao.api.IConnection;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 
 public class ConnectionManager implements IConnection {
 
     private final EntityManagerFactory sessionFactory;
 
-    public ConnectionManager() {
-        sessionFactory = Persistence.createEntityManagerFactory(
-                "org.hibernate.voting.jpa", PropertiesUtil.get());
+    public ConnectionManager(EntityManagerFactory entityManagerFactory) {
+        this.sessionFactory = entityManagerFactory;
     }
 
     @Override

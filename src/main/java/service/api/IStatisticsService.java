@@ -1,19 +1,19 @@
 package service.api;
 
-import dto.ArtistDTO;
-import dto.GenreDTO;
-import dto.StatisticsDTO;
+import dto.response.ArtistDTOResponse;
+import dto.response.GenreDTOResponse;
+import dto.response.StatisticDTOResponse;
 
 import java.time.LocalDateTime;
 import java.util.Map;
 
 public interface IStatisticsService {
 
-    Map<ArtistDTO, Integer> getBestArtists();
+    Map<ArtistDTOResponse, Integer> getBestArtists();
 
-    Map<GenreDTO, Integer> getBestGenres();
+    Map<GenreDTOResponse, Integer> getBestGenres();
 
     Map<LocalDateTime, String> getAbouts();
 
-    StatisticsDTO getStatistics();
+    StatisticDTOResponse getStatistics();
 }

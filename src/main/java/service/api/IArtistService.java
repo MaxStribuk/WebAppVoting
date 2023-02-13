@@ -1,20 +1,21 @@
 package service.api;
 
-import dto.ArtistDTO;
+import dto.request.ArtistDTORequest;
+import dto.response.ArtistDTOResponse;
 
 import java.util.List;
 
 public interface IArtistService {
 
-    List<ArtistDTO> getAll();
+    List<ArtistDTOResponse> getAll();
+
+    ArtistDTOResponse get(long id);
 
     boolean exists(long id);
 
-    ArtistDTO get(long id);
+    void add(ArtistDTORequest artist);
 
-    void add(ArtistDTO artist);
-
-    void update(ArtistDTO artist);
+    void update(long id, ArtistDTORequest artist);
 
     void delete(long id);
 }
