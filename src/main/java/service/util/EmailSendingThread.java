@@ -1,4 +1,4 @@
-package service;
+package service.util;
 
 import dao.api.IEmailSendingDAO;
 import dao.entity.EmailEntity;

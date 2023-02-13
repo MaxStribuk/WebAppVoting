@@ -95,13 +95,6 @@
         <constructor-arg name="genreEntityDTOConverter" ref="genreEntityDTOConverter"/>
     </bean>
 
-    <bean id="emailSendingService" class="service.impl.EmailSendingService">
-        <constructor-arg name="genreService" ref="genreService"/>
-        <constructor-arg name="artistService" ref="artistService"/>
-        <constructor-arg name="emailSendingDAO" ref="emailSendingDao"/>
-        <constructor-arg name="voteEntitySavedDTOConverter" ref="voteEntityDTOConverter"/>
-    </bean>
-
     <bean id="voteService" class="service.impl.VoteService">
         <constructor-arg name="voteDAO" ref="voteDAO"/>
         <constructor-arg name="genreService" ref="genreService"/>
@@ -115,5 +108,27 @@
         <constructor-arg name="voteService" ref="voteService"/>
         <constructor-arg name="artistService" ref="artistService"/>
         <constructor-arg name="genreService" ref="genreService"/>
+    </bean>
+
+    <bean id="emailSendingService" class="service.impl.EmailSendingService">
+        <constructor-arg name="genreService" ref="genreService"/>
+        <constructor-arg name="artistService" ref="artistService"/>
+        <constructor-arg name="emailSendingDAO" ref="emailSendingDao"/>
+        <constructor-arg name="voteEntityDTOConverter" ref="voteEntityDTOConverter"/>
+        <constructor-arg name="properties" ref="propertiesBean"/>
+        <constructor-arg name="executorService" ref="emailExecutorService"/>
+        <constructor-arg name="emailSendingThread" ref="emailSendingThread"/>
+    </bean>
+
+    <bean id="emailExecutorService" class="java.util.concurrent.Executors"
+          factory-method="newScheduledThreadPool"
+          destroy-method="shutdown">
+        <constructor-arg type="int" value="4"/>
+    </bean>
+
+    <bean id="emailSendingThread" class="service.util.EmailSendingThread">
+        <constructor-arg name="emailSendingDAO" ref="emailSendingDao"/>
+        <constructor-arg name="executorService" ref="emailExecutorService"/>
+        <constructor-arg name="sendingService" ref="emailSendingService"/>
     </bean>
 </beans>
