@@ -4,10 +4,9 @@ import service.api.ISendingService;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
-import javax.servlet.annotation.WebListener;
 
-@WebListener
-public class EmailResendLoaderListener implements ServletContextListener {
+//@WebListener
+public class EmailResendLoaderListener implements ServletContextListener{
 
     private final ISendingService sendingService;
 

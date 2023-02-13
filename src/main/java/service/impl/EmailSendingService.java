@@ -31,7 +31,6 @@ public class EmailSendingService implements ISendingService {
     private final IGenreService genreService;
     private final IArtistService artistService;
     private final IEmailSendingDAO emailSendingDAO;
-    private final EmailSendingThread sendingThread;
     private final IConvertable<VoteEntity, VoteDTOResponse> voteEntityDTOConverter;
     private final Properties mailProperties;
     private final ScheduledExecutorService executorService;
@@ -59,13 +58,11 @@ public class EmailSendingService implements ISendingService {
                                IEmailSendingDAO emailSendingDAO,
                                IConvertable<VoteEntity, VoteDTOResponse> voteEntityDTOConverter,
                                Properties properties,
-                               ScheduledExecutorService executorService,
-                               EmailSendingThread emailSendingThread) {
+                               ScheduledExecutorService executorService) {
         this.genreService = genreService;
         this.artistService = artistService;
         this.emailSendingDAO = emailSendingDAO;
         this.executorService = executorService;
-        this.sendingThread = emailSendingThread;
         this.voteEntityDTOConverter = voteEntityDTOConverter;
         this.mailProperties = properties;
         this.SENDER = PropertiesUtil.get(SENDER_PROMPT);
@@ -76,7 +73,8 @@ public class EmailSendingService implements ISendingService {
 
     @Override
     public void initializeSendingService() {
-        executorService.scheduleWithFixedDelay(sendingThread,
+        executorService.scheduleWithFixedDelay(
+                new EmailSendingThread(executorService, emailSendingDAO, this),
                 INTERVAL_BETWEEN_SHIPMENTS,
                 INTERVAL_BETWEEN_SHIPMENTS,
                 TimeUnit.SECONDS);
