@@ -1,4 +1,4 @@
-package dao.database;
+package dao.impl;
 
 import dao.api.IEmailSendingDAO;
 import dao.entity.EmailEntity;
@@ -12,13 +12,13 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import java.util.List;
 
-public class EmailSendingDBDAO implements IEmailSendingDAO {
+public class EmailSendingDAO implements IEmailSendingDAO {
 
     private final ConnectionManager connectionManager;
 
     private static final int NUMBER_EMAILS_TO_SEND = 10;
 
-    public EmailSendingDBDAO(ConnectionManager connectionManager) {
+    public EmailSendingDAO(ConnectionManager connectionManager) {
         this.connectionManager = connectionManager;
     }
 
@@ -27,7 +27,7 @@ public class EmailSendingDBDAO implements IEmailSendingDAO {
         EntityManager entityManager = connectionManager.getEntityManager();
         entityManager.getTransaction().begin();
 
-        entityManager.merge(email);
+        entityManager.persist(email);
 
         entityManager.getTransaction().commit();
         entityManager.close();
