@@ -2,11 +2,7 @@ package web.listeners;
 
 import service.api.ISendingService;
 
-import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletContextListener;
-
-//@WebListener
-public class EmailResendLoaderListener implements ServletContextListener{
+public class EmailResendLoaderListener {
 
     private final ISendingService sendingService;
 
@@ -14,13 +10,11 @@ public class EmailResendLoaderListener implements ServletContextListener{
         this.sendingService = sendingService;
     }
 
-    @Override
-    public void contextInitialized(ServletContextEvent sce) {
+    public void contextInitialized() {
         sendingService.initializeSendingService();
     }
 
-    @Override
-    public void contextDestroyed(ServletContextEvent sce) {
+    public void destroy() {
         sendingService.stopSendingService();
     }
 }

@@ -5,10 +5,13 @@ import java.util.Objects;
 
 public class VoteDTORequest {
 
-    private final Long artistId;
-    private final List<Long> genreIds;
-    private final String about;
-    private final String email;
+    private Long artistId;
+    private List<Long> genreIds;
+    private String about;
+    private String email;
+
+    public VoteDTORequest() {
+    }
 
     public VoteDTORequest(Long artistId, List<Long> genreIds,
                           String about, String email) {

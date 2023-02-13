@@ -17,7 +17,7 @@ public class EmailSendingThread implements Runnable {
     private final ScheduledExecutorService executorService;
     private final IEmailSendingDAO emailSendingDAO;
     private final ISendingService sendingService;
-    private static final long PAUSE_SENDING_EMAIL = 10L;
+    private static final long PAUSE_SENDING_EMAIL = 60L;
     private static final long MILLISECONDS_TO_SEND_EMAIL = 100L;
 
     public EmailSendingThread(ScheduledExecutorService executorService,
@@ -62,7 +62,7 @@ public class EmailSendingThread implements Runnable {
         }
         if (countExceptions == emails.size() && emails.size() != 0) {
             try {
-                TimeUnit.MINUTES.sleep(PAUSE_SENDING_EMAIL);
+                TimeUnit.SECONDS.sleep(PAUSE_SENDING_EMAIL);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
