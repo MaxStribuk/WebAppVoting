@@ -1,31 +1,57 @@
 package dto.response;
 
-import java.time.LocalDateTime;
-import java.util.Map;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
-public class StatisticDTOResponse {
+import java.io.Serializable;
+import java.util.List;
+import java.util.Objects;
 
-    private final Map<ArtistDTOResponse, Integer> bestArtists;
-    private final Map<GenreDTOResponse, Integer> bestGenres;
-    private final Map<LocalDateTime, String> abouts;
+@JsonPropertyOrder({"bestArtists", "bestGenres", "abouts"})
+public class StatisticDTOResponse implements Serializable {
 
-    public StatisticDTOResponse(Map<ArtistDTOResponse, Integer> bestArtists,
-                                Map<GenreDTOResponse, Integer> bestGenres,
-                                Map<LocalDateTime, String> abouts) {
-        this.bestArtists = bestArtists;
-        this.bestGenres = bestGenres;
+    private final List<ArtistStatisticDTOResponse> artists;
+    private final List<GenreStatisticDTOResponse> genres;
+    private final List<AboutStatisticDTOResponse> abouts;
+
+    public StatisticDTOResponse(List<ArtistStatisticDTOResponse> artists,
+                                List<GenreStatisticDTOResponse> genres,
+                                List<AboutStatisticDTOResponse> abouts) {
+        this.artists = artists;
+        this.genres = genres;
         this.abouts = abouts;
     }
 
-    public Map<ArtistDTOResponse, Integer> getBestArtists() {
-        return bestArtists;
+    public List<ArtistStatisticDTOResponse> getArtists() {
+        return artists;
     }
 
-    public Map<GenreDTOResponse, Integer> getBestGenres() {
-        return bestGenres;
+    public List<GenreStatisticDTOResponse> getGenres() {
+        return genres;
     }
 
-    public Map<LocalDateTime, String> getAbouts() {
+    public List<AboutStatisticDTOResponse> getAbouts() {
         return abouts;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        StatisticDTOResponse that = (StatisticDTOResponse) o;
+        return artists.equals(that.artists) && genres.equals(that.genres) && abouts.equals(that.abouts);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(artists, genres, abouts);
+    }
+
+    @Override
+    public String toString() {
+        return "StatisticDTOResponse{" +
+                "artists=" + artists +
+                ", genres=" + genres +
+                ", abouts=" + abouts +
+                '}';
     }
 }

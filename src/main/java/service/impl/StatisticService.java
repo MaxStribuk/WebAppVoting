@@ -1,7 +1,10 @@
 package service.impl;
 
+import dto.response.AboutStatisticDTOResponse;
 import dto.response.ArtistDTOResponse;
+import dto.response.ArtistStatisticDTOResponse;
 import dto.response.GenreDTOResponse;
+import dto.response.GenreStatisticDTOResponse;
 import dto.response.VoteDTOResponse;
 import dto.response.StatisticDTOResponse;
 import service.api.IGenreService;
@@ -9,12 +12,10 @@ import service.api.IArtistService;
 import service.api.IStatisticsService;
 import service.api.IVoteService;
 
-import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class StatisticService implements IStatisticsService {
@@ -32,7 +33,7 @@ public class StatisticService implements IStatisticsService {
     }
 
     @Override
-    public Map<ArtistDTOResponse, Integer> getBestArtists() {
+    public List<ArtistStatisticDTOResponse> getBestArtists() {
         final Map<Long, Integer> artistVotes = artistService.getAll()
                 .stream()
                 .collect(Collectors.toMap(ArtistDTOResponse::getId, artist -> 0));
@@ -42,11 +43,11 @@ public class StatisticService implements IStatisticsService {
                 .forEach(artistId -> artistVotes.put(
                         artistId,
                         artistVotes.get(artistId) + 1));
-        return sort(artistVotes, artistService::get);
+        return sortArtists(artistVotes);
     }
 
     @Override
-    public Map<GenreDTOResponse, Integer> getBestGenres() {
+    public List<GenreStatisticDTOResponse> getBestGenres() {
         final Map<Long, Integer> genreVotes = genreService.getAll()
                 .stream()
                 .collect(Collectors.toMap(GenreDTOResponse::getId, genre -> 0));
@@ -57,19 +58,19 @@ public class StatisticService implements IStatisticsService {
                 .forEach(genreId -> genreVotes.put(
                         genreId,
                         genreVotes.get(genreId) + 1));
-        return sort(genreVotes, genreService::get);
+        return sortGenres(genreVotes);
     }
 
     @Override
-    public Map<LocalDateTime, String> getAbouts() {
+    public List<AboutStatisticDTOResponse> getAbouts() {
         return voteService.getAll()
                 .stream()
-                .sorted(Comparator.comparing(VoteDTOResponse::getCreationTime))
-                .collect(Collectors.toMap(
-                        VoteDTOResponse::getCreationTime,
-                        VoteDTOResponse::getAbout,
-                        (value1, value2) -> value1 + "\n\n"+ value2,
-                        LinkedHashMap::new));
+                .map(vote -> new AboutStatisticDTOResponse(
+                        vote.getCreationTime(),
+                        vote.getAbout()
+                ))
+                .sorted(Comparator.comparing(AboutStatisticDTOResponse::getCreationTime))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -77,16 +78,27 @@ public class StatisticService implements IStatisticsService {
         return new StatisticDTOResponse(getBestArtists(), getBestGenres(), getAbouts());
     }
 
-    private <T> Map<T, Integer> sort(Map<Long, Integer> map,
-                                     Function<Long, T> method) {
-        return map.entrySet()
+    private List<ArtistStatisticDTOResponse> sortArtists(Map<Long, Integer> artistVotes) {
+        return artistVotes.entrySet()
                 .stream()
-                .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
-                .collect(Collectors.toMap(
-                        entry -> method.apply(entry.getKey()),
-                        Map.Entry::getValue,
-                        Integer::sum,
-                        LinkedHashMap::new
-                ));
+                .map(entry -> new ArtistStatisticDTOResponse(
+                        entry.getKey(),
+                        artistService.get(entry.getKey()).getName(),
+                        entry.getValue()
+                ))
+                .sorted(Comparator.comparingInt(ArtistStatisticDTOResponse::getCountVotes))
+                .collect(Collectors.toList());
+    }
+
+    private List<GenreStatisticDTOResponse> sortGenres(Map<Long, Integer> genreVotes) {
+        return genreVotes.entrySet()
+                .stream()
+                .map(entry -> new GenreStatisticDTOResponse(
+                        entry.getKey(),
+                        genreService.get(entry.getKey()).getTitle(),
+                        entry.getValue()
+                ))
+                .sorted(Comparator.comparingInt(GenreStatisticDTOResponse::getCountVotes))
+                .collect(Collectors.toList());
     }
 }
