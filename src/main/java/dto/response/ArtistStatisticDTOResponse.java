@@ -3,14 +3,16 @@ package dto.response;
 import java.io.Serializable;
 import java.util.Objects;
 
-public class ArtistDTOResponse implements Serializable {
+public class ArtistStatisticDTOResponse implements Serializable {
 
     private final long id;
     private final String name;
+    private final int countVotes;
 
-    public ArtistDTOResponse(long id, String name) {
+    public ArtistStatisticDTOResponse(long id, String name, int countVotes) {
         this.id = id;
         this.name = name;
+        this.countVotes = countVotes;
     }
 
     public long getId() {
@@ -21,24 +23,29 @@ public class ArtistDTOResponse implements Serializable {
         return name;
     }
 
+    public int getCountVotes() {
+        return countVotes;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        ArtistDTOResponse that = (ArtistDTOResponse) o;
-        return id == that.id && name.equals(that.name);
+        ArtistStatisticDTOResponse that = (ArtistStatisticDTOResponse) o;
+        return id == that.id && countVotes == that.countVotes && name.equals(that.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name);
+        return Objects.hash(id, name, countVotes);
     }
 
     @Override
     public String toString() {
-        return "ArtistDTO{" +
+        return "ArtistStatisticDTOResponse{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
+                ", countVotes=" + countVotes +
                 '}';
     }
 }
