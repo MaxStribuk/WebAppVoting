@@ -46,11 +46,6 @@ public class ArtistDAO implements IArtistDAO {
     }
 
     @Override
-    public boolean exists(long id) {
-        return get(id) != null;
-    }
-
-    @Override
     public ArtistEntity get(long id) {
         EntityManager entityManager = null;
         try {
@@ -96,17 +91,16 @@ public class ArtistDAO implements IArtistDAO {
     }
 
     @Override
-    public void update(long id, ArtistEntity artist) {
+    public void update(ArtistEntity artist) {
         EntityManager entityManager = null;
         try {
             entityManager = connectionManager.getEntityManager();
             entityManager.getTransaction().begin();
 
-            ArtistEntity artistEntity = entityManager.find(ArtistEntity.class, id);
-            if (artistEntity == null) {
+            if (artist == null) {
                 throw new IllegalArgumentException("Artist with this id was not found in the database");
             }
-            artistEntity.setArtist(artist.getArtist());
+            entityManager.merge(artist);
 
             entityManager.getTransaction().commit();
         } catch (Exception e) {

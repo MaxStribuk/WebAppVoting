@@ -5,7 +5,7 @@ import dto.response.ArtistDTOResponse;
 import service.api.IConvertable;
 
 public class ArtistEntityDTOResponseConverter
-        implements IConvertable <ArtistEntity, ArtistDTOResponse> {
+        implements IConvertable<ArtistEntity, ArtistDTOResponse> {
 
     @Override
     public ArtistDTOResponse convert(ArtistEntity artist) {
@@ -14,8 +14,9 @@ public class ArtistEntityDTOResponseConverter
                     "does not exist");
         }
         return new ArtistDTOResponse(
-            artist.getId(),
-            artist.getArtist()
+                artist.getId(),
+                artist.getArtist(),
+                artist.getVersion()
         );
     }
 }

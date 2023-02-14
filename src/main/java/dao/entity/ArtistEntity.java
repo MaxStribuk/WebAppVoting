@@ -7,6 +7,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.Version;
 import java.io.Serializable;
 
 @Entity
@@ -23,6 +24,10 @@ public class ArtistEntity implements Serializable {
     @Column(name = "name", nullable = false)
     private String artist;
 
+    @Version
+    @Column(name = "version", nullable = false)
+    private long version;
+
     public ArtistEntity() {
     }
 
@@ -34,17 +39,16 @@ public class ArtistEntity implements Serializable {
         this.id = id;
     }
 
-    public ArtistEntity(long id, String artist) {
-        this.id = id;
-        this.artist = artist;
-    }
-
     public long getId() {
         return id;
     }
 
     public String getArtist() {
         return artist;
+    }
+
+    public long getVersion() {
+        return version;
     }
 
     public void setArtist(String artist) {
