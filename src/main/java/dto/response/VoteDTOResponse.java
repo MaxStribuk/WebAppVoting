@@ -1,10 +1,11 @@
 package dto.response;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
-public class VoteDTOResponse {
+public class VoteDTOResponse implements Serializable {
 
     private final Long artistId;
     private final List<Long> genreIds;
