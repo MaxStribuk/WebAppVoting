@@ -1,10 +1,15 @@
 package dto.response;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import service.util.DateSerializer;
+
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-public class AboutStatisticDTOResponse {
+public class AboutStatisticDTOResponse implements Serializable {
 
+    @JsonSerialize(using = DateSerializer.class)
     private final LocalDateTime creationTime;
     private final String message;
 

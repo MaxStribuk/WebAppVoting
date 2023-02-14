@@ -1,8 +1,9 @@
 package dto.response;
 
+import java.io.Serializable;
 import java.util.Objects;
 
-public class GenreStatisticDTOResponse {
+public class GenreStatisticDTOResponse implements Serializable {
 
     private final long id;
     private final String title;

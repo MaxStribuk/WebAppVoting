@@ -1,12 +1,9 @@
 package dto.response;
 
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-
 import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
 
-@JsonPropertyOrder({"bestArtists", "bestGenres", "abouts"})
 public class StatisticDTOResponse implements Serializable {
 
     private final List<ArtistStatisticDTOResponse> artists;

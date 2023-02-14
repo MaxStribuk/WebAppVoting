@@ -86,7 +86,7 @@ public class StatisticService implements IStatisticsService {
                         artistService.get(entry.getKey()).getName(),
                         entry.getValue()
                 ))
-                .sorted(Comparator.comparingInt(ArtistStatisticDTOResponse::getCountVotes))
+                .sorted(Comparator.comparingInt(ArtistStatisticDTOResponse::getCountVotes).reversed())
                 .collect(Collectors.toList());
     }
 
@@ -98,7 +98,7 @@ public class StatisticService implements IStatisticsService {
                         genreService.get(entry.getKey()).getTitle(),
                         entry.getValue()
                 ))
-                .sorted(Comparator.comparingInt(GenreStatisticDTOResponse::getCountVotes))
+                .sorted(Comparator.comparingInt(GenreStatisticDTOResponse::getCountVotes).reversed())
                 .collect(Collectors.toList());
     }
 }
