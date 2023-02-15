@@ -47,29 +47,27 @@ public class ArtistService implements IArtistService {
     public void update(long id, long version, ArtistDTORequest artist) {
         validate(artist);
         ArtistEntity artistEntity = artistDAO.get(id);
-        if (artistEntity != null) {
-            if (version == artistEntity.getVersion()) {
-                artistEntity.setArtist(artist.getName());
-                artistDAO.update(artistEntity);
-            } else {
-                throw new IllegalArgumentException("Version was specified incorrectly");
-            }
-        } else {
+        if (artistEntity == null) {
             throw new IllegalArgumentException("No artist updated for id " + id);
+        }
+        if (version == artistEntity.getVersion()) {
+            artistEntity.setArtist(artist.getName());
+            artistDAO.update(artistEntity);
+        } else {
+            throw new IllegalArgumentException("Version was specified incorrectly");
         }
     }
 
     @Override
     public void delete(long id, long version) {
         ArtistEntity artistEntity = artistDAO.get(id);
-        if (artistEntity != null) {
-            if (version == artistEntity.getVersion()) {
-                artistDAO.delete(id);
-            } else {
-                throw new IllegalArgumentException("Version was specified incorrectly");
-            }
-        } else {
+        if (artistEntity == null) {
             throw new IllegalArgumentException("No artist deleted for id " + id);
+        }
+        if (version == artistEntity.getVersion()) {
+            artistDAO.delete(id);
+        } else {
+            throw new IllegalArgumentException("Version was specified incorrectly");
         }
     }
 

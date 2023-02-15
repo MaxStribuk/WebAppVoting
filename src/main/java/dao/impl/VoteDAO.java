@@ -32,10 +32,10 @@ public class VoteDAO implements IVoteDAO {
             CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
             CriteriaQuery<VoteEntity> query = criteriaBuilder
                     .createQuery(VoteEntity.class);
+            query.distinct(true);
             Root<VoteEntity> root = query.from(VoteEntity.class);
             root.fetch("genres");
             CriteriaQuery<VoteEntity> all = query.select(root);
-            all.distinct(true);
             TypedQuery<VoteEntity> allQuery = entityManager.createQuery(all);
             List<VoteEntity> votes = allQuery.getResultList();
 
