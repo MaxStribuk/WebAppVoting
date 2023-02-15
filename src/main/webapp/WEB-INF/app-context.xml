@@ -4,29 +4,28 @@
        xmlns:mvc="http://www.springframework.org/schema/mvc"
        xmlns:p="http://www.springframework.org/schema/p"
        xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:util="http://www.springframework.org/schema/util"
        xsi:schemaLocation="
         http://www.springframework.org/schema/beans
         https://www.springframework.org/schema/beans/spring-beans.xsd
         http://www.springframework.org/schema/context
         https://www.springframework.org/schema/context/spring-context.xsd
         http://www.springframework.org/schema/mvc
-        https://www.springframework.org/schema/mvc/spring-mvc.xsd">
+        https://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/util
+        https://www.springframework.org/schema/util/spring-util.xsd">
 
     <context:component-scan base-package="web"/>
-
     <mvc:annotation-driven/>
+    <util:properties id="propertyConfiguration" location="classpath:application.properties"/>
 
     <!--initialize connect to DB-->
-
-    <bean id="propertiesBean" class="dao.util.PropertiesUtil"
-          factory-method="get">
-    </bean>
 
     <bean id="entityManagerFactory" class="javax.persistence.Persistence"
           factory-method="createEntityManagerFactory"
           destroy-method="close">
         <constructor-arg name="persistenceUnitName" value="org.hibernate.voting.jpa"/>
-        <constructor-arg name="properties" ref="propertiesBean"/>
+        <constructor-arg name="properties" ref="propertyConfiguration"/>
     </bean>
 
     <bean id="connectionManager" class="dao.util.ConnectionManager">
@@ -111,7 +110,7 @@
         <constructor-arg name="artistService" ref="artistService"/>
         <constructor-arg name="emailSendingDAO" ref="emailSendingDao"/>
         <constructor-arg name="voteEntityDTOConverter" ref="voteEntityDTOConverter"/>
-        <constructor-arg name="properties" ref="propertiesBean"/>
+        <constructor-arg name="properties" ref="propertyConfiguration"/>
         <constructor-arg name="executorService" ref="emailExecutorService"/>
     </bean>
 

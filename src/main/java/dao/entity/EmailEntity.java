@@ -12,6 +12,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.Version;
 import java.io.Serializable;
 
 @Entity
@@ -43,6 +44,10 @@ public class EmailEntity implements Serializable {
     @Column(name = "status", nullable = false)
     @Enumerated(EnumType.STRING)
     private EmailStatus status;
+
+    @Version
+    @Column(name = "version", nullable = false)
+    private long version;
 
     public EmailEntity() {
     }
@@ -83,6 +88,10 @@ public class EmailEntity implements Serializable {
 
     public EmailStatus getStatus() {
         return status;
+    }
+
+    public long getVersion() {
+        return version;
     }
 
     public void setVote(VoteEntity vote) {
