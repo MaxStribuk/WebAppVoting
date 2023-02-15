@@ -15,6 +15,7 @@
         http://www.springframework.org/schema/util
         https://www.springframework.org/schema/util/spring-util.xsd">
 
+    <context:annotation-config/>
     <context:component-scan base-package="web"/>
     <mvc:annotation-driven/>
     <util:properties id="propertyConfiguration" location="classpath:application.properties"/>
@@ -120,10 +121,10 @@
         <constructor-arg type="int" value="4"/>
     </bean>
 
-    <bean id="emailResendListener" class="web.listeners.EmailResendLoaderListener"
-          init-method="contextInitialized"
-          destroy-method="destroy">
-        <constructor-arg name="sendingService" ref="emailSendingService"/>
-    </bean>
+<!--    <bean id="emailResendListener" class="web.listeners.EmailResendLoaderListener">-->
+<!--          init-method="contextInitialized"-->
+<!--          destroy-method="destroy">-->
+<!--        <constructor-arg name="sendingService" ref="emailSendingService"/>-->
+<!--    </bean>-->
 
 </beans>
