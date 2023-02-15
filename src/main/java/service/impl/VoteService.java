@@ -70,7 +70,7 @@ public class VoteService implements IVoteService {
         if (artistId == null) {
             throw new IllegalArgumentException("Artist must be not null");
         }
-        if (!artistService.exists(artistId)) {
+        if (artistService.get(artistId) == null) {
             throw new NoSuchElementException("Invalid artist id " +
                     "provided - '" + artistId + "'");
         }
@@ -91,7 +91,7 @@ public class VoteService implements IVoteService {
                     "must be non-repeating");
         }
         for (long genreId : genresIdList) {
-            if (!genreService.exists(genreId)) {
+            if (genreService.get(genreId) == null) {
                 throw new NoSuchElementException("Invalid genre id " +
                         "provided - '" + genreId + "'");
             }

@@ -33,11 +33,6 @@ public class ArtistService implements IArtistService {
     }
 
     @Override
-    public boolean exists(long id) {
-        return artistDAO.exists(id);
-    }
-
-    @Override
     public ArtistDTOResponse get(long id) {
         return artistEntityDTOConverter.convert(artistDAO.get(id));
     }
@@ -49,21 +44,30 @@ public class ArtistService implements IArtistService {
     }
 
     @Override
-    public void update(long id, ArtistDTORequest artist) {
+    public void update(long id, long version, ArtistDTORequest artist) {
         validate(artist);
-        if (artistDAO.exists(id)) {
-            artistDAO.update(id, artistDTOEntityConverter.convert(artist));
-        } else {
+        ArtistEntity artistEntity = artistDAO.get(id);
+        if (artistEntity == null) {
             throw new IllegalArgumentException("No artist updated for id " + id);
+        }
+        if (version == artistEntity.getVersion()) {
+            artistEntity.setArtist(artist.getName());
+            artistDAO.update(artistEntity);
+        } else {
+            throw new IllegalArgumentException("Version was specified incorrectly");
         }
     }
 
     @Override
-    public void delete(long id) {
-        if (artistDAO.exists(id)) {
+    public void delete(long id, long version) {
+        ArtistEntity artistEntity = artistDAO.get(id);
+        if (artistEntity == null) {
+            throw new IllegalArgumentException("No artist deleted for id " + id);
+        }
+        if (version == artistEntity.getVersion()) {
             artistDAO.delete(id);
         } else {
-            throw new IllegalArgumentException("No artist deleted for id " + id);
+            throw new IllegalArgumentException("Version was specified incorrectly");
         }
     }
 

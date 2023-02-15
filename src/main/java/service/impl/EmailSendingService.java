@@ -2,7 +2,6 @@ package service.impl;
 
 import dao.api.IEmailSendingDAO;
 import dao.entity.VoteEntity;
-import dao.util.PropertiesUtil;
 import dao.entity.EmailEntity;
 import dao.entity.EmailStatus;
 import dto.response.VoteDTOResponse;
@@ -34,22 +33,11 @@ public class EmailSendingService implements ISendingService {
     private final IConvertable<VoteEntity, VoteDTOResponse> voteEntityDTOConverter;
     private final Properties mailProperties;
     private final ScheduledExecutorService executorService;
-    private final String SENDER;
-    private final String PASSWORD;
 
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy, HH:mm");
-    private static final String SENDER_PROMPT = "mail.sender";
-    private static final String PASSWORD_PROMPT = "mail.password";
+    private static final String SENDER = "mail.sender";
+    private static final String PASSWORD = "mail.password";
     private static final String SUBJECT = "WebAppVoting Vote Confirmation";
-    private static final String TRANSPORT_PROTOCOL = "mail.transport.protocol";
-    private static final String SERVICE_HOST = "mail.host";
-    private static final String SMPT_AUTHENTICATION = "mail.smtp.auth";
-    private static final String SMPT_PORT = "mail.smtp.port";
-    private static final String DEBUG_ON = "mail.debug";
-    private static final String SOCKET_FACTORY_PORT = "mail.smtp.socketFactory.port";
-    private static final String SOCKET_FACTORY_CLASS = "mail.smtp.socketFactory.class";
-    private static final String SOCKET_FACTORY_FALLBACK = "mail.smtp.socketFactory.fallback";
-    private static final String ENABLE_START_TLS = "mail.smtp.starttls.enable";
     private static final int MAX_VOTE_CONFIRMATION_SENDS = 3;
     private static final long INTERVAL_BETWEEN_SHIPMENTS = 10L;
 
@@ -65,10 +53,6 @@ public class EmailSendingService implements ISendingService {
         this.executorService = executorService;
         this.voteEntityDTOConverter = voteEntityDTOConverter;
         this.mailProperties = properties;
-        this.SENDER = PropertiesUtil.get(SENDER_PROMPT);
-        this.PASSWORD = PropertiesUtil.get(PASSWORD_PROMPT);
-
-        prepareMailProperties();
     }
 
     @Override
@@ -95,13 +79,16 @@ public class EmailSendingService implements ISendingService {
         Authenticator authenticator = new Authenticator() {
             @Override
             protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication(SENDER, PASSWORD);
+                return new PasswordAuthentication(
+                        mailProperties.getProperty(SENDER),
+                        mailProperties.getProperty(PASSWORD));
             }
         };
         Session session = Session.getInstance(mailProperties,
                 authenticator);
         MimeMessage message = new MimeMessage(session);
-        InternetAddress address = new InternetAddress(SENDER);
+        InternetAddress address = new InternetAddress(
+                mailProperties.getProperty(SENDER));
         message.setFrom(address);
         message.setRecipients(Message.RecipientType.TO,
                 email.getRecipient());
@@ -110,30 +97,12 @@ public class EmailSendingService implements ISendingService {
         Transport.send(message);
     }
 
-    private void prepareMailProperties() {
-        mailProperties.put(TRANSPORT_PROTOCOL,
-                PropertiesUtil.get(TRANSPORT_PROTOCOL));
-        mailProperties.put(SERVICE_HOST, PropertiesUtil.get(SERVICE_HOST));
-        mailProperties.put(SMPT_AUTHENTICATION,
-                PropertiesUtil.get(SMPT_AUTHENTICATION));
-        mailProperties.put(SMPT_PORT, PropertiesUtil.get(SMPT_PORT));
-        mailProperties.put(DEBUG_ON, PropertiesUtil.get(DEBUG_ON));
-        mailProperties.put(SOCKET_FACTORY_PORT,
-                PropertiesUtil.get(SOCKET_FACTORY_PORT));
-        mailProperties.put(SOCKET_FACTORY_CLASS,
-                PropertiesUtil.get(SOCKET_FACTORY_CLASS));
-        mailProperties.put(SOCKET_FACTORY_FALLBACK,
-                PropertiesUtil.get(SOCKET_FACTORY_FALLBACK));
-        mailProperties.put(ENABLE_START_TLS,
-                PropertiesUtil.get(ENABLE_START_TLS));
-    }
-
     private EmailEntity createEmailEntity(VoteEntity vote) {
         VoteDTOResponse voteDTO = voteEntityDTOConverter.convert(vote);
         String messageText = createVoteConfirmationText(voteDTO);
         String recipient = vote.getEmail();
-        return new EmailEntity(vote, recipient, SUBJECT,
-                messageText, MAX_VOTE_CONFIRMATION_SENDS, EmailStatus.WAITING);
+        return new EmailEntity(vote, recipient, SUBJECT, messageText,
+                MAX_VOTE_CONFIRMATION_SENDS, EmailStatus.WAITING);
     }
 
     private String createVoteConfirmationText(VoteDTOResponse vote) {

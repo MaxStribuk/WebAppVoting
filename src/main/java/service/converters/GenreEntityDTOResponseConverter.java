@@ -14,8 +14,9 @@ public class GenreEntityDTOResponseConverter
                     "does not exist");
         }
         return new GenreDTOResponse(
-            genre.getId(),
-            genre.getTitle()
+                genre.getId(),
+                genre.getTitle(),
+                genre.getVersion()
         );
     }
 }

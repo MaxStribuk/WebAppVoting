@@ -47,11 +47,6 @@ public class GenreDAO implements IGenreDAO {
     }
 
     @Override
-    public boolean exists(long id) {
-        return get(id) != null;
-    }
-
-    @Override
     public GenreEntity get(long id) {
         EntityManager entityManager = null;
         try {
@@ -95,17 +90,16 @@ public class GenreDAO implements IGenreDAO {
     }
 
     @Override
-    public void update(long id, GenreEntity genre) {
+    public void update(GenreEntity genre) {
         EntityManager entityManager = null;
         try {
             entityManager = connectionManager.getEntityManager();
             entityManager.getTransaction().begin();
 
-            GenreEntity genreEntity = entityManager.find(GenreEntity.class, id);
             if (genre == null) {
                 throw new IllegalArgumentException("Genre with this id was not found in the database");
             }
-            genreEntity.setTitle(genre.getTitle());
+            entityManager.merge(genre);
 
             entityManager.getTransaction().commit();
         } catch (Exception e) {

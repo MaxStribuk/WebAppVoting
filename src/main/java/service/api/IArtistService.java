@@ -11,11 +11,9 @@ public interface IArtistService {
 
     ArtistDTOResponse get(long id);
 
-    boolean exists(long id);
-
     void add(ArtistDTORequest artist);
 
-    void update(long id, ArtistDTORequest artist);
+    void update(long id, long version, ArtistDTORequest artist);
 
-    void delete(long id);
+    void delete(long id, long version);
 }

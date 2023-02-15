@@ -38,40 +38,45 @@ public class GenreService implements IGenreService {
     }
 
     @Override
-    public boolean exists(long id) {
-        return genreDAO.exists(id);
-    }
-
-    @Override
     public void add(GenreDTORequest genre) {
         validate(genre);
         boolean isDuplicate = isDuplicate(genre.getTitle());
         if (isDuplicate) {
-            throw new IllegalArgumentException("This genre has already " +
-                    "been added");
+            throw new IllegalArgumentException("This genre has already been added");
         } else {
             genreDAO.add(genreDTOEntityConverter.convert(genre));
         }
     }
 
     @Override
-    public void update(long id, GenreDTORequest genre) {
+    public void update(long id, long version, GenreDTORequest genre) {
         validate(genre);
         boolean isDuplicate = isDuplicate(genre.getTitle());
-        if (genreDAO.exists(id) && !isDuplicate) {
-            genreDAO.update(id, genreDTOEntityConverter.convert(genre));
+        GenreEntity genreEntity = genreDAO.get(id);
+        if (genreEntity == null) {
+            throw new IllegalArgumentException("No genre updated for id " + id);
+        }
+        if (isDuplicate) {
+            throw new IllegalArgumentException("Genre has already been added" + genre);
+        }
+        if (version == genreEntity.getVersion()) {
+            genreEntity.setTitle(genre.getTitle());
+            genreDAO.update(genreEntity);
         } else {
-            throw new IllegalArgumentException("No genre updated for id " +
-                    id + " or genre has already been added");
+            throw new IllegalArgumentException("Version was specified incorrectly");
         }
     }
 
     @Override
-    public void delete(long id) {
-        if (genreDAO.exists(id)) {
+    public void delete(long id, long version) {
+        GenreEntity genreEntity = genreDAO.get(id);
+        if (genreEntity == null) {
+            throw new IllegalArgumentException("No genre deleted for id " + id);
+        }
+        if (version == genreEntity.getVersion()) {
             genreDAO.delete(id);
         } else {
-            throw new IllegalArgumentException("No genre deleted for id " + id);
+            throw new IllegalArgumentException("Version was specified incorrectly");
         }
     }
 

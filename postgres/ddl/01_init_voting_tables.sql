@@ -1,7 +1,10 @@
+CREATE SCHEMA IF NOT EXISTS app;
+
 CREATE TABLE app.artists
 (
-    id   bigint NOT NULL,
-    name text   NOT NULL
+    id      bigint NOT NULL,
+    name    text   NOT NULL,
+    version bigint NOT NULL
 );
 
 CREATE SEQUENCE app.artists_id_seq
@@ -21,7 +24,8 @@ CREATE TABLE app.emails
     topic        text    NOT NULL,
     text_message text    NOT NULL,
     departures   integer NOT NULL,
-    status       text    NOT NULL
+    status       text    NOT NULL,
+    version      bigint  NOT NULL
 );
 
 CREATE SEQUENCE app.emails_id_seq
@@ -35,8 +39,9 @@ ALTER SEQUENCE app.emails_id_seq OWNED BY app.emails.id;
 
 CREATE TABLE app.genres
 (
-    id    bigint NOT NULL,
-    title text   NOT NULL
+    id      bigint NOT NULL,
+    title   text   NOT NULL,
+    version bigint NOT NULL
 );
 
 CREATE SEQUENCE app.genres_id_seq

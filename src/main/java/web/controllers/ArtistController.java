@@ -40,14 +40,16 @@ public class ArtistController {
         artistService.add(artist);
     }
 
-    @PutMapping(path = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(path = "/{id}/version/{version}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public void update(@PathVariable("id") Long id,
+                       @PathVariable("version") Long version,
                        @RequestBody ArtistDTORequest artist) {
-        artistService.update(id, artist);
+        artistService.update(id, version, artist);
     }
 
-    @DeleteMapping(path = "/{id}")
-    public void delete(@PathVariable("id") Long id) {
-        artistService.delete(id);
+    @DeleteMapping(path = "/{id}/version/{version}")
+    public void delete(@PathVariable("id") Long id,
+                       @PathVariable("version") Long version) {
+        artistService.delete(id, version);
     }
 }
