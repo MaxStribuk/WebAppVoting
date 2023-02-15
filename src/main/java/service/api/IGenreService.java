@@ -11,11 +11,9 @@ public interface IGenreService {
 
     GenreDTOResponse get(long id);
 
-    boolean exists(long id);
-
     void add(GenreDTORequest genre);
 
-    void delete(long id);
+    void delete(long id, long version);
 
-    void update(long id, GenreDTORequest genre);
+    void update(long id, long version, GenreDTORequest genre);
 }

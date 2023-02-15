@@ -91,7 +91,7 @@ public class VoteService implements IVoteService {
                     "must be non-repeating");
         }
         for (long genreId : genresIdList) {
-            if (!genreService.exists(genreId)) {
+            if (genreService.get(genreId) == null) {
                 throw new NoSuchElementException("Invalid genre id " +
                         "provided - '" + genreId + "'");
             }

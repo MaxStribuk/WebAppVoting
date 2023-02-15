@@ -8,13 +8,11 @@ public interface IGenreDAO {
 
     List<GenreEntity> getAll();
 
-    boolean exists(long id);
-
     GenreEntity get(long id);
 
     void add(GenreEntity genre);
 
-    void update(long id, GenreEntity genre);
+    void update(GenreEntity genre);
     
     void delete(long id);
 }

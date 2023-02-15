@@ -7,10 +7,12 @@ public class GenreDTOResponse implements Serializable {
 
     private final long id;
     private final String title;
+    private final long version;
 
-    public GenreDTOResponse(long id, String title) {
+    public GenreDTOResponse(long id, String title, long version) {
         this.id = id;
         this.title = title;
+        this.version = version;
     }
 
     public long getId() {
@@ -21,24 +23,29 @@ public class GenreDTOResponse implements Serializable {
         return title;
     }
 
+    public long getVersion() {
+        return version;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        GenreDTOResponse genreDTOResponse = (GenreDTOResponse) o;
-        return id == genreDTOResponse.id && title.equals(genreDTOResponse.title);
+        GenreDTOResponse that = (GenreDTOResponse) o;
+        return id == that.id && version == that.version && title.equals(that.title);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, title);
+        return Objects.hash(id, title, version);
     }
 
     @Override
     public String toString() {
-        return "GenreDTO{" +
+        return "GenreDTOResponse{" +
                 "id=" + id +
                 ", title='" + title + '\'' +
+                ", version=" + version +
                 '}';
     }
 }

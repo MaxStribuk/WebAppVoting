@@ -40,14 +40,16 @@ public class GenreController {
         genreService.add(genre);
     }
 
-    @PutMapping(path = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(path = "/{id}/version/{version}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public void update(@PathVariable("id") Long id,
+                       @PathVariable("version") Long version,
                        @RequestBody GenreDTORequest genre) {
-        genreService.update(id, genre);
+        genreService.update(id, version, genre);
     }
 
-    @DeleteMapping(path = "/{id}")
-    public void delete(@PathVariable("id") Long id) {
-        genreService.delete(id);
+    @DeleteMapping(path = "/{id}/version/{version}")
+    public void delete(@PathVariable("id") Long id,
+                       @PathVariable("version") Long version) {
+        genreService.delete(id, version);
     }
 }
