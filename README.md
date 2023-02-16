@@ -40,14 +40,14 @@ You can use the version of the application available at the following link: [pro
 
 When accessing the GET method, you can get a list of all artists.
 
-for example: <a href="http://localhost:8080/voting/artists">get all artists</a>
+for example: <a href="http://178.62.215.246:8080/voting/artists">get all artists</a>
 `http://localhost:8080/voting/artists`
 
 > /artists/{id}
 
 You can get information about a specific artist by specifying the id as part of the URL using a GET request
 
-for example: <a href="http://localhost:8080/voting/artists/1">get artist</a>
+for example: <a href="http://178.62.215.246:8080/voting/artists/1">get artist</a>
 `http://localhost:8080/voting/artists/1`
 
 > /artists
@@ -55,7 +55,7 @@ for example: <a href="http://localhost:8080/voting/artists/1">get artist</a>
 You can add your own artist by making a POST request.<br>
 The body must contain the name of the artist, as shown in the example below:
 
-for example: <a href="http://localhost:8080/voting/artists">add artist</a>
+for example: <a href="http://178.62.215.246:8080/voting/artists">add artist</a>
 `http://localhost:8080/voting/artists`
 
 body:
@@ -71,7 +71,7 @@ You can make a PUT request to change the name of an existing artist.<br>
 The URL must include the id and version of the artist being changed.<br>
 As part of the body, you must pass the new name of the artist.
 
-for example: <a href="http://localhost:8080/voting/artists/4/version/0">update artist</a>
+for example: <a href="http://178.62.215.246:8080/voting/artists/4/version/0">update artist</a>
 `http://localhost:8080/voting/artists/4/version/0`
 
 body:
@@ -86,21 +86,21 @@ body:
 You can make a DELETE request to remove an existing artist.<br>
 The URL must include the id and version of the artist to be removed.
 
-for example: <a href="http://localhost:8080/voting/artists/4/version/0">delete artist</a>
+for example: <a href="http://178.62.215.246:8080/voting/artists/4/version/0">delete artist</a>
 `http://localhost:8080/voting/artists/4/version/0`
 
 > /genres
 
 When accessing the GET method, you can get a list of all genres.
 
-for example: <a href="http://localhost:8080/voting/genres">get all genres</a>
+for example: <a href="http://178.62.215.246:8080/voting/genres">get all genres</a>
 `http://localhost:8080/voting/genres
 `
 > /genres/{id}
 
 You can get information about a specific genre by specifying the id as part of the URL using a GET request
 
-for example: <a href="http://localhost:8080/voting/genres/1">get genre</a>
+for example: <a href="http://178.62.215.246:8080/voting/genres/1">get genre</a>
 `http://localhost:8080/voting/genres/1`
 
 > /genres
@@ -108,7 +108,7 @@ for example: <a href="http://localhost:8080/voting/genres/1">get genre</a>
 You can add your own genre by making a POST request.<br>
 The body must contain the name of the genre, as shown in the example below:
 
-for example: <a href="http://localhost:8080/voting/genres">add genre</a>
+for example: <a href="http://178.62.215.246:8080/voting/genres">add genre</a>
 `http://localhost:8080/voting/genres`
 
 body:
@@ -126,7 +126,7 @@ You can make a PUT request to change the name of an existing genre.<br>
 The URL must include the id and version of the genre being changed.<br>
 As part of the body, you must pass the new name of the genre.
 
-for example: <a href="http://localhost:8080/voting/genres/4/version/0">update genre</a>
+for example: <a href="http://178.62.215.246:8080/voting/genres/4/version/0">update genre</a>
 `http://localhost:8080/voting/genres/4/version/0`
 
 body:
@@ -142,14 +142,14 @@ body:
 You can make a DELETE request to remove an existing genre.<br>
 The URL must include the id and version of the genre to be removed.
 
-for example: <a href="http://localhost:8080/voting/genres/4/version/0">delete genre</a>
+for example: <a href="http://178.62.215.246:8080/voting/genres/4/version/0">delete genre</a>
 `http://localhost:8080/voting/genres/4/version/0`
 
 > /vote
 
 You can vote by making a POST request to the following URL:
 
-for example: <a href="http://localhost:8080/voting/vote">add vote</a>
+for example: <a href="http://178.62.215.246:8080/voting/vote">add vote</a>
 `http://localhost:8080/voting/vote`
 
 body:
@@ -178,7 +178,7 @@ After voting, information about how you voted will be sent to the email address 
 
 To get current voting results, you can make a GET request to the following URL:
 
-for example: <a href="http://localhost:8080/voting/results">get results</a>
+for example: <a href="http://178.62.215.246:8080/voting/results">get results</a>
 `http://localhost:8080/voting/results`
 
     The results will be sorted by the number of votes.
