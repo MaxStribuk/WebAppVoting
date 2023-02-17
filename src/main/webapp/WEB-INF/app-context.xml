@@ -121,10 +121,4 @@
         <constructor-arg type="int" value="4"/>
     </bean>
 
-<!--    <bean id="emailResendListener" class="web.listeners.EmailResendLoaderListener">-->
-<!--          init-method="contextInitialized"-->
-<!--          destroy-method="destroy">-->
-<!--        <constructor-arg name="sendingService" ref="emailSendingService"/>-->
-<!--    </bean>-->
-
 </beans>
