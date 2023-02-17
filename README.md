@@ -29,7 +29,7 @@ The root repository contains a postgres folder containing ddl and dml files with
 You can use it to create tables and populate them with default data.<br>
 Please note that ddl does not create the database itself, you will need to do it yourself.
 
-You can use the version of the application available at the following link: [project link](http://localhost:8080/voting "in progress")
+You can use the version of the application available at the following link: [project link](http://178.62.215.246:8080/voting/results)
 ---------------------------------------------------------------------------
 
     All data in the application is given and received exclusively in JSON format.
